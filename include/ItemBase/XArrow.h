@@ -21,10 +21,11 @@ public:
 	QRectF boundingRect() const override;
 	QPainterPath shape() const override;
 	void setColor(const QColor& color) { myColor = color; }
-	XBaseItem* startItem() const { return myStartItem; }
-	XBaseItem* endItem() const { return myEndItem; }
+	XBaseItem* getStartItem() const { return myStartItem; }
+	XBaseItem* getEndItem() const { return myEndItem; }
 signals:
-	void showTableViewSingle(XArrow*, QList<TableData>, QList<TableData>);
+	void showTableViewSingle(const QString& xName, const QString& yName,
+		XArrow*, QList<TableData>, QList<TableData>);
 public slots:
 	void changeLineArrowColorSlots(const QColor& color);
 protected:

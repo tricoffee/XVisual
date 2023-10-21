@@ -5,8 +5,7 @@
 InputItem::InputItem(QMenu* contextMenu, QGraphicsItem* parent)
 	: XBaseItem(contextMenu, parent)
 {
-	QString uniqueName = ItemManager::instance().getUniqueItemName("InputItem");
-	setObjectName(uniqueName);
+	createUniqueName();
 	QRect rect(-100, -100, 200, 200);
 	QPainterPath path;
 	int radius = 25;
@@ -40,8 +39,18 @@ void InputItem::debug()
 	qDebug() << "InputItem::boundingRect().height() " << boundingRect().height();
 	qDebug() << "InputItem::uuid " << QString::fromStdString(uuid);
 }
+void InputItem::setSourceFrom(const std::string& xName,
+	const QString& yItemId, const std::string& yName)
+{
+
+}
 void InputItem::ItemXOP(Source& sources, Dest& dests)
 {
 
+}
+void InputItem::createUniqueName()
+{
+	uniqueName = ItemManager::instance().getUniqueItemName("Input");
+	setObjectName(uniqueName);
 }
 REGISTER_CLASS(Input);

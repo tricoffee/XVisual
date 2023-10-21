@@ -97,8 +97,10 @@ void XArrow::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 	qDebug() << "void XArrow::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event) ";
 	qDebug() << "yUuid = " << QString::fromStdString(myStartItem->getUuid());
 	qDebug() << "xUuid = " << QString::fromStdString(myEndItem->getUuid());
-	std::string itemIdY = const_cast<std::string&>(myStartItem->getUuid());
-	std::string itemIdX = const_cast<std::string&>(myEndItem->getUuid());
+	std::string yItemId = const_cast<std::string&>(myStartItem->getUuid());
+	std::string xItemId = const_cast<std::string&>(myEndItem->getUuid());
+	QString yItemName = const_cast<QString&>(myStartItem->getUniqueName());
+	QString xItemName = const_cast<QString&>(myEndItem->getUniqueName());
 	Dest& dest = myStartItem->getDests();
 	Source& source = myEndItem->getSources();
 	std::vector<std::string> yNames = ACQUIRE_NAMES(dest);
@@ -112,19 +114,19 @@ void XArrow::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 	for (int j = 0; j < yNum; ++j)
 	{
 		std::string yName = yNames[j];
-		std::string yTypeName = (*GET_MEMBER_TYPE_STR(source, yName)).name();
-		TableData yData{ itemIdY,yName,yTypeName };
+		std::string yTypeName = (*GET_MEMBER_TYPE_STR(dest, yName)).name();
+		TableData yData{ yItemId,yName,yTypeName };
 		variablesY << yData;
 	}
 	for (int i = 0; i < xNum; ++i)
 	{
 		std::string xName = xNames[i];
-		std::string xTypeName = (*GET_MEMBER_TYPE_STR(dest, xName)).name();
+		std::string xTypeName = (*GET_MEMBER_TYPE_STR(source, xName)).name();
 		//std::any xValue = GET_MEMBER_STR(dest, xName);
-		TableData xData{ itemIdX,xName,xTypeName };
+		TableData xData{ xItemId,xName,xTypeName };
 		variablesX << xData;
 	}
-	emit showTableViewSingle(this,variablesX, variablesY);
+	emit showTableViewSingle(xItemName,yItemName,this,variablesX, variablesY);
 	return QGraphicsLineItem::mouseDoubleClickEvent(event);
 }
 

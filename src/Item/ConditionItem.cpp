@@ -5,8 +5,7 @@
 ConditionItem::ConditionItem(QMenu* contextMenu, QGraphicsItem* parent)
 	: XBaseItem(contextMenu, parent)
 {
-	QString uniqueName = ItemManager::instance().getUniqueItemName("ConditionItem");
-	setObjectName(uniqueName);
+	createUniqueName();
 	myPolygon << QPointF(-100, 0) << QPointF(0, 100)
 		      << QPointF(100, 0)  << QPointF(0, -100)
 		      << QPointF(-100, 0);
@@ -28,6 +27,16 @@ void ConditionItem::debug()
 	qDebug() << "ConditionItem::uuid " << QString::fromStdString(uuid);
 }
 void ConditionItem::ItemXOP(Source& sources, Dest& dests)
+{
+
+}
+void ConditionItem::createUniqueName()
+{
+	uniqueName = ItemManager::instance().getUniqueItemName("Condition");
+	setObjectName(uniqueName);
+}
+void ConditionItem::setSourceFrom(const std::string& xName,
+	const QString& yItemId, const std::string& yName)
 {
 
 }
