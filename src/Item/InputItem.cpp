@@ -39,11 +39,6 @@ void InputItem::debug()
 	qDebug() << "InputItem::boundingRect().height() " << boundingRect().height();
 	qDebug() << "InputItem::uuid " << QString::fromStdString(uuid);
 }
-void InputItem::setSourceFrom(const std::string& xName,
-	const QString& yItemId, const std::string& yName)
-{
-
-}
 void InputItem::ItemXOP(Source& sources, Dest& dests)
 {
 

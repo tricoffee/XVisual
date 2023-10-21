@@ -50,13 +50,11 @@ class XBaseItem : public QObject, public QGraphicsPolygonItem
 		QList<XBaseItem*> childs;
 		virtual void initParameters();
 		virtual void ItemXOP(Source& sources, Dest& dests);
-
 		virtual Source& getSources();
 		virtual Dest& getDests();
 		const QString& getUniqueName();
-		const SourceFrom& getSourceFrom();
-		virtual void setSourceFrom(const std::string& xName,
-			const QString& yItemId, const std::string& yName);
+		void setSourceFrom(const std::string& xName,
+			const std::string& yItemId, const std::string& yName);
 	public slots:
 			void TextEditFocusOutSlot(QString mText);
 	protected:
@@ -68,7 +66,6 @@ class XBaseItem : public QObject, public QGraphicsPolygonItem
 		std::string uuid;
 		virtual void createUniqueName();
 		QString uniqueName;
-		SourceFrom sourceFrom;
     private:
 		QMenu* myContextMenu;
 		QList<XArrow*> arrows;

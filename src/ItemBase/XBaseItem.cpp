@@ -151,12 +151,12 @@ void XBaseItem::ItemXOP(Source& sources, Dest& dests)
 
 }
 void XBaseItem::setSourceFrom(const std::string& xName,
-	const QString& yItemId, const std::string& yName)
+	const std::string& yItemId, const std::string& yName)
 {
-
-}
-const SourceFrom& XBaseItem::getSourceFrom()
-{
-	return sourceFrom;
+	SourceFrom sourceFrom;
+	sourceFrom.itemId = yItemId;
+	sourceFrom.name = yName;
+	SET_SOURCEFROM_STR(sources, xName, sourceFrom);
+	GET_SOURCEFROM_STR(sources, xName);
 }
 REGISTER_CLASS(XBase);

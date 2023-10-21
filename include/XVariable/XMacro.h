@@ -31,8 +31,14 @@
 #define SET_SOURCEFROM(instance, name, sourceFrom) \
     instance.setSourceFrom(#name, sourceFrom)
 
+#define SET_SOURCEFROM_STR(instance, name, sourceFrom) \
+    instance.setSourceFrom(name, sourceFrom)
+
 #define GET_SOURCEFROM(instance, name) \
     instance.getSourceFrom(#name)
+
+#define GET_SOURCEFROM_STR(instance, name) \
+    instance.getSourceFrom(name)
 
 #define IS_MEMBER_FROM_INNER(instance, name) \
     instance.isFromInner(#name)

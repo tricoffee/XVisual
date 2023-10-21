@@ -26,11 +26,6 @@ void StepItem::debug()
 	qDebug() << "StepItem::boundingRect().height() " << boundingRect().height();
 	qDebug() << "StepItem::uuid " << QString::fromStdString(uuid);
 }
-void StepItem::setSourceFrom(const std::string& xName,
-	const QString& yItemId, const std::string& yName)
-{
-
-}
 void StepItem::ItemXOP(Source& sources, Dest& dests)
 {
 
