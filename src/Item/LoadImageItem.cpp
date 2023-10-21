@@ -12,8 +12,7 @@
 LoadImageItem::LoadImageItem(QMenu* contextMenu, QGraphicsItem* parent)
 	: XBaseItem(contextMenu, parent), sources(Source::getInstance()), dests(Dest::getInstance())
 {
-	QString uniqueName = ItemManager::instance().getUniqueItemName("LoadImageItem");
-	setObjectName(uniqueName);
+	createUniqueName();
 	QRect rect(-100, -100, 200, 200);
 	QPainterPath path;
 	int radius = 25;
@@ -71,11 +70,6 @@ void LoadImageItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 	QString imagePath = QFileDialog::getOpenFileName(nullptr, "Select Image", "", "Images (*.png *.jpg *.jpeg *.bmp *.gif)");
 	if (!imagePath.isEmpty())
 	{
-		//REGISTER_MEMBER_WITH_FLAG(sources, imagePath, imagePath.toStdString(),
-		//	IS_MEMBER_FROM_INNER(sources,imagePath));
-		//cv::Mat image = cv::imread(imagePath.toStdString());
-		//REGISTER_MEMBER_WITH_FLAG(dests, image, image,
-		//	IS_MEMBER_FROM_INNER(dests, image));
 		REGISTER_MEMBER(sources, imagePath, imagePath.toStdString());
 		cv::Mat image = cv::imread(imagePath.toStdString());
 		REGISTER_MEMBER(dests, image, image);
@@ -92,9 +86,19 @@ void LoadImageItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 	// Call the base class event handler
 	QGraphicsPolygonItem::mouseDoubleClickEvent(event);
 }
+void LoadImageItem::setSourceFrom(const std::string& xName,
+	const QString& yItemId, const std::string& yName)
+{
+
+}
 void LoadImageItem::ItemXOP(Source& sources, Dest& dests)
 {
 	cv::Mat InputImage = GET_MEMBER_WITH_TYPE(dests, cv::Mat, image);
 
+}
+void LoadImageItem::createUniqueName()
+{
+	uniqueName = ItemManager::instance().getUniqueItemName("LoadImage");
+	setObjectName(uniqueName);
 }
 REGISTER_CLASS(LoadImage);

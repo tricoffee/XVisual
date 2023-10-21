@@ -83,8 +83,8 @@ void MainWindow::deleteItem()
 		{
 			scene->removeItem(item);
 			XArrow* arrow = qgraphicsitem_cast<XArrow*>(item);
-			arrow->startItem()->removeArrow(arrow);
-			arrow->endItem()->removeArrow(arrow);
+			arrow->getStartItem()->removeArrow(arrow);
+			arrow->getEndItem()->removeArrow(arrow);
 			delete item;
 		}
 		else if (XBaseItem::Type == item->type())
@@ -509,8 +509,8 @@ void MainWindow::initSceneBackground()
 	//    qDebug() << "MainWindow::initSceneBackground... ";
 }
 
-void MainWindow::showTableViewSlot(XArrow* xLineArrow, QList<TableData> variablesX,
-	QList<TableData> variablesY)
+void MainWindow::showTableViewSlot(const QString& xName,const QString& yName,XArrow* xLineArrow, 
+	QList<TableData> variablesX, QList<TableData> variablesY)
 {
 
 	tableView = new CustomTableView(xLineArrow);
@@ -521,8 +521,8 @@ void MainWindow::showTableViewSlot(XArrow* xLineArrow, QList<TableData> variable
 	QStandardItemModel* model = new QStandardItemModel(variablesX.length(), 2);
 
 	// Set the header for the table
-	model->setHeaderData(0, Qt::Horizontal, "Node X");
-	model->setHeaderData(1, Qt::Horizontal, "Node Y");
+	model->setHeaderData(0, Qt::Horizontal, xName);
+	model->setHeaderData(1, Qt::Horizontal, yName);
 
 	// Add variables of node X to the table
 	for (int i = 0; i < variablesX.length(); i++)

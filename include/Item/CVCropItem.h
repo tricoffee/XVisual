@@ -13,8 +13,11 @@ public:
 	void initParameters() override;
 	Source& getSources();
 	Dest& getDests();
-	void setSourceFrom() override;
+	void setSourceFrom(const std::string& xName,
+		const QString& yItemId, const std::string& yName) override;
 	void ItemXOP(Source& sources, Dest& dests) override;
+protected:
+	void createUniqueName() override;
 private:
 	Source sources;
 	Dest dests;

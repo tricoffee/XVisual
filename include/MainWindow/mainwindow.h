@@ -34,7 +34,8 @@ public:
 	MainWindow();
 	std::map<int, QString> idnames;
 public slots:
-		void showTableViewSlot(XArrow*, QList<TableData>, QList<TableData>);
+		void showTableViewSlot(const QString& xName,const QString& yName,
+			XArrow*, QList<TableData>, QList<TableData>);
 private slots:
 	void backgroundButtonGroupClicked(QAbstractButton* button);
 	void buttonGroupClicked(QAbstractButton* button);

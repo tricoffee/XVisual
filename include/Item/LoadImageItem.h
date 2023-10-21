@@ -13,9 +13,12 @@ class LoadImageItem : public XBaseItem
 		Source& getSources();
 		Dest& getDests();
 		void initParameters() override;
+		void setSourceFrom(const std::string& xName,
+			const QString& yItemId, const std::string& yName) override;
 		void ItemXOP(Source& sources, Dest& dests) override;
     protected:
-	   void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event);
+	   void createUniqueName() override;
+	   void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event) override;
 	private:
 		Source sources;
 		Dest dests;

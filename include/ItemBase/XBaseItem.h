@@ -12,6 +12,7 @@
 #include "XVariable/Source.h"
 #include "XVariable/Dest.h"
 #include "XVariable/XMacro.h"
+#include "XVariable/SourceFrom.h"
 
 class DiagramProxyWidget;
 class ItemWidget;
@@ -49,9 +50,13 @@ class XBaseItem : public QObject, public QGraphicsPolygonItem
 		QList<XBaseItem*> childs;
 		virtual void initParameters();
 		virtual void ItemXOP(Source& sources, Dest& dests);
-		virtual void setSourceFrom();
+
 		virtual Source& getSources();
 		virtual Dest& getDests();
+		const QString& getUniqueName();
+		const SourceFrom& getSourceFrom();
+		virtual void setSourceFrom(const std::string& xName,
+			const QString& yItemId, const std::string& yName);
 	public slots:
 			void TextEditFocusOutSlot(QString mText);
 	protected:
@@ -61,6 +66,9 @@ class XBaseItem : public QObject, public QGraphicsPolygonItem
 		ItemWidget* xitemWidget;
 		void createUuid();
 		std::string uuid;
+		virtual void createUniqueName();
+		QString uniqueName;
+		SourceFrom sourceFrom;
     private:
 		QMenu* myContextMenu;
 		QList<XArrow*> arrows;

@@ -5,8 +5,7 @@
 StepItem::StepItem(QMenu* contextMenu, QGraphicsItem* parent)
 	: XBaseItem(contextMenu, parent)
 {
-	QString uniqueName = ItemManager::instance().getUniqueItemName("StepItem");
-	setObjectName(uniqueName);
+	createUniqueName();
 	myPolygon << QPointF(-100, -100) << QPointF(100, -100)
 		<< QPointF(100, 100) << QPointF(-100, 100)
 		<< QPointF(-100, -100);
@@ -27,8 +26,18 @@ void StepItem::debug()
 	qDebug() << "StepItem::boundingRect().height() " << boundingRect().height();
 	qDebug() << "StepItem::uuid " << QString::fromStdString(uuid);
 }
+void StepItem::setSourceFrom(const std::string& xName,
+	const QString& yItemId, const std::string& yName)
+{
+
+}
 void StepItem::ItemXOP(Source& sources, Dest& dests)
 {
 
+}
+void StepItem::createUniqueName()
+{
+	uniqueName = ItemManager::instance().getUniqueItemName("Step");
+	setObjectName(uniqueName);
 }
 REGISTER_CLASS(Step);

@@ -12,8 +12,7 @@
 CVCropItem::CVCropItem(QMenu* contextMenu, QGraphicsItem* parent)
 	: XBaseItem(contextMenu, parent), sources(Source::getInstance()), dests(Dest::getInstance())
 {
-	QString uniqueName = ItemManager::instance().getUniqueItemName("CVCropItem");
-	setObjectName(uniqueName);
+	createUniqueName();
 	QRect rect(-100, -100, 200, 200);
 	QPainterPath path;
 	int radius = 25;
@@ -60,12 +59,13 @@ Dest& CVCropItem::getDests()
 }
 void CVCropItem::initParameters()
 {
-	cv::Mat image;
-	REGISTER_MEMBER(sources, image, image);
+	cv::Mat img;
+	REGISTER_MEMBER(sources, img, img);
 	cv::Mat cropImage;
 	REGISTER_MEMBER(dests, cropImage, cropImage);
 }
-void CVCropItem::setSourceFrom()
+void CVCropItem::setSourceFrom(const std::string& xName, 
+	const QString& ItemIdY, const std::string& yName)
 {
 
 }
@@ -73,5 +73,10 @@ void CVCropItem::ItemXOP(Source& sources, Dest& dests)
 {
 
 
+}
+void CVCropItem::createUniqueName()
+{
+	uniqueName = ItemManager::instance().getUniqueItemName("CVCrop");
+	setObjectName(uniqueName);
 }
 REGISTER_CLASS(CVCrop);

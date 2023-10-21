@@ -5,8 +5,7 @@
 OutputItem::OutputItem(QMenu* contextMenu, QGraphicsItem* parent)
 	: XBaseItem(contextMenu, parent)
 {
-	QString uniqueName = ItemManager::instance().getUniqueItemName("OutputItem");
-	setObjectName(uniqueName);
+	createUniqueName();
 	myPolygon << QPointF(-120, -80) << QPointF(-70, 80)
 		<< QPointF(120, 80) << QPointF(70, -80)
 		<< QPointF(-120, -80);
@@ -27,8 +26,18 @@ void OutputItem::debug()
 	qDebug() << "OutputItem::boundingRect().height() " << boundingRect().height();
 	qDebug() << "OutputItem::uuid " << QString::fromStdString(uuid);
 }
+void OutputItem::setSourceFrom(const std::string& xName,
+	const QString& yItemId, const std::string& yName)
+{
+
+}
 void OutputItem::ItemXOP(Source& sources, Dest& dests)
 {
 
+}
+void OutputItem::createUniqueName()
+{
+	uniqueName = ItemManager::instance().getUniqueItemName("Output");
+	setObjectName(uniqueName);
 }
 REGISTER_CLASS(Output);

@@ -41,8 +41,8 @@ void XBaseItem::removeArrows()
 	const auto arrowsCopy = arrows;
 	for (XArrow* arrow : arrowsCopy)
 	{
-		arrow->startItem()->removeArrow(arrow);
-		arrow->endItem()->removeArrow(arrow);
+		arrow->getStartItem()->removeArrow(arrow);
+		arrow->getEndItem()->removeArrow(arrow);
 		scene()->removeItem(arrow);
 		delete arrow;
 	}
@@ -124,6 +124,14 @@ const std::string& XBaseItem::getUuid() const
 {
 	return uuid;
 }
+void XBaseItem::createUniqueName()
+{
+
+}
+const QString& XBaseItem::getUniqueName()
+{
+	return uniqueName;
+}
 Source& XBaseItem::getSources()
 {
 	qDebug() << "Source& XBaseItem::getSources() ";
@@ -142,8 +150,13 @@ void XBaseItem::ItemXOP(Source& sources, Dest& dests)
 {
 
 }
-void XBaseItem::setSourceFrom()
+void XBaseItem::setSourceFrom(const std::string& xName,
+	const QString& yItemId, const std::string& yName)
 {
 
+}
+const SourceFrom& XBaseItem::getSourceFrom()
+{
+	return sourceFrom;
 }
 REGISTER_CLASS(XBase);

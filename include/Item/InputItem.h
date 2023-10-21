@@ -10,7 +10,11 @@ class InputItem : public XBaseItem
 		InputItem(QMenu* contextMenu, QGraphicsItem* parent = nullptr);
 		QPixmap image() override;
 		void debug();
+		void setSourceFrom(const std::string& xName,
+			const QString& yItemId, const std::string& yName) override;
 		void ItemXOP(Source& sources, Dest& dests) override;
+    protected:
+		void createUniqueName() override;
 };
 
 #endif //InputItem_H
