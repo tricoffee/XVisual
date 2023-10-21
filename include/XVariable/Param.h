@@ -110,11 +110,15 @@ class Param
 			sourceMap[name] = sourceFrom;
 		}
 
-		SourceFrom getSourceFrom(const std::string& name)
+		SourceFrom& getSourceFrom(const std::string& name)
 		{
 			try
 			{
-				return std::any_cast<SourceFrom>(sourceMap.at(name));
+				qDebug() << "SourceFrom& getSourceFrom(const std::string& name) \n name " << QString::fromStdString(name);
+				SourceFrom sfrom = sourceMap.at(name);
+				qDebug() << "sourceMap.at(name) itemId  " << QString::fromStdString(sfrom.itemId);
+				qDebug() << "sourceMap.at(name) name  " << QString::fromStdString(sfrom.name);
+				return sourceMap.at(name);
 			}
 			catch (const std::out_of_range& e)
 			{

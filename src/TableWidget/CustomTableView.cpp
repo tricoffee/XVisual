@@ -78,6 +78,6 @@ void CustomTableView::closeEvent(QCloseEvent* event)
 			}
 		}
 		qDebug() << "xName.toStdString(), yItemId, yName.toStdString():" << xName << yItemId << yName;
-		xItem->setSourceFrom(xName.toStdString(), yItemId, yName.toStdString());
+		xItem->setSourceFrom(xName.toStdString(), yItemId.toStdString(), yName.toStdString());
 	}
 }

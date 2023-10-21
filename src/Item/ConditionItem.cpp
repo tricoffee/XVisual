@@ -35,9 +35,4 @@ void ConditionItem::createUniqueName()
 	uniqueName = ItemManager::instance().getUniqueItemName("Condition");
 	setObjectName(uniqueName);
 }
-void ConditionItem::setSourceFrom(const std::string& xName,
-	const QString& yItemId, const std::string& yName)
-{
-
-}
 REGISTER_CLASS(Condition);

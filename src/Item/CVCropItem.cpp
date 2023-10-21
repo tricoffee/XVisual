@@ -64,11 +64,6 @@ void CVCropItem::initParameters()
 	cv::Mat cropImage;
 	REGISTER_MEMBER(dests, cropImage, cropImage);
 }
-void CVCropItem::setSourceFrom(const std::string& xName, 
-	const QString& ItemIdY, const std::string& yName)
-{
-
-}
 void CVCropItem::ItemXOP(Source& sources, Dest& dests)
 {
 

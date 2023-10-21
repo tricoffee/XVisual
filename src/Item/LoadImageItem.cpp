@@ -86,11 +86,6 @@ void LoadImageItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 	// Call the base class event handler
 	QGraphicsPolygonItem::mouseDoubleClickEvent(event);
 }
-void LoadImageItem::setSourceFrom(const std::string& xName,
-	const QString& yItemId, const std::string& yName)
-{
-
-}
 void LoadImageItem::ItemXOP(Source& sources, Dest& dests)
 {
 	cv::Mat InputImage = GET_MEMBER_WITH_TYPE(dests, cv::Mat, image);
