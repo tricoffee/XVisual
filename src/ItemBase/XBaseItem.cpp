@@ -157,6 +157,10 @@ void XBaseItem::setSourceFrom(const std::string& xName,
 	sourceFrom.itemId = yItemId;
 	sourceFrom.name = yName;
 	SET_SOURCEFROM_STR(sources, xName, sourceFrom);
+
+}
+void XBaseItem::loadSourceFrom(const std::string& xName)
+{
 	GET_SOURCEFROM_STR(sources, xName);
 }
 REGISTER_CLASS(XBase);

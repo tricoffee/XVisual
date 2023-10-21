@@ -55,6 +55,7 @@ class XBaseItem : public QObject, public QGraphicsPolygonItem
 		const QString& getUniqueName();
 		void setSourceFrom(const std::string& xName,
 			const std::string& yItemId, const std::string& yName);
+		void loadSourceFrom(const std::string& xName);
 	public slots:
 			void TextEditFocusOutSlot(QString mText);
 	protected:
