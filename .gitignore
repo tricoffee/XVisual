@@ -36,3 +36,6 @@
 .vcxproj
 .vcxproj.filters
 X64
+XVisual.vcxproj.user
+XVisual.vcxproj
+XVisual.vcxproj.filters
