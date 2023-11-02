@@ -7,6 +7,9 @@
 #include <QtDebug>
 #include "MainWindow/diagramscene.h"
 #include "ItemWidget/XTextEdit.h"
+#include <mutex>
+#include "GlobalStorage/GlobalStorage.h"
+#include "MainWindow/GraphicsWidget.h"
 
 class XBaseItem;
 class ConditionItem;
@@ -19,7 +22,7 @@ DiagramScene::DiagramScene(QMenu* itemMenu, QObject* parent)
 	myItemColor = Qt::white;
 	myTextColor = Qt::black;
 	myLineColor = Qt::black;
-	mainWindow = qobject_cast<MainWindow*>(parent);
+	graphicsWidget = qobject_cast<GraphicsWidget*>(parent);
 }
 
 void DiagramScene::setLineColor(const QColor& color)
@@ -104,9 +107,18 @@ void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
 		item = ItemRegistry::createObject(itemclass, myItemMenu, nullptr);
 		item->setPos(mouseEvent->scenePos());
 		item->setBrush(myItemColor);
-		//item->setEditText(diagramName);
 		item->debug();
+		std::string itemId = item->getUuid();
 		addItem(item);
+		{
+			std::lock_guard<std::mutex> lock(itemMapMutex); 
+			globalItemMap[itemId] = item;
+		}// 作用域结束时，lock_guard 会自动解锁互斥锁itemMapMutex
+		{
+			std::lock_guard<std::mutex> lock(xGraphMutex);
+			// 创建标识为itemId的节点
+			xGraph.push_back(std::make_shared<GraphNode>(itemId));
+		}// 作用域结束时，lock_guard 会自动解锁互斥锁xGraphMutex
 		diagramState = DiagramState::Move;
 		diagramType = DiagramType::Item;
 		QGraphicsScene::mousePressEvent(mouseEvent);
@@ -184,7 +196,7 @@ void DiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* mouseEvent)
 				{
 					XBaseItem* startItem = qgraphicsitem_cast<XBaseItem*>(startItems.first());
 					XBaseItem* endItem = qgraphicsitem_cast<XBaseItem*>(endItems.first());
-					arrow = new XArrow(mainWindow, startItem, endItem);
+					arrow = new XArrow(graphicsWidget, startItem, endItem);
 					arrow->setColor(myLineColor);
 					startItem->addArrow(arrow);
 					endItem->addArrow(arrow);

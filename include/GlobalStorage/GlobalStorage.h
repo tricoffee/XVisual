@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <mutex>
 #include "ItemBase/XBaseItem.h"
+#include "XGraph/XGraph.h"
 
 /*
 extern关键字用于声明全局变量，但它不分配存储空间。
@@ -15,7 +16,11 @@ extern关键字用于声明全局变量，但它不分配存储空间。
 */
 //一个全局的std::unordered_map用来存储itemId和对应的XBaseItem*
 extern std::unordered_map<std::string, XBaseItem*> globalItemMap;
-//互斥锁(mutex)来保护全局的std::unordered_map，这样可以确保同时只有一个线程访问它，以避免资源竞争和数据不一致
+//互斥锁(mutex)来保护全局globalItemMap，这样可以确保同时只有一个线程访问它，以避免资源竞争和数据不一致
 extern std::mutex itemMapMutex;
+//一个全局的xGraph用来存储itemId标识的GraphNode
+extern std::vector<std::shared_ptr<GraphNode>> xGraph;
+//互斥锁(mutex)来保护全局的xGraph，这样可以确保同时只有一个线程访问它，以避免资源竞争和数据不一致
+extern std::mutex xGraphMutex;
 
 #endif //GlobalStorage_H

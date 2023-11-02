@@ -5,9 +5,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "MainWindow/diagramscene.h"
+//#include "MainWindow/diagramscene.h"
 #include "TableWidget/TableData.h"
-#include "TableWidget/CustomTableView.h"
+//#include "TableWidget/CustomTableView.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -17,13 +17,14 @@ class QComboBox;
 class QFontComboBox;
 class QButtonGroup;
 class QLineEdit;
-class QGraphicsTextItem;
+//class QGraphicsTextItem;
 class QFont;
 class QToolButton;
 class QAbstractButton;
-class QGraphicsView;
-class DiagramScene;
-class XArrow;
+//class QGraphicsView;
+//class DiagramScene;
+//class XArrow;
+class GraphicsWidget;
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
@@ -33,16 +34,11 @@ class MainWindow : public QMainWindow
 public:
 	MainWindow();
 	std::map<int, QString> idnames;
-public slots:
-		void showTableViewSlot(const QString& xName,const QString& yName,
-			XArrow*, QList<TableData>, QList<TableData>);
+	void inintActionConnection();
 private slots:
 	void backgroundButtonGroupClicked(QAbstractButton* button);
 	void buttonGroupClicked(QAbstractButton* button);
-	void deleteItem();
 	void linePointerButtonClicked(bool checked);
-	void bringToFront();
-	void sendToBack();
 	void currentFontChanged(const QFont& font);
 	void fontSizeChanged(const QString& size);
 	void sceneScaleChanged(const QString& scale);
@@ -57,15 +53,12 @@ private:
 	void createActions();
 	void createMenus();
 	void createToolbars();
-	QWidget* createBackgroundCellWidget(const QString& text,BackGroundType type,const QString& image);
+	QWidget* createBackgroundCellWidget(const QString& text,int type,const QString& image);
 	QWidget* createCellWidget(const QString& text);
 	int itemtype = 0;
 	QMenu* createColorMenu(const char* slot, QColor defaultColor);
 	QIcon createColorToolButtonIcon(const QString& image, QColor color);
 	QIcon createColorIcon(QColor color);
-	
-	DiagramScene* scene;
-	QGraphicsView* view;
 
 	QAction* exitAction;
 	QAction* addAction;
@@ -103,10 +96,8 @@ private:
 	QAction* textAction;
 	QAction* fillAction;
 	QAction* lineAction;
-	int scene_width;
-	int scene_height;
 
-	CustomTableView* tableView = nullptr;
+	GraphicsWidget* graphicsWidget;
 };
 
 #endif // MAINWINDOW_H

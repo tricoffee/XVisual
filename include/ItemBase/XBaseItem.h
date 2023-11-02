@@ -49,13 +49,13 @@ class XBaseItem : public QObject, public QGraphicsPolygonItem
 		QList<XBaseItem*> parents;
 		QList<XBaseItem*> childs;
 		virtual void initParameters();
+		void initItemOperands(Source& sources);
 		virtual void ItemXOP(Source& sources, Dest& dests);
 		virtual Source& getSources();
 		virtual Dest& getDests();
 		const QString& getUniqueName();
-		void setSourceFrom(const std::string& xName,
-			const std::string& yItemId, const std::string& yName);
-		void loadSourceFrom(const std::string& xName);
+		void setSourceFrom(const std::string& xVariableName, const SourceFrom& sourceFrom);
+		void loadSourceFrom(const std::string& xVariableName, SourceFrom& sourceFrom);
 	public slots:
 			void TextEditFocusOutSlot(QString mText);
 	protected:

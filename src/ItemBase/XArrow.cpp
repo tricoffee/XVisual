@@ -8,6 +8,7 @@
 #include <QPen>
 #include <QtMath>
 #include "MainWindow/MainWindow.h"
+#include "MainWindow/GraphicsWidget.h"
 
 XArrow::XArrow(XBaseItem* startItem, XBaseItem* endItem, QGraphicsItem* parent)
 	: QGraphicsLineItem(parent), myStartItem(startItem), myEndItem(endItem)
@@ -22,9 +23,9 @@ XArrow::XArrow(QWidget* widget, XBaseItem* startItem, XBaseItem* endItem, QGraph
 	setFlag(QGraphicsItem::ItemIsSelectable, true);
 	setPen(QPen(myColor, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 	// 连接双击信号到槽函数
-	MainWindow* mWidget = static_cast<MainWindow*>(widget);
+	GraphicsWidget* mWidget = static_cast<GraphicsWidget*>(widget);
 	connect(this, &XArrow::showTableViewSingle,
-		mWidget, &MainWindow::showTableViewSlot);
+		mWidget, &GraphicsWidget::showTableViewSlot);
 }
 
 QRectF XArrow::boundingRect() const
@@ -122,7 +123,6 @@ void XArrow::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 	{
 		std::string xName = xNames[i];
 		std::string xTypeName = (*GET_MEMBER_TYPE_STR(source, xName)).name();
-		//std::any xValue = GET_MEMBER_STR(dest, xName);
 		TableData xData{ xItemId,xName,xTypeName };
 		variablesX << xData;
 	}

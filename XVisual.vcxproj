@@ -60,6 +60,7 @@
     <IncludePath>C:\NDev\CPPDev\XVisual\XVisual\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <IncludePath>C:\NDev\CPPDev\XVisual\XVisual\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -93,6 +94,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Common\constants.cpp" />
+    <ClCompile Include="src\CustomDialog\CropDialog.cpp" />
+    <ClCompile Include="src\GlobalStorage\GlobalStorage.cpp" />
     <ClCompile Include="src\ItemBase\ItemFactory.cpp" />
     <ClCompile Include="src\ItemBase\XArrow.cpp" />
     <ClCompile Include="src\ItemBase\XBaseItem.cpp" />
@@ -106,10 +109,13 @@
     <ClCompile Include="src\Item\OutputItem.cpp" />
     <ClCompile Include="src\Item\StepItem.cpp" />
     <ClCompile Include="src\MainWindow\diagramscene.cpp" />
+    <ClCompile Include="src\MainWindow\GraphicsWidget.cpp" />
     <ClCompile Include="src\MainWindow\mainwindow.cpp" />
+    <ClCompile Include="src\MainWindow\SideWidget.cpp" />
     <ClCompile Include="src\TableWidget\ComboBoxDelegate.cpp" />
     <ClCompile Include="src\TableWidget\CustomTableView.cpp" />
     <ClCompile Include="src\TableWidget\LabelDelegate.cpp" />
+    <ClCompile Include="src\XGraph\XGraph.cpp" />
     <ClCompile Include="src\XVariable\Dest.cpp" />
     <ClCompile Include="src\XVariable\Param.cpp" />
     <ClCompile Include="src\XVariable\Source.cpp" />
@@ -121,6 +127,8 @@
     <QtMoc Include="include\ItemBase\XArrow.h" />
     <QtMoc Include="include\ItemBase\XBaseItem.h" />
     <ClInclude Include="include\Common\constants.h" />
+    <ClInclude Include="include\Common\XGraphUtils.h" />
+    <QtMoc Include="include\CustomDialog\CropDialog.h" />
     <ClInclude Include="include\GlobalStorage\GlobalStorage.h" />
     <ClInclude Include="include\GlobalStorage\ItemManager.h" />
     <ClInclude Include="include\ItemBase\ItemFactory.h" />
@@ -135,10 +143,14 @@
     <QtMoc Include="include\Item\OutputItem.h" />
     <QtMoc Include="include\Item\StepItem.h" />
     <QtMoc Include="include\Item\CVCropItem.h" />
+    <QtMoc Include="include\MainWindow\GraphicsWidget.h" />
+    <QtMoc Include="include\MainWindow\SideWidget.h" />
     <ClInclude Include="include\TableWidget\ComboBoxDelegate.h" />
     <QtMoc Include="include\TableWidget\CustomTableView.h" />
     <ClInclude Include="include\TableWidget\LabelDelegate.h" />
     <ClInclude Include="include\TableWidget\TableData.h" />
+    <ClInclude Include="include\XGraph\GraphNode.h" />
+    <ClInclude Include="include\XGraph\XGraph.h" />
     <ClInclude Include="include\XVariable\Dest.h" />
     <ClInclude Include="include\XVariable\Param.h" />
     <ClInclude Include="include\XVariable\Source.h" />

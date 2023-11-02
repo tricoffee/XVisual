@@ -11,6 +11,9 @@
 #include <QGraphicsSceneContextMenuEvent>
 #include <QMenu>
 #include <QPainter>
+#include <mutex>
+#include "GlobalStorage/GlobalStorage.h"
+#include "XGraph/XGraph.h"
 
 XBaseItem::XBaseItem(QMenu* contextMenu,QGraphicsItem* parent)
 	: QGraphicsPolygonItem(parent), myContextMenu(contextMenu), sources(Source::getInstance()), dests(Dest::getInstance())
@@ -150,17 +153,43 @@ void XBaseItem::ItemXOP(Source& sources, Dest& dests)
 {
 
 }
-void XBaseItem::setSourceFrom(const std::string& xName,
-	const std::string& yItemId, const std::string& yName)
+void XBaseItem::initItemOperands(Source& sources)
 {
-	SourceFrom sourceFrom;
-	sourceFrom.itemId = yItemId;
-	sourceFrom.name = yName;
-	SET_SOURCEFROM_STR(sources, xName, sourceFrom);
-
+	std::vector<std::string> xVaribleNames = ACQUIRE_NAMES(sources);
+	for (const auto& xName : xVaribleNames) 
+	{
+		SourceFrom sourceFrom;
+		loadSourceFrom(xName, sourceFrom);
+		std::string yItemId = sourceFrom.itemId;
+		std::string yName = sourceFrom.variableName;
+		XBaseItem* yItem = nullptr;
+		{
+			std::lock_guard<std::mutex> lock(xGraphMutex);
+			yItem = globalItemMap[yItemId];
+		} // 作用域结束时，lock_guard 会自动解锁互斥锁xGraphMutex
+		if (yItem != nullptr)
+		{
+			auto yValue = GET_MEMBER_STR(yItem->getDests(), yName);
+			REGISTER_MEMBER_STR(sources, xName, yValue);
+		}
+	}
 }
-void XBaseItem::loadSourceFrom(const std::string& xName)
+void XBaseItem::setSourceFrom(const std::string& xVariableName,const SourceFrom& sourceFrom)
 {
-	GET_SOURCEFROM_STR(sources, xName);
+	SET_SOURCEFROM_STR(sources, xVariableName, sourceFrom);
+	{
+		std::lock_guard<std::mutex> lock(xGraphMutex);
+	    int xIndex = XGraph::findNodeIndex(xGraph, getUuid());
+	    int yIndex = XGraph::findNodeIndex(xGraph, sourceFrom.itemId);
+		if (xIndex != -1 && yIndex != -1)
+		{
+			//添加边, 标识为xItemId(即getUuid()的返回值)的节点---》指向---》标识为yItemId的节点
+			xGraph[xIndex]->neighbors.push_back(xGraph[yIndex]);
+		}
+	} // 作用域结束时，lock_guard 会自动解锁互斥锁xGraphMutex
+}
+void XBaseItem::loadSourceFrom(const std::string& xVariableName, SourceFrom& sourceFrom)
+{
+	sourceFrom = GET_SOURCEFROM_STR(sources, xVariableName);
 }
 REGISTER_CLASS(XBase);
