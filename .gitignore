@@ -32,7 +32,6 @@
 .app
 
 # Projects Relative
-.vcxproj.user
-.vcxproj
-.vcxproj.filters
 X64
+Debug
+GlogDemo/Debug

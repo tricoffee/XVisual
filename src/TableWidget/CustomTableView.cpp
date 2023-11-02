@@ -36,8 +36,8 @@ void CustomTableView::closeEvent(QCloseEvent* event)
 	{
 		QModelIndex yIndex = model->index(row, yColumn);
 		QVariant yData = model->data(yIndex);
-		QString yName = "";
-		QString yType = "";
+		QString yVaribleName = "";
+		QString yVariableType = "";
 		if (yData.canConvert<QString>())
 		{
 			QString yText = yData.toString();
@@ -45,10 +45,10 @@ void CustomTableView::closeEvent(QCloseEvent* event)
 			QStringList parts = yText.split('\n');
 			if (parts.size() >= 2 && !parts[0].isEmpty() && !parts[1].isEmpty()) 
 			{
-				yName = parts[0];
-				yType = parts[1];
-				qDebug() << "yName :" << yName;
-				qDebug() << "yType :" << yType;
+				yVaribleName = parts[0];
+				yVariableType = parts[1];
+				qDebug() << "yVaribleName :" << yVaribleName;
+				qDebug() << "yVariableType :" << yVariableType;
 			}
 			else 
 			{
@@ -58,8 +58,10 @@ void CustomTableView::closeEvent(QCloseEvent* event)
 
 		QModelIndex xIndex = model->index(row, xColumn);
 		QVariant xData = model->data(xIndex);
-		QString xName = "";
-		QString xType = "";
+		//variable name
+		QString xVariableName = "";
+		//variable type
+		QString xVariableType = "";
 		if (xData.canConvert<QString>())
 		{
 			QString xText = xData.toString();
@@ -67,17 +69,18 @@ void CustomTableView::closeEvent(QCloseEvent* event)
 			QStringList parts = xText.split('\n');
 			if (parts.size() >= 2 && !parts[0].isEmpty() && !parts[1].isEmpty())
 			{
-				xName = parts[0];
-				xType = parts[1];
-				qDebug() << "xName :" << xName;
-				qDebug() << "xType :" << xType;
+				xVariableName = parts[0];
+				xVariableType = parts[1];
+				qDebug() << "xVariableName :" << xVariableName;
+				qDebug() << "xVariableType :" << xVariableType;
 			}
 			else
 			{
 				qDebug() << "Input does not contain expected parts.";
 			}
 		}
-		qDebug() << "xName.toStdString(), yItemId, yName.toStdString():" << xName << yItemId << yName;
-		xItem->setSourceFrom(xName.toStdString(), yItemId.toStdString(), yName.toStdString());
+		qDebug() << "xVariableName.toStdString(), yItemId, yVariableName.toStdString():" << xVariableName << yItemId << yVaribleName;
+		SourceFrom soureFrom{yItemId.toStdString(),yVaribleName.toStdString()};
+		xItem->setSourceFrom(xVariableName.toStdString(), soureFrom);
 	}
 }

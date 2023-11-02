@@ -9,28 +9,20 @@
 #include "MainWindow/diagramscene.h"
 #include "MainWindow/mainwindow.h"
 #include "Common/constants.h"
-#include "TableWidget/LabelDelegate.h"
-#include "TableWidget/ComboBoxDelegate.h"
-#include "TableWidget/CustomTableView.h"
+#include "MainWindow/GraphicsWidget.h"
 
 MainWindow::MainWindow()
 {
 	createActions();
 	createMenus();
+    graphicsWidget = new GraphicsWidget(itemMenu);
 	createToolbars();
 	createToolBox();
-	scene_width = 5000;
-	scene_height = 5000;
-	scene = new DiagramScene(itemMenu, this);
-	scene->setSceneRect(QRectF(0, 0, scene_width, scene_height));
+	inintActionConnection();
 
 	QHBoxLayout* layout = new QHBoxLayout;
 	layout->addWidget(toolBox);
-
-	view = new QGraphicsView(scene);
-	view->setMouseTracking(true);
-	layout->addWidget(view);
-	scene->setView(view);
+	layout->addWidget(graphicsWidget);
 
 	QWidget* widget = new QWidget;
 	widget->setLayout(layout);
@@ -45,96 +37,23 @@ void MainWindow::backgroundButtonGroupClicked(QAbstractButton* button)
 {
 	button->setChecked(false);
 	const int id = backgroundButtonGroup->id(button);
-	if (BackGroundType::BlueGrid == id)
-	{
-		scene->setBackgroundBrush(QPixmap(ImageSources::Background1));
-	}
-	else if (BackGroundType::WhiteGrid == id)
-	{
-		scene->setBackgroundBrush(QPixmap(ImageSources::Background2));
-	}
-	else if (BackGroundType::GrayGrid == id)
-	{
-		scene->setBackgroundBrush(QPixmap(ImageSources::Background3));
-	}
-	else
-	{
-		scene->setBackgroundBrush(QPixmap(ImageSources::Background4));
-	}
-	scene->update();
-	view->update();
+	graphicsWidget->setBackgroundChange(id);
 }
 
 void MainWindow::buttonGroupClicked(QAbstractButton* button)
 {
 	button->setChecked(false);
 	const int id = buttonGroup->id(button);
-	scene->setDiagramState(DiagramState::Insert);
-	scene->setDiagramType(DiagramType::Item);
-	scene->setDiagramName(idnames[id]);
-}
-
-void MainWindow::deleteItem()
-{
-	QList<QGraphicsItem*> selectedItems = scene->selectedItems();
-	for (QGraphicsItem* item : std::as_const(selectedItems))
-	{
-		if (XArrow::Type == item->type())
-		{
-			scene->removeItem(item);
-			XArrow* arrow = qgraphicsitem_cast<XArrow*>(item);
-			arrow->getStartItem()->removeArrow(arrow);
-			arrow->getEndItem()->removeArrow(arrow);
-			delete item;
-		}
-		else if (XBaseItem::Type == item->type())
-		{
-			qgraphicsitem_cast<XBaseItem*>(item)->removeArrows();
-			scene->removeItem(item);
-			delete item;
-		}
-	}
+	graphicsWidget->setDiagramState(DiagramState::Insert);
+	graphicsWidget->setDiagramType(DiagramType::Item);
+	graphicsWidget->setDiagramName(idnames[id]);
 }
 
 void MainWindow::linePointerButtonClicked(bool checked)
 {
 	linePointerButton->setChecked(false);
-	scene->setDiagramState(DiagramState::Insert);
-	scene->setDiagramType(DiagramType::Line);
-}
-
-void MainWindow::bringToFront()
-{
-	if (scene->selectedItems().isEmpty())
-		return;
-
-	QGraphicsItem* selectedItem = scene->selectedItems().first();
-	const QList<QGraphicsItem*> overlapItems = selectedItem->collidingItems();
-
-	qreal zValue = 0;
-	for (const QGraphicsItem* item : overlapItems)
-	{
-		if (item->zValue() >= zValue && item->type() == XBaseItem::Type)
-			zValue = item->zValue() + 0.1;
-	}
-	selectedItem->setZValue(zValue);
-}
-
-void MainWindow::sendToBack()
-{
-	if (scene->selectedItems().isEmpty())
-		return;
-
-	QGraphicsItem* selectedItem = scene->selectedItems().first();
-	const QList<QGraphicsItem*> overlapItems = selectedItem->collidingItems();
-
-	qreal zValue = 0;
-	for (const QGraphicsItem* item : overlapItems)
-	{
-		if (item->zValue() <= zValue && item->type() == XBaseItem::Type)
-			zValue = item->zValue() - 0.1;
-	}
-	selectedItem->setZValue(zValue);
+	graphicsWidget->setDiagramState(DiagramState::Insert);
+	graphicsWidget->setDiagramType(DiagramType::Line);
 }
 
 void MainWindow::currentFontChanged(const QFont&)
@@ -149,11 +68,7 @@ void MainWindow::fontSizeChanged(const QString&)
 
 void MainWindow::sceneScaleChanged(const QString& scale)
 {
-	double newScale = scale.left(scale.indexOf(tr("%"))).toDouble() / 100.0;
-	QTransform oldMatrix = view->transform();
-	view->resetTransform();
-	view->translate(oldMatrix.dx(), oldMatrix.dy());
-	view->scale(newScale, newScale);
+	graphicsWidget->setSceneScaleChange(scale);
 }
 
 /*
@@ -169,7 +84,8 @@ void MainWindow::textColorChanged()
 		qvariant_cast<QColor>(textAction->data())));
 	//去掉原来的textButtonTriggered();直接把textButtonTriggered()里面的这一句拿过来，如下：
 	//这段代码表示设置场景scene中text的背景色
-	scene->setTextColor(qvariant_cast<QColor>(textAction->data()));
+	QColor color = qvariant_cast<QColor>(textAction->data());
+	graphicsWidget->setItemTextColor(color);
 }
 
 /*
@@ -185,7 +101,8 @@ void MainWindow::itemColorChanged()
 		qvariant_cast<QColor>(fillAction->data())));
 	//去掉原来的fillButtonTriggered();直接把fillButtonTriggered里面的这一句拿过来，如下:
 	//这段代码表示设置场景scene中item的颜色
-	scene->setItemColor(qvariant_cast<QColor>(fillAction->data()));
+	QColor color = qvariant_cast<QColor>(fillAction->data());
+	graphicsWidget->setSceneItemColor(color);
 }
 
 /*
@@ -201,7 +118,8 @@ void MainWindow::lineColorChanged()
 		qvariant_cast<QColor>(lineAction->data())));
 	//去掉原来的lineButtonTriggered();直接把lineButtonTriggered里面的这一句拿过来，如下:
 	//这段代码表示设置场景scene中line的颜色
-	scene->setLineColor(qvariant_cast<QColor>(lineAction->data()));
+	QColor color = qvariant_cast<QColor>(lineAction->data());
+	graphicsWidget->setSceneLineColor(color);
 }
 
 void MainWindow::handleFontChange()
@@ -211,7 +129,7 @@ void MainWindow::handleFontChange()
 	font.setWeight(boldAction->isChecked() ? QFont::Bold : QFont::Normal);
 	font.setItalic(italicAction->isChecked());
 	font.setUnderline(underlineAction->isChecked());
-	scene->setFont(font);
+	graphicsWidget->setFont(font);
 }
 
 void MainWindow::about()
@@ -271,47 +189,51 @@ void MainWindow::createToolBox()
 
 }
 
+void MainWindow::inintActionConnection()
+{
+	connect(toFrontAction, &QAction::triggered, graphicsWidget, &GraphicsWidget::bringToFront);
+	connect(sendBackAction, &QAction::triggered, graphicsWidget, &GraphicsWidget::sendToBack);
+	connect(deleteAction, &QAction::triggered, graphicsWidget, &GraphicsWidget::deleteItem);
+	connect(exitAction, &QAction::triggered, this, &QWidget::close);
+	connect(boldAction, &QAction::triggered, this, &MainWindow::handleFontChange);
+	connect(italicAction, &QAction::triggered, this, &MainWindow::handleFontChange);
+	connect(underlineAction, &QAction::triggered, this, &MainWindow::handleFontChange);
+	connect(aboutAction, &QAction::triggered, this, &MainWindow::about);
+}
+
 void MainWindow::createActions()
 {
 	toFrontAction = new QAction(QIcon(ImageSources::BringFront),
 		tr("Bring to &Front"), this);
 	toFrontAction->setShortcut(tr("Ctrl+F"));
 	toFrontAction->setStatusTip(tr("Bring item to front"));
-	connect(toFrontAction, &QAction::triggered, this, &MainWindow::bringToFront);
-
+	
 	sendBackAction = new QAction(QIcon(ImageSources::SendBack), tr("Send to &Back"), this);
 	sendBackAction->setShortcut(tr("Ctrl+T"));
 	sendBackAction->setStatusTip(tr("Send item to back"));
-	connect(sendBackAction, &QAction::triggered, this, &MainWindow::sendToBack);
-
+	
 	deleteAction = new QAction(QIcon(ImageSources::Delete), tr("&Delete"), this);
 	deleteAction->setShortcut(tr("Delete"));
 	deleteAction->setStatusTip(tr("Delete item from diagram"));
-	connect(deleteAction, &QAction::triggered, this, &MainWindow::deleteItem);
-
+	
 	exitAction = new QAction(tr("E&xit"), this);
 	exitAction->setShortcuts(QKeySequence::Quit);
 	exitAction->setStatusTip(tr("Quit Scenediagram example"));
-	connect(exitAction, &QAction::triggered, this, &QWidget::close);
-
+	
 	boldAction = new QAction(QIcon(ImageSources::Bold), tr("Bold"), this);
 	boldAction->setCheckable(true);
 	boldAction->setShortcut(tr("Ctrl+B"));
-	connect(boldAction, &QAction::triggered, this, &MainWindow::handleFontChange);
-
+	
 	italicAction = new QAction(QIcon(ImageSources::Italic), tr("Italic"), this);
 	italicAction->setCheckable(true);
 	italicAction->setShortcut(tr("Ctrl+I"));
-	connect(italicAction, &QAction::triggered, this, &MainWindow::handleFontChange);
-
+	
 	underlineAction = new QAction(QIcon(ImageSources::Underline), tr("Underline"), this);
 	underlineAction->setCheckable(true);
 	underlineAction->setShortcut(tr("Ctrl+U"));
-	connect(underlineAction, &QAction::triggered, this, &MainWindow::handleFontChange);
-
+	
 	aboutAction = new QAction(tr("A&bout"), this);
 	aboutAction->setShortcut(tr("F1"));
-	connect(aboutAction, &QAction::triggered, this, &MainWindow::about);
 }
 
 void MainWindow::createMenus()
@@ -403,13 +325,13 @@ void MainWindow::createToolbars()
 
 //BackGroundType
 QWidget* MainWindow::createBackgroundCellWidget(const QString& text,
-	BackGroundType type, const QString& image)
+	int type, const QString& image)
 {
 	QToolButton* button = new QToolButton;
 	button->setIcon(QIcon(image));
 	button->setIconSize(QSize(50, 50));
 	button->setCheckable(true);
-	backgroundButtonGroup->addButton(button, int(type));
+	backgroundButtonGroup->addButton(button, type);
 
 	QGridLayout* layout = new QGridLayout;
 	layout->addWidget(button, 0, 0, Qt::AlignHCenter);
@@ -505,46 +427,5 @@ void MainWindow::initSceneBackground()
 	QPainter p(&bg);
 	p.setBrush(QBrush(Qt::gray));
 	p.drawRect(0, 0, TILE_SIZE, TILE_SIZE);
-	scene->setBackgroundBrush(QBrush(bg));
-	//    qDebug() << "MainWindow::initSceneBackground... ";
+	graphicsWidget->setBackgroundBrushChange(QBrush(bg));
 }
-
-void MainWindow::showTableViewSlot(const QString& xName,const QString& yName,XArrow* xLineArrow, 
-	QList<TableData> variablesX, QList<TableData> variablesY)
-{
-
-	tableView = new CustomTableView(xLineArrow);
-	// 设置对象名称为 "tableView"
-	tableView->setObjectName("tableView");
-
-	// Create a QStandardItemModel
-	QStandardItemModel* model = new QStandardItemModel(variablesX.length(), 2);
-
-	// Set the header for the table
-	model->setHeaderData(0, Qt::Horizontal, xName);
-	model->setHeaderData(1, Qt::Horizontal, yName);
-
-	// Add variables of node X to the table
-	for (int i = 0; i < variablesX.length(); i++)
-	{
-		model->setData(model->index(i, 0), QString::fromStdString(variablesX[i].name + "\n" + variablesX[i].type));
-	}
-
-	// Set the custom delegate for the first column
-	LabelDelegate* labelDelegate = new LabelDelegate();
-	tableView->setItemDelegateForColumn(0, labelDelegate);
-
-	// Set the ComboBoxDelegate for column 1
-	ComboBoxDelegate* comboBoxDelegate = new ComboBoxDelegate(variablesY);
-	tableView->setItemDelegateForColumn(1, comboBoxDelegate);
-
-	// Set the Model for tableView
-	tableView->setModel(model);
-
-	tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-
-	tableView->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-
-	tableView->show();
-}
-

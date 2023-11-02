@@ -63,8 +63,23 @@
     <Filter Include="Source Files\TableWidget">
       <UniqueIdentifier>{e757435a-c6e8-4a79-8f7c-778555722d22}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\GLobalStorage">
+    <Filter Include="Header Files\XGraph">
+      <UniqueIdentifier>{e4850742-634f-4628-9313-8b4af84ca8a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\XGraph">
+      <UniqueIdentifier>{293b2eac-b72f-4117-9bb7-428fbedc4555}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GloabelStorage">
+      <UniqueIdentifier>{ebbd8521-e1fa-4260-9f71-1eb154c91712}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GlobalStorage">
       <UniqueIdentifier>{bbfc8904-b33d-47cc-b47c-a45a77b507d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CustomDialog">
+      <UniqueIdentifier>{2df7b4e4-b97e-4148-a84d-c95d3bb32508}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CustomDialog">
+      <UniqueIdentifier>{151e1ce6-8fcd-49fa-8db7-336f0b5a7346}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -142,6 +157,21 @@
     <ClCompile Include="src\TableWidget\CustomTableView.cpp">
       <Filter>Source Files\TableWidget</Filter>
     </ClCompile>
+    <ClCompile Include="src\XGraph\XGraph.cpp">
+      <Filter>Source Files\XGraph</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GlobalStorage\GlobalStorage.cpp">
+      <Filter>Source Files\GloabelStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CustomDialog\CropDialog.cpp">
+      <Filter>Source Files\CustomDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MainWindow\GraphicsWidget.cpp">
+      <Filter>Source Files\MainWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MainWindow\SideWidget.cpp">
+      <Filter>Source Files\MainWindow</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="include\ItemBase\XArrow.h">
@@ -180,6 +210,15 @@
     <QtMoc Include="include\TableWidget\CustomTableView.h">
       <Filter>Header Files\TableWidget</Filter>
     </QtMoc>
+    <QtMoc Include="include\CustomDialog\CropDialog.h">
+      <Filter>Header Files\CustomDialog</Filter>
+    </QtMoc>
+    <QtMoc Include="include\MainWindow\GraphicsWidget.h">
+      <Filter>Header Files\MainWindow</Filter>
+    </QtMoc>
+    <QtMoc Include="include\MainWindow\SideWidget.h">
+      <Filter>Header Files\MainWindow</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ItemBase\ItemFactory.h">
@@ -210,7 +249,7 @@
       <Filter>Header Files\TableWidget</Filter>
     </ClInclude>
     <ClInclude Include="include\GlobalStorage\GlobalStorage.h">
-      <Filter>Header Files\GLobalStorage</Filter>
+      <Filter>Header Files\GlobalStorage</Filter>
     </ClInclude>
     <ClInclude Include="include\XVariable\Param.h">
       <Filter>Header Files\XVariable</Filter>
@@ -222,7 +261,16 @@
       <Filter>Header Files\TableWidget</Filter>
     </ClInclude>
     <ClInclude Include="include\GlobalStorage\ItemManager.h">
-      <Filter>Header Files\GLobalStorage</Filter>
+      <Filter>Header Files\GlobalStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="include\XGraph\XGraph.h">
+      <Filter>Header Files\XGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="include\XGraph\GraphNode.h">
+      <Filter>Header Files\XGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\XGraphUtils.h">
+      <Filter>Header Files\Common</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

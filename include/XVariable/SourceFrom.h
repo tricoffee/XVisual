@@ -4,6 +4,6 @@
 struct SourceFrom
 {
 	std::string itemId; //ItemId
-	std::string name; // Dest对象的或Source对象的某个name
+	std::string variableName; // Dest对象的或Source对象的某个变量的name
 };
 #endif //SourceFrom_H
