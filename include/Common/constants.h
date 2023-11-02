@@ -20,6 +20,7 @@ class ImageSources
 		   static const QString Italic;
 		   static const QString Underline;
 		   static const QString LinePointer;
+		   static const QString RunButton;
 };
 
 enum DiagramState { Insert, Move, Release };

@@ -15,5 +15,7 @@
         <file>images/sendtoback.png</file>
         <file>images/textpointer.png</file>
         <file>images/underline.png</file>
+		<file>images/runbutton.png</file>
+	    <file>images/runbuttonCopy.png</file>
     </qresource>
 </RCC>
