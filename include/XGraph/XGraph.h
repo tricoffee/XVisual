@@ -10,6 +10,8 @@ class XGraph
 {
 	public:
 		static std::vector<std::string> BFSWithTopologicalSort(std::vector<std::shared_ptr<GraphNode>>& graph);
+		static void executeGraphNode(std::shared_ptr<GraphNode>& graphNode);
+		static void executeXGraph(std::vector<std::shared_ptr<GraphNode>>& graph);
 		static int findNodeIndex(const std::vector<std::shared_ptr<GraphNode>>& graph, const std::string& nodeId);
 };
 

@@ -5,8 +5,8 @@
 #include<memory>
 struct GraphNode
 {
-	std::string label;
+	std::string nodeId;
 	std::vector<std::shared_ptr<GraphNode>> neighbors;
-	GraphNode(const std::string& x) : label(x) {}
+	GraphNode(const std::string& xNodeId) : nodeId(xNodeId) {}
 };
 #endif //GraphNode_H
