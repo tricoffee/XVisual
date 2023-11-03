@@ -49,11 +49,15 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(QtMsBuild)\Qt.props" />
     <Import Project="..\..\..\CPP_Props\opencv4.4.0_debug.props" />
+    <Import Project="..\..\..\CPP_Props\glog_debugx64.props" />
+    <Import Project="..\..\..\CPP_Props\gflags_debugx64.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(QtMsBuild)\Qt.props" />
     <Import Project="..\..\..\CPP_Props\opencv4.4.0_release.props" />
+    <Import Project="..\..\..\CPP_Props\glog_releasex64.props" />
+    <Import Project="..\..\..\CPP_Props\gflags_releasex64.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
@@ -94,6 +98,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Common\constants.cpp" />
+    <ClCompile Include="src\Common\LoggerInstance.cpp" />
     <ClCompile Include="src\CustomDialog\CropDialog.cpp" />
     <ClCompile Include="src\GlobalStorage\GlobalStorage.cpp" />
     <ClCompile Include="src\ItemBase\ItemFactory.cpp" />
@@ -127,6 +132,8 @@
     <QtMoc Include="include\ItemBase\XArrow.h" />
     <QtMoc Include="include\ItemBase\XBaseItem.h" />
     <ClInclude Include="include\Common\constants.h" />
+    <ClInclude Include="include\Common\LoggerInstance.h" />
+    <ClInclude Include="include\Common\LogMacro.h" />
     <ClInclude Include="include\Common\XGraphUtils.h" />
     <QtMoc Include="include\CustomDialog\CropDialog.h" />
     <ClInclude Include="include\GlobalStorage\GlobalStorage.h" />

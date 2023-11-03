@@ -1,0 +1,5 @@
+Log file created at: 2023/11/03 11:02:02
+Running on machine: DESKTOP-UMGREQD
+Running duration (h:mm:ss): 0:00:04
+Log line format: [IWEF]yyyymmdd hh:mm:ss.uuuuuu threadid file:line] msg
+I20231103 11:02:02.450474 10532 LoggerInstance.h:20] void MainWindow::runButtonClicked(bool checked) ...

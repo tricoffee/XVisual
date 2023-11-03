@@ -1,5 +1,7 @@
 // Copyright (C) 2016 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+#include "Common/LoggerInstance.h"
+
 #include <QtWidgets>
 #include <QString>
 #include <string>
@@ -15,6 +17,8 @@
 
 MainWindow::MainWindow()
 {
+	//logger.LogInfo("这是一条信息日志");
+	//logger.LogError("这是一条错误日志");
 	createActions();
 	createMenus();
     graphicsWidget = new GraphicsWidget(itemMenu);
@@ -70,10 +74,20 @@ void MainWindow::buttonGroupClicked(QAbstractButton* button)
 	graphicsWidget->setDiagramName(idnames[id]);
 }
 
+void MainWindow::linePointerButtonClicked(bool checked)
+{
+	linePointerButton->setChecked(false);
+	graphicsWidget->setDiagramState(DiagramState::Insert);
+	graphicsWidget->setDiagramType(DiagramType::Line);
+}
+
 void MainWindow::runButtonClicked(bool checked)
 {
 	runButton->setChecked(false);
-	qDebug() << "void MainWindow::runButtonClicked(bool checked) ... ";
+
+	XLOG_INFO("void MainWindow::runButtonClicked(bool checked) ...", __LINE__);
+	XLOG_ERROR("ToDo, execute XGraph when runButton is clicked.", __LINE__);
+	
     //ToDo, execute XGraph when runButton is clicked
 
 }
@@ -325,10 +339,15 @@ void MainWindow::createToolbars()
 	colorToolBar->addWidget(fillColorToolButton);
 	colorToolBar->addWidget(lineColorToolButton);
 
+	linePointerButton = new QToolButton;
+	linePointerButton->setCheckable(true);
+	linePointerButton->setChecked(false);
+	linePointerButton->setIcon(QIcon(ImageSources::LinePointer));
+	connect(linePointerButton, &QAbstractButton::toggled, this, &MainWindow::linePointerButtonClicked);
+
 	runButton = new QToolButton;
 	runButton->setCheckable(true);
 	runButton->setChecked(false);
-
 	runButton->setIcon(QIcon(ImageSources::RunButton));
 	connect(runButton, &QAbstractButton::toggled, this, &MainWindow::runButtonClicked);
 
@@ -342,6 +361,9 @@ void MainWindow::createToolbars()
 
 	sceneScaleBar = addToolBar(tr("Scale"));
 	sceneScaleBar->addWidget(sceneScaleCombo);
+
+	pointerToolBar = addToolBar(tr("linePointer"));
+	pointerToolBar->addWidget(linePointerButton);
 
 	runButtonToolBar = addToolBar(tr("Run"));
 	runButtonToolBar->addWidget(runButton);

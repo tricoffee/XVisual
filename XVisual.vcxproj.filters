@@ -172,6 +172,9 @@
     <ClCompile Include="src\MainWindow\SideWidget.cpp">
       <Filter>Source Files\MainWindow</Filter>
     </ClCompile>
+    <ClCompile Include="src\Common\LoggerInstance.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="include\ItemBase\XArrow.h">
@@ -270,6 +273,12 @@
       <Filter>Header Files\XGraph</Filter>
     </ClInclude>
     <ClInclude Include="include\Common\XGraphUtils.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\LoggerInstance.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\LogMacro.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
   </ItemGroup>

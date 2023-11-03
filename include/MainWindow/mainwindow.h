@@ -33,6 +33,7 @@ public:
 private slots:
 	void backgroundButtonGroupClicked(QAbstractButton* button);
 	void buttonGroupClicked(QAbstractButton* button);
+	void linePointerButtonClicked(bool checked);
 	void runButtonClicked(bool checked);
 	void currentFontChanged(const QFont& font);
 	void fontSizeChanged(const QString& size);
@@ -70,6 +71,7 @@ private:
 	QToolBar* textToolBar;
 	QToolBar* editToolBar;
 	QToolBar* colorToolBar;
+	QToolBar* pointerToolBar;
 	QToolBar* sceneScaleBar;
 	QToolBar* runButtonToolBar;
 
@@ -80,6 +82,7 @@ private:
 	QFontComboBox* fontCombo;
 
 	QToolBox* toolBox;
+	QToolButton* linePointerButton;
 	QButtonGroup* buttonGroup;
 	QToolButton* runButton;
 	QButtonGroup* backgroundButtonGroup;
