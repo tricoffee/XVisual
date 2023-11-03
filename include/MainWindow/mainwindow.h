@@ -5,9 +5,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-//#include "MainWindow/diagramscene.h"
 #include "TableWidget/TableData.h"
-//#include "TableWidget/CustomTableView.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -17,14 +15,11 @@ class QComboBox;
 class QFontComboBox;
 class QButtonGroup;
 class QLineEdit;
-//class QGraphicsTextItem;
 class QFont;
 class QToolButton;
 class QAbstractButton;
-//class QGraphicsView;
-//class DiagramScene;
-//class XArrow;
 class GraphicsWidget;
+class SideWidget;
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
@@ -38,7 +33,7 @@ public:
 private slots:
 	void backgroundButtonGroupClicked(QAbstractButton* button);
 	void buttonGroupClicked(QAbstractButton* button);
-	void linePointerButtonClicked(bool checked);
+	void runButtonClicked(bool checked);
 	void currentFontChanged(const QFont& font);
 	void fontSizeChanged(const QString& size);
 	void sceneScaleChanged(const QString& scale);
@@ -75,7 +70,8 @@ private:
 	QToolBar* textToolBar;
 	QToolBar* editToolBar;
 	QToolBar* colorToolBar;
-	QToolBar* pointerToolbar;
+	QToolBar* sceneScaleBar;
+	QToolBar* runButtonToolBar;
 
 	QComboBox* sceneScaleCombo;
 	QComboBox* itemColorCombo;
@@ -85,7 +81,7 @@ private:
 
 	QToolBox* toolBox;
 	QButtonGroup* buttonGroup;
-	QToolButton* linePointerButton;
+	QToolButton* runButton;
 	QButtonGroup* backgroundButtonGroup;
 	QToolButton* fontColorToolButton;
 	QToolButton* fillColorToolButton;
@@ -98,6 +94,7 @@ private:
 	QAction* lineAction;
 
 	GraphicsWidget* graphicsWidget;
+	SideWidget* sideWidget;
 };
 
 #endif // MAINWINDOW_H

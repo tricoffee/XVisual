@@ -3,6 +3,7 @@
 #include <QtWidgets>
 #include <QString>
 #include <string>
+#include <QSplitter>
 
 #include "ItemBase/XArrow.h"
 #include "ItemBase/XBaseItem.h"
@@ -10,6 +11,7 @@
 #include "MainWindow/mainwindow.h"
 #include "Common/constants.h"
 #include "MainWindow/GraphicsWidget.h"
+#include "MainWindow/SideWidget.h"
 
 MainWindow::MainWindow()
 {
@@ -20,9 +22,28 @@ MainWindow::MainWindow()
 	createToolBox();
 	inintActionConnection();
 
+	sideWidget = new SideWidget();
+
+	QSplitter* splitter = new QSplitter(Qt::Horizontal);
+	// 设置QSplitter分割线的样式表
+	splitter->setStyleSheet("QSplitter::handle { background: lightgray; border: 1px gray; }");
+    // 将toolBox添加到splitter
+	splitter->addWidget(toolBox);
+	// 将graphicsWidget添加到splitter
+	splitter->addWidget(graphicsWidget);
+	// 将sideWidget添加到splitter
+	splitter->addWidget(sideWidget);
+	//设置拉伸比例
+	splitter->setStretchFactor(0, 1);
+	splitter->setStretchFactor(1, 1);
+	splitter->setStretchFactor(2, 0);
+
 	QHBoxLayout* layout = new QHBoxLayout;
-	layout->addWidget(toolBox);
-	layout->addWidget(graphicsWidget);
+	layout->addWidget(splitter);
+	// 设置layout中小控件之间的距离, 即设置内边距
+	layout->setSpacing(0);
+	// 设置layout的外边距
+	layout->setContentsMargins(0, 0, 0, 0);
 
 	QWidget* widget = new QWidget;
 	widget->setLayout(layout);
@@ -49,11 +70,12 @@ void MainWindow::buttonGroupClicked(QAbstractButton* button)
 	graphicsWidget->setDiagramName(idnames[id]);
 }
 
-void MainWindow::linePointerButtonClicked(bool checked)
+void MainWindow::runButtonClicked(bool checked)
 {
-	linePointerButton->setChecked(false);
-	graphicsWidget->setDiagramState(DiagramState::Insert);
-	graphicsWidget->setDiagramType(DiagramType::Line);
+	runButton->setChecked(false);
+	qDebug() << "void MainWindow::runButtonClicked(bool checked) ... ";
+    //ToDo, execute XGraph when runButton is clicked
+
 }
 
 void MainWindow::currentFontChanged(const QFont&)
@@ -303,11 +325,12 @@ void MainWindow::createToolbars()
 	colorToolBar->addWidget(fillColorToolButton);
 	colorToolBar->addWidget(lineColorToolButton);
 
-	linePointerButton = new QToolButton;
-	linePointerButton->setCheckable(true);
-	linePointerButton->setChecked(false);
-	linePointerButton->setIcon(QIcon(ImageSources::LinePointer));
-	connect(linePointerButton, &QAbstractButton::toggled,this,&MainWindow::linePointerButtonClicked);
+	runButton = new QToolButton;
+	runButton->setCheckable(true);
+	runButton->setChecked(false);
+
+	runButton->setIcon(QIcon(ImageSources::RunButton));
+	connect(runButton, &QAbstractButton::toggled, this, &MainWindow::runButtonClicked);
 
 	sceneScaleCombo = new QComboBox;
 	QStringList scales;
@@ -317,9 +340,11 @@ void MainWindow::createToolbars()
 	connect(sceneScaleCombo, &QComboBox::currentTextChanged,
 		this, &MainWindow::sceneScaleChanged);
 
-	pointerToolbar = addToolBar(tr("Pointer type"));
-	pointerToolbar->addWidget(linePointerButton);
-	pointerToolbar->addWidget(sceneScaleCombo);
+	sceneScaleBar = addToolBar(tr("Scale"));
+	sceneScaleBar->addWidget(sceneScaleCombo);
+
+	runButtonToolBar = addToolBar(tr("Run"));
+	runButtonToolBar->addWidget(runButton);
 }
 
 

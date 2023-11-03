@@ -14,3 +14,4 @@ const QString ImageSources::Bold = ":/XVisual/images/bold.png";
 const QString ImageSources::Italic = ":/XVisual/images/italic.png";
 const QString ImageSources::Underline = ":/XVisual/images/underline.png";
 const QString ImageSources::LinePointer = ":/XVisual/images/linepointer.png";
+const QString ImageSources::RunButton = ":/XVisual/images/runbutton.png";
