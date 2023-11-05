@@ -62,6 +62,8 @@ Dest& CVCropItem::getDests()
 }
 void CVCropItem::initParameters()
 {
+	isSourceFromOutside = false;
+
 	cv::Mat img;
 	REGISTER_MEMBER(sources, img, img);
 	cv::Mat croppedImage;
@@ -93,7 +95,7 @@ void CVCropItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 	// Call the base class event handler
 	QGraphicsPolygonItem::mouseDoubleClickEvent(event);
 }
-void CVCropItem::ItemXOP(Source& sources, Dest& dests)
+void CVCropItem::ItemXOP()
 {
 	cv::Mat img = std::any_cast<cv::Mat>(GET_MEMBER(sources, img));
 	int imageWidth = -1;
@@ -122,6 +124,7 @@ void CVCropItem::ItemXOP(Source& sources, Dest& dests)
 		qDebug() << "Region of Intersest is invalid, please set again";
 	}
 	REGISTER_MEMBER(dests, croppedImage, croppedImage);
+	// TO-DO,Add code for sending show image signals to display images on SideWidgets
 }
 void CVCropItem::createUniqueName()
 {

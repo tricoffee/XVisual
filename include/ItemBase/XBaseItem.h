@@ -49,8 +49,8 @@ class XBaseItem : public QObject, public QGraphicsPolygonItem
 		QList<XBaseItem*> parents;
 		QList<XBaseItem*> childs;
 		virtual void initParameters();
-		void initItemOperands(Source& sources);
-		virtual void ItemXOP(Source& sources, Dest& dests);
+		void initItemOperands();
+		virtual void ItemXOP();
 		virtual Source& getSources();
 		virtual Dest& getDests();
 		const QString& getUniqueName();
@@ -59,6 +59,8 @@ class XBaseItem : public QObject, public QGraphicsPolygonItem
 	public slots:
 			void TextEditFocusOutSlot(QString mText);
 	protected:
+		// The default is true, indicating that the source of information(i.e. the input of the node) comes from the outside world. 
+		bool isSourceFromOutside = true; 
 		void contextMenuEvent(QGraphicsSceneContextMenuEvent* event) override;
 		QPolygonF myPolygon;
 		DiagramProxyWidget* proxyWidget;

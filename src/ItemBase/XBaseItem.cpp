@@ -149,12 +149,20 @@ void XBaseItem::initParameters()
 {
 
 }
-void XBaseItem::ItemXOP(Source& sources, Dest& dests)
+void XBaseItem::ItemXOP()
 {
 
 }
-void XBaseItem::initItemOperands(Source& sources)
+/*
+从sourceFrom查找sources里面的每个参数的来源并且初始化该参数
+*/
+void XBaseItem::initItemOperands()
 {
+	// To-DO, XBaseItem再添加一个成员变量, isSourceFromOutside, 条件isSourceFromOutside == true为真时, 直接返回true
+	if (isSourceFromOutside == true)
+	{
+		return;
+	}
 	std::vector<std::string> xVaribleNames = ACQUIRE_NAMES(sources);
 	for (const auto& xName : xVaribleNames) 
 	{
@@ -167,15 +175,24 @@ void XBaseItem::initItemOperands(Source& sources)
 			std::lock_guard<std::mutex> lock(xGraphMutex);
 			yItem = globalItemMap[yItemId];
 		} // 作用域结束时，lock_guard 会自动解锁互斥锁xGraphMutex
-		if (yItem != nullptr)
+		// To-DO, XBaseItem再添加一个成员变量, isSourceFromOutside, 并且if条件修改为yItem != nullptr && isSourceFromOutside == false
+		if (yItem != nullptr && isSourceFromOutside == false)
 		{
 			auto yValue = GET_MEMBER_STR(yItem->getDests(), yName);
 			REGISTER_MEMBER_STR(sources, xName, yValue);
 		}
 	}
 }
+/*
+设置某个变量的sourceFrom，让我们知道它从哪里来
+*/
 void XBaseItem::setSourceFrom(const std::string& xVariableName,const SourceFrom& sourceFrom)
 {
+	// To-DO, XBaseItem再添加一个成员变量, isSourceFromOutside, 条件isSourceFromOutside == true为真时, 直接返回true
+	if (isSourceFromOutside == true)
+	{
+		return;
+	}
 	SET_SOURCEFROM_STR(sources, xVariableName, sourceFrom);
 	{
 		std::lock_guard<std::mutex> lock(xGraphMutex);
@@ -188,8 +205,16 @@ void XBaseItem::setSourceFrom(const std::string& xVariableName,const SourceFrom&
 		}
 	} // 作用域结束时，lock_guard 会自动解锁互斥锁xGraphMutex
 }
+/*
+按名字查找某个变量的sourceFrom，在执行计算图前初始化参数时会调用这个函数
+*/
 void XBaseItem::loadSourceFrom(const std::string& xVariableName, SourceFrom& sourceFrom)
 {
+	// To-DO, XBaseItem再添加一个成员变量, isSourceFromOutside, 条件isSourceFromOutside == true为真时, 直接返回true
+	if (isSourceFromOutside == true)
+	{
+		return;
+	}
 	sourceFrom = GET_SOURCEFROM_STR(sources, xVariableName);
 }
 REGISTER_CLASS(XBase);

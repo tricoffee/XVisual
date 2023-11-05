@@ -13,7 +13,7 @@ class LoadImageItem : public XBaseItem
 		Source& getSources();
 		Dest& getDests();
 		void initParameters() override;
-		void ItemXOP(Source& sources, Dest& dests) override;
+		void ItemXOP() override;
     protected:
 	   void createUniqueName() override;
 	   void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event) override;

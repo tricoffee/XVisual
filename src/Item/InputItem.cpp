@@ -39,7 +39,7 @@ void InputItem::debug()
 	qDebug() << "InputItem::boundingRect().height() " << boundingRect().height();
 	qDebug() << "InputItem::uuid " << QString::fromStdString(uuid);
 }
-void InputItem::ItemXOP(Source& sources, Dest& dests)
+void InputItem::ItemXOP()
 {
 
 }
