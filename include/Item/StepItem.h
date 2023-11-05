@@ -10,7 +10,7 @@ class StepItem : public XBaseItem
 		StepItem(QMenu* contextMenu, QGraphicsItem* parent = nullptr);
 		QPixmap image() override;
 		void debug();
-		void ItemXOP(Source& sources, Dest& dests) override;
+		void ItemXOP() override;
 	protected:
 		void createUniqueName() override;
 };

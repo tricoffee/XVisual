@@ -26,7 +26,7 @@ void StepItem::debug()
 	qDebug() << "StepItem::boundingRect().height() " << boundingRect().height();
 	qDebug() << "StepItem::uuid " << QString::fromStdString(uuid);
 }
-void StepItem::ItemXOP(Source& sources, Dest& dests)
+void StepItem::ItemXOP()
 {
 
 }

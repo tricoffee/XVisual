@@ -26,7 +26,7 @@ void ConditionItem::debug()
 	qDebug() << "ConditionItem::boundingRect().height() " << boundingRect().height();
 	qDebug() << "ConditionItem::uuid " << QString::fromStdString(uuid);
 }
-void ConditionItem::ItemXOP(Source& sources, Dest& dests)
+void ConditionItem::ItemXOP()
 {
 
 }

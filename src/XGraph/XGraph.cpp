@@ -1,6 +1,9 @@
-#include "XGraph/XGraph.h"
 #include <unordered_map>
 #include <queue>
+#include "XGraph/XGraph.h"
+#include "GlobalStorage/GlobalStorage.h"
+#include "Common/LoggerInstance.h"
+#include "ItemBase/XBaseItem.h"
 
 /*
 广度优先遍历按照拓扑排序的顺序访问节点
@@ -70,6 +73,18 @@ std::vector<std::string> XGraph::BFSWithTopologicalSort(std::vector<std::shared_
 
 void XGraph::executeGraphNode(std::shared_ptr<GraphNode>& graphNode)
 {
+    std::string itemId = graphNode->nodeId;
+    auto it = globalItemMap.find(itemId);
+	if (it != globalItemMap.end()) 
+    {
+		XBaseItem* item = it->second;
+        item->initItemOperands();
+        item->ItemXOP();
+	}
+	else 
+    {
+        XLOG_ERROR("XGraph::executeGraphNode, No found itemId in globalItemMap", __LINE__);
+	}
 
 }
 

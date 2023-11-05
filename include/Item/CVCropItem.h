@@ -17,7 +17,7 @@ public:
 	Source& getSources();
 	Dest& getDests();
 	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event);
-	void ItemXOP(Source& sources, Dest& dests) override;
+	void ItemXOP() override;
 protected:
 	void createUniqueName() override;
 private:

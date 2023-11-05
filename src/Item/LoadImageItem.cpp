@@ -59,6 +59,7 @@ Dest& LoadImageItem::getDests()
 }
 void LoadImageItem::initParameters()
 {
+	isSourceFromOutside = true;
 	std::string imagePath;
 	REGISTER_MEMBER(sources, imagePath, imagePath);
 	cv::Mat image;
@@ -86,9 +87,10 @@ void LoadImageItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 	// Call the base class event handler
 	QGraphicsPolygonItem::mouseDoubleClickEvent(event);
 }
-void LoadImageItem::ItemXOP(Source& sources, Dest& dests)
+void LoadImageItem::ItemXOP()
 {
 	cv::Mat InputImage = GET_MEMBER_WITH_TYPE(dests, cv::Mat, image);
+	// TO-DO,Add code for sending show image signals to display images on SideWidgets
 
 }
 void LoadImageItem::createUniqueName()

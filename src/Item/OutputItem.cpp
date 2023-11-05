@@ -26,7 +26,7 @@ void OutputItem::debug()
 	qDebug() << "OutputItem::boundingRect().height() " << boundingRect().height();
 	qDebug() << "OutputItem::uuid " << QString::fromStdString(uuid);
 }
-void OutputItem::ItemXOP(Source& sources, Dest& dests)
+void OutputItem::ItemXOP()
 {
 
 }
