@@ -1,9 +1,21 @@
 #include "Item/OutputItem.h"
 #include "ItemWidget/ItemWidget.h"
 #include "GlobalStorage/ItemManager.h"
+#include "MainWindow/GraphicsWidget.h"
 
 OutputItem::OutputItem(QMenu* contextMenu, QGraphicsItem* parent)
 	: XBaseItem(contextMenu, parent)
+{
+	createUniqueName();
+	myPolygon << QPointF(-120, -80) << QPointF(-70, 80)
+		<< QPointF(120, 80) << QPointF(70, -80)
+		<< QPointF(-120, -80);
+	setPolygon(myPolygon);
+	// 设置显示在Item上的文本
+	setEditText(uniqueName);
+}
+OutputItem::OutputItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent)
+	: XBaseItem(gWidget, contextMenu, parent)
 {
 	createUniqueName();
 	myPolygon << QPointF(-120, -80) << QPointF(-70, 80)

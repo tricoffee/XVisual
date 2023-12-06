@@ -4,7 +4,7 @@
 #include "TableWidget/ComboBoxDelegate.h"
 #include "TableWidget/CustomTableView.h"
 #include "ItemBase/XArrow.h"
-
+#include "ItemBase/XBaseItem.h"
 #include <QWidget>
 #include <QGridLayout>
 #include <QGraphicsView>
@@ -26,7 +26,7 @@ GraphicsWidget::GraphicsWidget(QMenu* myItemMenu, QWidget* parent, Qt::WindowFla
 	scene->setView(view);
 
 	// set layout for this GraphicsWidget and QGraphicsView
-	QGridLayout* layout = new QGridLayout(this);
+	QGridLayout* layout = new QGridLayout();
 	layout->addWidget(view);
 	setLayout(layout);
 }
@@ -199,3 +199,7 @@ void GraphicsWidget::showTableViewSlot(const QString& xName, const QString& yNam
 	tableView->show();
 }
 
+void GraphicsWidget::showImageSlot(const std::string& filename, const cv::Mat& image, XBaseItem* item)
+{
+	emit showImageInTabSignal(filename, image, item);
+}

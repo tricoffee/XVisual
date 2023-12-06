@@ -11,18 +11,15 @@ class CVCropItem : public XBaseItem
 	Q_OBJECT
 public:
 	CVCropItem(QMenu* contextMenu, QGraphicsItem* parent = nullptr);
+	CVCropItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent = nullptr);
 	QPixmap image() override;
 	void debug();
 	void initParameters() override;
-	Source& getSources();
-	Dest& getDests();
 	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event);
 	void ItemXOP() override;
 protected:
 	void createUniqueName() override;
 private:
-	Source sources;
-	Dest dests;
 	cv::Rect regionOfInterest;
 };
 

@@ -1,9 +1,9 @@
 // Copyright (C) 2016 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
-
+#include "Common/LoggerInstance.h"
+#include "Common/XThreadMacro.h"
 #include "ItemBase/XArrow.h"
 #include "ItemBase/XBaseItem.h"
-
 #include <QPainter>
 #include <QPen>
 #include <QtMath>
@@ -95,9 +95,12 @@ void XArrow::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 {
 	// 当双击XArrow时，更改XArrow的颜色为红色
 	myColor = Qt::red;
-	qDebug() << "void XArrow::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event) ";
-	qDebug() << "yUuid = " << QString::fromStdString(myStartItem->getUuid());
-	qDebug() << "xUuid = " << QString::fromStdString(myEndItem->getUuid());
+	//qDebug() << "void XArrow::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event) ";
+	//qDebug() << "yUuid = " << QString::fromStdString(myStartItem->getUuid());
+	//qDebug() << "xUuid = " << QString::fromStdString(myEndItem->getUuid());
+	XLOG_INFO("void XArrow::mouseDoubleClickEvent ...", CURRENT_THREAD_ID);
+	XLOG_INFO("yUuid = " + myStartItem->getUuid(), CURRENT_THREAD_ID);
+	XLOG_INFO("xUuid = " + myEndItem->getUuid(), CURRENT_THREAD_ID);
 	std::string yItemId = const_cast<std::string&>(myStartItem->getUuid());
 	std::string xItemId = const_cast<std::string&>(myEndItem->getUuid());
 	QString yItemName = const_cast<QString&>(myStartItem->getUniqueName());
@@ -108,8 +111,10 @@ void XArrow::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 	std::vector<std::string> xNames = ACQUIRE_NAMES(source);
 	int yNum = yNames.size();
 	int xNum = xNames.size();
-	qDebug() << "yNum = " << yNum;
-	qDebug() << "xNum = " << xNum;
+	//qDebug() << "yNum = " << yNum;
+	//qDebug() << "xNum = " << xNum;
+	XLOG_INFO("yNames.size() = " + std::to_string(yNum), CURRENT_THREAD_ID);
+	XLOG_INFO("xNames.size() = " + std::to_string(xNum), CURRENT_THREAD_ID);
 	QList<TableData> variablesY;
 	QList<TableData> variablesX;
 	for (int j = 0; j < yNum; ++j)

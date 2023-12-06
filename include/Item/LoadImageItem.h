@@ -8,17 +8,15 @@ class LoadImageItem : public XBaseItem
     Q_OBJECT
 	public:
 		LoadImageItem(QMenu* contextMenu, QGraphicsItem* parent = nullptr);
+		LoadImageItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent = nullptr);
 		QPixmap image() override;
 		void debug();
-		Source& getSources();
-		Dest& getDests();
 		void initParameters() override;
 		void ItemXOP() override;
     protected:
 	   void createUniqueName() override;
 	   void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event) override;
 	private:
-		Source sources;
-		Dest dests;
+
 };
 #endif //LoadImageItem_H

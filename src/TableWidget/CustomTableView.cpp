@@ -1,3 +1,5 @@
+#include "Common/LoggerInstance.h"
+#include "Common/XThreadMacro.h"
 #include "TableWidget/CustomTableView.h"
 #include "ItemBase/XArrow.h"
 #include "ItemBase/XBaseItem.h"
@@ -17,15 +19,19 @@ CustomTableView::CustomTableView(QGraphicsLineItem* lineArrow, QWidget* parent) 
 }
 void CustomTableView::closeEvent(QCloseEvent* event)
 {
-	qDebug() << "CustomTableView::closeEvent(QCloseEvent* event)";
-	qDebug() << "yItemId" << yItemId;
-	qDebug() << "xItemId" << xItemId;
+	//qDebug() << "CustomTableView::closeEvent(QCloseEvent* event)";
+	//qDebug() << "yItemId" << yItemId;
+	//qDebug() << "xItemId" << xItemId;
+	XLOG_INFO("CustomTableView::closeEvent(QCloseEvent* event)", CURRENT_THREAD_ID);
+	XLOG_INFO("CustomTableView::closeEvent, yItemId = " + yItemId.toStdString(), CURRENT_THREAD_ID);
+	XLOG_INFO("CustomTableView::closeEvent, xItemId = " + xItemId.toStdString(), CURRENT_THREAD_ID);
 	QColor color = Qt::black;
 	emit changeLineArrowColorSignal(color);
 	QAbstractItemModel* model = this->model();
 	if (!model)
 	{
-		qDebug() << "Model is not set.";
+		//qDebug() << "Model is not set.";
+		XLOG_INFO("Model is not set.", CURRENT_THREAD_ID);
 		return;
 	}
 	// 第一列的索引
@@ -36,23 +42,27 @@ void CustomTableView::closeEvent(QCloseEvent* event)
 	{
 		QModelIndex yIndex = model->index(row, yColumn);
 		QVariant yData = model->data(yIndex);
-		QString yVaribleName = "";
+		QString yVariableName = "";
 		QString yVariableType = "";
 		if (yData.canConvert<QString>())
 		{
 			QString yText = yData.toString();
-			qDebug() << "Cloumn-1,Row-" << row << " - Selected Item Text: " << yText;
+			//qDebug() << "Cloumn-1,Row-" << row << " - Selected Item Text: " << yText;
+			XLOG_INFO("Cloumn-1,Row- " + std::to_string(row) + " - Selected Item Text: " + yText.toStdString(), CURRENT_THREAD_ID);
 			QStringList parts = yText.split('\n');
 			if (parts.size() >= 2 && !parts[0].isEmpty() && !parts[1].isEmpty()) 
 			{
-				yVaribleName = parts[0];
+				yVariableName = parts[0];
 				yVariableType = parts[1];
-				qDebug() << "yVaribleName :" << yVaribleName;
-				qDebug() << "yVariableType :" << yVariableType;
+				//qDebug() << "yVariableName :" << yVariableName;
+				//qDebug() << "yVariableType :" << yVariableType;
+				XLOG_INFO("yVariableName : " + yVariableName.toStdString(), CURRENT_THREAD_ID);
+				XLOG_INFO("yVariableType : " + yVariableType.toStdString(), CURRENT_THREAD_ID);
 			}
 			else 
 			{
-				qDebug() << "Input does not contain expected parts.";
+				//qDebug() << "Input does not contain expected parts.";
+				XLOG_INFO("Input does not contain expected parts.", CURRENT_THREAD_ID);
 			}
 		}
 
@@ -65,22 +75,29 @@ void CustomTableView::closeEvent(QCloseEvent* event)
 		if (xData.canConvert<QString>())
 		{
 			QString xText = xData.toString();
-			qDebug() << "Cloumn-0,Row-" << row << " - Selected Item Text: " << xText;
+			//qDebug() << "Cloumn-0,Row-" << row << " - Selected Item Text: " << xText;
+			XLOG_INFO("Cloumn-0,Row-"+ std::to_string(row) +" - Selected Item Text: " + xText.toStdString(), CURRENT_THREAD_ID);
 			QStringList parts = xText.split('\n');
 			if (parts.size() >= 2 && !parts[0].isEmpty() && !parts[1].isEmpty())
 			{
 				xVariableName = parts[0];
 				xVariableType = parts[1];
-				qDebug() << "xVariableName :" << xVariableName;
-				qDebug() << "xVariableType :" << xVariableType;
+				//qDebug() << "xVariableName :" << xVariableName;
+				//qDebug() << "xVariableType :" << xVariableType;
+				XLOG_INFO("xVariableName : " + xVariableName.toStdString(), CURRENT_THREAD_ID);
+				XLOG_INFO("xVariableType : " + xVariableType.toStdString(), CURRENT_THREAD_ID);
 			}
 			else
 			{
-				qDebug() << "Input does not contain expected parts.";
+				//qDebug() << "Input does not contain expected parts.";
+				XLOG_INFO("Input does not contain expected parts.", CURRENT_THREAD_ID);
 			}
 		}
-		qDebug() << "xVariableName.toStdString(), yItemId, yVariableName.toStdString():" << xVariableName << yItemId << yVaribleName;
-		SourceFrom soureFrom{yItemId.toStdString(),yVaribleName.toStdString()};
+		//qDebug() << "xVariableName yItemId, yVariableName:" << xVariableName << yItemId << yVariableName;
+		XLOG_INFO("CustomTableView::closeEvent, xVariableName.toStdString() = "+xVariableName.toStdString(), CURRENT_THREAD_ID);
+		XLOG_INFO("CustomTableView::closeEvent, yItemId.toStdString() = " + yItemId.toStdString(), CURRENT_THREAD_ID);
+		XLOG_INFO("CustomTableView::closeEvent, yVariableName.toStdString() = " + yVariableName.toStdString(), CURRENT_THREAD_ID);
+		SourceFrom soureFrom{yItemId.toStdString(),yVariableName.toStdString()};
 		xItem->setSourceFrom(xVariableName.toStdString(), soureFrom);
 	}
 }

@@ -8,6 +8,7 @@ class ConditionItem : public XBaseItem
 	Q_OBJECT
 	public:
 		ConditionItem(QMenu* contextMenu, QGraphicsItem* parent = nullptr);
+		ConditionItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent = nullptr);
 		QPixmap image() override;
 		void debug();
 		void ItemXOP() override;

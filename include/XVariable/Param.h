@@ -1,5 +1,7 @@
 #ifndef PARAM_H
 #define PARAM_H
+#include "Common/LoggerInstance.h"
+#include "Common/XThreadMacro.h"
 #include <iostream>
 #include <unordered_map>
 #include <string>
@@ -16,7 +18,7 @@ class Param
 		void registerMember(const std::string& variableName, const T& value)
 		{
 			memberMap[variableName] = value;
-			memberTypes[variableName] = &typeid(T);
+			XLOG_INFO("Param,registerMember,variableName = " + variableName, CURRENT_THREAD_ID);
 		}
 
 		template<typename T>
@@ -24,8 +26,17 @@ class Param
 		{
 			qDebug() << "void registerMember(const std::string& name, const T& value, bool from_inner)";
 			memberMap[variableName] = value;
-			memberTypes[variableName] = &typeid(T);
 			memberFrom[variableName] = from_inner;
+		}
+
+		template<typename T>
+		void registerType(const std::string& variableName, const T& value)
+		{
+			memberTypes[variableName] = &typeid(T);
+			const std::type_info* typeinfo_x = &typeid(T);
+			std::string typename_x = (*typeinfo_x).name();
+			XLOG_INFO("Param,registerMember,variableName = " + variableName, CURRENT_THREAD_ID);
+			XLOG_INFO("Param,registerMember,typename_x = " + typename_x, CURRENT_THREAD_ID);
 		}
 
 		template<typename T>
@@ -136,10 +147,11 @@ class Param
 
 		std::vector<std::string> acquireNames()
 		{
+			XLOG_INFO("Param::acquireNames...... ", CURRENT_THREAD_ID);
 			std::vector<std::string> keys;
-			qDebug() << "const std::vector<std::string>& acquireNames() const ";
-			for (const auto& pair : memberMap) 
+			for (const auto& pair : memberMap)
 			{
+				XLOG_INFO("Param::acquireNames = " + pair.first, CURRENT_THREAD_ID);
 				keys.push_back(pair.first);
 			}
 			return keys;

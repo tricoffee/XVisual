@@ -1,6 +1,7 @@
 #include "Item/InputItem.h"
 #include "ItemWidget/ItemWidget.h"
 #include "GlobalStorage/ItemManager.h"
+#include "MainWindow/GraphicsWidget.h"
 
 InputItem::InputItem(QMenu* contextMenu, QGraphicsItem* parent)
 	: XBaseItem(contextMenu, parent)
@@ -20,6 +21,31 @@ InputItem::InputItem(QMenu* contextMenu, QGraphicsItem* parent)
 		cornersize, cornersize, 270, 90);
 	path.lineTo(rect.right(),rect.top()+radius);
 	path.arcTo(rect.right()-cornersize,rect.top(),
+		cornersize, cornersize, 0, 90);
+	myPolygon = path.toFillPolygon();
+	setPolygon(myPolygon);
+	// 设置显示在Item上的文本
+	setEditText(uniqueName);
+}
+
+InputItem::InputItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent)
+	: XBaseItem(gWidget, contextMenu, parent)
+{
+	createUniqueName();
+	QRect rect(-100, -100, 200, 200);
+	QPainterPath path;
+	int radius = 25;
+	int cornersize = 2 * radius;
+	path.moveTo(rect.left() + radius, rect.top());
+	path.arcTo(rect.left(), rect.top(), cornersize, cornersize, 90, 90);
+	path.lineTo(rect.left(), rect.bottom() - radius);
+	path.arcTo(rect.left(), rect.bottom() - cornersize,
+		cornersize, cornersize, 180, 90);
+	path.lineTo(rect.right() - radius, rect.bottom());
+	path.arcTo(rect.right() - cornersize, rect.bottom() - cornersize,
+		cornersize, cornersize, 270, 90);
+	path.lineTo(rect.right(), rect.top() + radius);
+	path.arcTo(rect.right() - cornersize, rect.top(),
 		cornersize, cornersize, 0, 90);
 	myPolygon = path.toFillPolygon();
 	setPolygon(myPolygon);

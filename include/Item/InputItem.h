@@ -8,6 +8,7 @@ class InputItem : public XBaseItem
 	Q_OBJECT
 	public:
 		InputItem(QMenu* contextMenu, QGraphicsItem* parent = nullptr);
+		InputItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent = nullptr);
 		QPixmap image() override;
 		void debug();
 		void ItemXOP() override;
