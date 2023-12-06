@@ -69,9 +69,6 @@
     <Filter Include="Source Files\XGraph">
       <UniqueIdentifier>{293b2eac-b72f-4117-9bb7-428fbedc4555}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\GloabelStorage">
-      <UniqueIdentifier>{ebbd8521-e1fa-4260-9f71-1eb154c91712}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\GlobalStorage">
       <UniqueIdentifier>{bbfc8904-b33d-47cc-b47c-a45a77b507d9}</UniqueIdentifier>
     </Filter>
@@ -80,6 +77,9 @@
     </Filter>
     <Filter Include="Header Files\CustomDialog">
       <UniqueIdentifier>{151e1ce6-8fcd-49fa-8db7-336f0b5a7346}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GlobalStorage">
+      <UniqueIdentifier>{c6e4e81f-d7f8-4d8a-a92e-a147978d9244}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -160,12 +160,6 @@
     <ClCompile Include="src\XGraph\XGraph.cpp">
       <Filter>Source Files\XGraph</Filter>
     </ClCompile>
-    <ClCompile Include="src\GlobalStorage\GlobalStorage.cpp">
-      <Filter>Source Files\GloabelStorage</Filter>
-    </ClCompile>
-    <ClCompile Include="src\CustomDialog\CropDialog.cpp">
-      <Filter>Source Files\CustomDialog</Filter>
-    </ClCompile>
     <ClCompile Include="src\MainWindow\GraphicsWidget.cpp">
       <Filter>Source Files\MainWindow</Filter>
     </ClCompile>
@@ -174,6 +168,27 @@
     </ClCompile>
     <ClCompile Include="src\Common\LoggerInstance.cpp">
       <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MainWindow\NamesWidget.cpp">
+      <Filter>Source Files\MainWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MainWindow\VariableWidget.cpp">
+      <Filter>Source Files\MainWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MainWindow\ImagePageWidget.cpp">
+      <Filter>Source Files\MainWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CustomDialog\CropDialog.cpp">
+      <Filter>Source Files\CustomDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GlobalStorage\GlobalStorage.cpp">
+      <Filter>Source Files\GlobalStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\ZoomImageLabel.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MainWindow\RowWidget.cpp">
+      <Filter>Source Files\MainWindow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -220,6 +235,21 @@
       <Filter>Header Files\MainWindow</Filter>
     </QtMoc>
     <QtMoc Include="include\MainWindow\SideWidget.h">
+      <Filter>Header Files\MainWindow</Filter>
+    </QtMoc>
+    <QtMoc Include="include\MainWindow\NamesWidget.h">
+      <Filter>Header Files\MainWindow</Filter>
+    </QtMoc>
+    <QtMoc Include="include\MainWindow\VariableWidget.h">
+      <Filter>Header Files\MainWindow</Filter>
+    </QtMoc>
+    <QtMoc Include="include\MainWindow\ImagePageWidget.h">
+      <Filter>Header Files\MainWindow</Filter>
+    </QtMoc>
+    <QtMoc Include="include\Common\ZoomImageLabel.h">
+      <Filter>Header Files\Common</Filter>
+    </QtMoc>
+    <QtMoc Include="include\MainWindow\RowWidget.h">
       <Filter>Header Files\MainWindow</Filter>
     </QtMoc>
   </ItemGroup>
@@ -272,13 +302,19 @@
     <ClInclude Include="include\XGraph\GraphNode.h">
       <Filter>Header Files\XGraph</Filter>
     </ClInclude>
-    <ClInclude Include="include\Common\XGraphUtils.h">
-      <Filter>Header Files\Common</Filter>
-    </ClInclude>
     <ClInclude Include="include\Common\LoggerInstance.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="include\Common\LogMacro.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\XThreadMacro.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\Aux.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\OpenCVHeaders.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,6 +1,7 @@
 // Copyright (C) 2016 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
-
+#include "Common/LoggerInstance.h"
+#include "Common/XThreadMacro.h"
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
 #include <QTextCursor>
@@ -104,7 +105,8 @@ void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
 	if (DiagramType::Item == diagramType && DiagramState::Insert == diagramState)
 	{
 		std::string itemclass = diagramName.toStdString();
-		item = ItemRegistry::createObject(itemclass, myItemMenu, nullptr);
+		//item = ItemRegistry::createObject(itemclass, myItemMenu, nullptr);
+		item = ItemRegistry::createObject(itemclass, graphicsWidget, myItemMenu, nullptr);
 		item->setPos(mouseEvent->scenePos());
 		item->setBrush(myItemColor);
 		item->debug();
@@ -189,13 +191,15 @@ void DiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* mouseEvent)
 				}
 				removeItem(lineItem);
 				delete lineItem;
+				XBaseItem* startItem = nullptr;
+				XBaseItem* endItem = nullptr;
 				if (startItems.count() && endItems.count() &&
 					startItems.first()->type() == XBaseItem::Type &&
 					endItems.first()->type() == XBaseItem::Type &&
 					startItems.first() != endItems.first())
 				{
-					XBaseItem* startItem = qgraphicsitem_cast<XBaseItem*>(startItems.first());
-					XBaseItem* endItem = qgraphicsitem_cast<XBaseItem*>(endItems.first());
+					startItem = qgraphicsitem_cast<XBaseItem*>(startItems.first());
+					endItem = qgraphicsitem_cast<XBaseItem*>(endItems.first());
 					arrow = new XArrow(graphicsWidget, startItem, endItem);
 					arrow->setColor(myLineColor);
 					startItem->addArrow(arrow);
@@ -206,11 +210,31 @@ void DiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* mouseEvent)
 					arrow->setLine(line);
 					arrow->setZValue(-9999.99);
 					if (!startItem->childs.contains(endItem))
+					{
 						startItem->childs.emplace_back(endItem);
+					}
 					if (!endItem->parents.contains(startItem))
+					{
 						endItem->parents.emplace_back(startItem);
+					}
 				}
+				XLOG_INFO("DiagramScene::mouseReleaseEvent, DiagramType::Line == diagramType ...  ", CURRENT_THREAD_ID);
 				lineItem = nullptr;
+				if (startItem != nullptr)
+				{
+					XLOG_INFO("DiagramScene::mouseReleaseEvent, startItem != nullptr ...  ", CURRENT_THREAD_ID);
+					std::lock_guard<std::mutex> lock(xGraphMutex);
+					// 获取节点startItem->getUuid()在xGraph里面的索引startIndex
+					int startIndex = XGraph::findNodeIndex(xGraph, startItem->getUuid());
+					if (endItem != nullptr)
+					{
+						XLOG_INFO("DiagramScene::mouseReleaseEvent, endItem != nullptr ...  ", CURRENT_THREAD_ID);
+						// 获取节点endItem->getUuid()在xGraph里面的索引endIndex
+						int endIndex = XGraph::findNodeIndex(xGraph, endItem->getUuid());
+						// 把xGraph[endIndex]设置为xGraph[startIndex]的邻节点, 添加边, 标识为yItemId的节点---》指向---》标识为xItemId的节点(即getUuid()的返回值)的节点, 这个逻辑应该紧跟连线动作释放之后
+						xGraph[startIndex]->neighbors.push_back(xGraph[endIndex]);
+					}
+				}//作用域结束时，lock_guard会自动解锁互斥锁xGraphMutex
 			}
 		}
 		QGraphicsScene::mouseReleaseEvent(mouseEvent);

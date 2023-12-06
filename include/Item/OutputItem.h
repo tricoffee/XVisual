@@ -8,6 +8,7 @@ class OutputItem : public XBaseItem
 	Q_OBJECT
 	public:
 		OutputItem(QMenu* contextMenu, QGraphicsItem* parent = nullptr);
+		OutputItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent = nullptr);
 		QPixmap image() override;
 		void debug();
 		void ItemXOP() override;

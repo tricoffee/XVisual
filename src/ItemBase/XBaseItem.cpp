@@ -1,19 +1,22 @@
 // Copyright (C) 2016 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
 
+#include "Common/LoggerInstance.h"
+#include <QGraphicsScene>
+#include <QGraphicsSceneContextMenuEvent>
+#include <QMenu>
+#include <QPainter>
+#include <mutex>
+#include "Common/XThreadMacro.h"
 #include "ItemBase/XBaseItem.h"
 #include "ItemBase/XArrow.h"
 #include "ItemWidget/XTextEdit.h"
 #include "ItemWidget/ItemWidget.h"
 #include "ItemWidget/DiagramProxyWidget.h"
 #include "GlobalStorage/ItemManager.h"
-#include <QGraphicsScene>
-#include <QGraphicsSceneContextMenuEvent>
-#include <QMenu>
-#include <QPainter>
-#include <mutex>
 #include "GlobalStorage/GlobalStorage.h"
 #include "XGraph/XGraph.h"
+#include "MainWindow/GraphicsWidget.h"
 
 XBaseItem::XBaseItem(QMenu* contextMenu,QGraphicsItem* parent)
 	: QGraphicsPolygonItem(parent), myContextMenu(contextMenu), sources(Source::getInstance()), dests(Dest::getInstance())
@@ -32,6 +35,27 @@ XBaseItem::XBaseItem(QMenu* contextMenu,QGraphicsItem* parent)
 	// Item接收其代理维护的QWidget对象xitemWidget里面的一个QTextEdit发过来的信号
 	connect(xitemWidget->getEdit(), &XTextEdit::TextEditFocusOutSignal,
 		this, &XBaseItem::TextEditFocusOutSlot);
+}
+XBaseItem::XBaseItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent)
+	: QGraphicsPolygonItem(parent), myContextMenu(contextMenu), sources(Source::getInstance()), dests(Dest::getInstance())
+{
+	QString uniqueName = ItemManager::instance().getUniqueItemName("XBase");
+	setObjectName(uniqueName);
+	setFlag(QGraphicsItem::ItemIsMovable, true);
+	setFlag(QGraphicsItem::ItemIsSelectable, true);
+	setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
+	// 创建Item的Uuid
+	createUuid();
+	// 给Item初始化一个代理
+	initProxy();
+	// 给代理设置一个widget，并且setPos
+	setWidget();
+	// Item接收其代理维护的QWidget对象xitemWidget里面的一个QTextEdit发过来的信号
+	connect(xitemWidget->getEdit(), &XTextEdit::TextEditFocusOutSignal,
+		this, &XBaseItem::TextEditFocusOutSlot);
+	// 连接发送showImage信号到槽函数
+	//GraphicsWidget* gWidget = static_cast<GraphicsWidget*>(widget);
+	connect(this, &XBaseItem::showImageSignal, gWidget, &GraphicsWidget::showImageSlot);
 }
 void XBaseItem::removeArrow(XArrow* arrow)
 {
@@ -137,12 +161,12 @@ const QString& XBaseItem::getUniqueName()
 }
 Source& XBaseItem::getSources()
 {
-	qDebug() << "Source& XBaseItem::getSources() ";
+	//qDebug() << "Source& XBaseItem::getSources() ";
 	return sources;
 }
 Dest& XBaseItem::getDests()
 {
-	qDebug() << "Dest& XBaseItem::getDests() ";
+	//qDebug() << "Dest& XBaseItem::getDests() ";
 	return dests;
 }
 void XBaseItem::initParameters()
@@ -158,23 +182,27 @@ void XBaseItem::ItemXOP()
 */
 void XBaseItem::initItemOperands()
 {
+	XLOG_INFO("XBaseItem::initItemOperands ...... ", CURRENT_THREAD_ID);
 	// To-DO, XBaseItem再添加一个成员变量, isSourceFromOutside, 条件isSourceFromOutside == true为真时, 直接返回true
 	if (isSourceFromOutside == true)
 	{
 		return;
 	}
 	std::vector<std::string> xVaribleNames = ACQUIRE_NAMES(sources);
+	int num = xVaribleNames.size();
+	XLOG_INFO("XBaseItem::initItemOperands,xVaribleNames.size() = "+ std::to_string(num), CURRENT_THREAD_ID);
 	for (const auto& xName : xVaribleNames) 
 	{
+		XLOG_INFO("XBaseItem::initItemOperands: " + xName, CURRENT_THREAD_ID);
 		SourceFrom sourceFrom;
 		loadSourceFrom(xName, sourceFrom);
 		std::string yItemId = sourceFrom.itemId;
 		std::string yName = sourceFrom.variableName;
 		XBaseItem* yItem = nullptr;
 		{
-			std::lock_guard<std::mutex> lock(xGraphMutex);
+			std::lock_guard<std::mutex> lock(itemMapMutex);
 			yItem = globalItemMap[yItemId];
-		} // 作用域结束时，lock_guard 会自动解锁互斥锁xGraphMutex
+		} // 作用域结束时，lock_guard 会自动解锁互斥锁itemMapMutex
 		// To-DO, XBaseItem再添加一个成员变量, isSourceFromOutside, 并且if条件修改为yItem != nullptr && isSourceFromOutside == false
 		if (yItem != nullptr && isSourceFromOutside == false)
 		{
@@ -194,16 +222,6 @@ void XBaseItem::setSourceFrom(const std::string& xVariableName,const SourceFrom&
 		return;
 	}
 	SET_SOURCEFROM_STR(sources, xVariableName, sourceFrom);
-	{
-		std::lock_guard<std::mutex> lock(xGraphMutex);
-	    int xIndex = XGraph::findNodeIndex(xGraph, getUuid());
-	    int yIndex = XGraph::findNodeIndex(xGraph, sourceFrom.itemId);
-		if (xIndex != -1 && yIndex != -1)
-		{
-			//添加边, 标识为xItemId(即getUuid()的返回值)的节点---》指向---》标识为yItemId的节点
-			xGraph[xIndex]->neighbors.push_back(xGraph[yIndex]);
-		}
-	} // 作用域结束时，lock_guard 会自动解锁互斥锁xGraphMutex
 }
 /*
 按名字查找某个变量的sourceFrom，在执行计算图前初始化参数时会调用这个函数

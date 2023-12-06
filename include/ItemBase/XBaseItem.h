@@ -16,6 +16,7 @@
 
 class DiagramProxyWidget;
 class ItemWidget;
+class GraphicsWidget;
 QT_BEGIN_NAMESPACE
 class QPixmap;
 class QGraphicsSceneContextMenuEvent;
@@ -29,6 +30,7 @@ class XBaseItem : public QObject, public QGraphicsPolygonItem
 	public:
 		enum { Type = UserType + 1 };
 		XBaseItem(QMenu* contextMenu, QGraphicsItem* parent = nullptr);
+		XBaseItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent = nullptr);
 		void removeArrow(XArrow* arrow);
 		void removeArrows();
 		QPolygonF polygon() const { return myPolygon; }
@@ -49,10 +51,10 @@ class XBaseItem : public QObject, public QGraphicsPolygonItem
 		QList<XBaseItem*> parents;
 		QList<XBaseItem*> childs;
 		virtual void initParameters();
-		void initItemOperands();
+		virtual void initItemOperands();
 		virtual void ItemXOP();
-		virtual Source& getSources();
-		virtual Dest& getDests();
+		Source& getSources();
+		Dest& getDests();
 		const QString& getUniqueName();
 		void setSourceFrom(const std::string& xVariableName, const SourceFrom& sourceFrom);
 		void loadSourceFrom(const std::string& xVariableName, SourceFrom& sourceFrom);
@@ -69,12 +71,14 @@ class XBaseItem : public QObject, public QGraphicsPolygonItem
 		std::string uuid;
 		virtual void createUniqueName();
 		QString uniqueName;
+		Source sources;
+		Dest dests;
     private:
 		QMenu* myContextMenu;
 		QList<XArrow*> arrows;
 		QString text;
-		Source sources;
-		Dest dests;
+	signals:
+		void showImageSignal(const std::string& filename, const cv::Mat& image, XBaseItem* item);
 };
 
 #endif //XBaseItem_H

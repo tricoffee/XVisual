@@ -59,7 +59,7 @@ private:
 	QColor myLineColor;
 	XArrow* arrow;
 	QWidget* xView;
-	QWidget* graphicsWidget = nullptr;
+	GraphicsWidget* graphicsWidget = nullptr;
 };
 
 #endif //DIAGRAMSCENE_H

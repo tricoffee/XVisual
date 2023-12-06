@@ -1,6 +1,9 @@
 // Copyright (C) 2016 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
 #include "Common/LoggerInstance.h"
+#include "Common/XThreadMacro.h"
+#include "GlobalStorage/GlobalStorage.h"
+#include "XGraph/XGraph.h"
 
 #include <QtWidgets>
 #include <QString>
@@ -14,11 +17,10 @@
 #include "Common/constants.h"
 #include "MainWindow/GraphicsWidget.h"
 #include "MainWindow/SideWidget.h"
+#include "MainWindow/ImagePageWidget.h"
 
 MainWindow::MainWindow()
 {
-	//logger.LogInfo("这是一条信息日志");
-	//logger.LogError("这是一条错误日志");
 	createActions();
 	createMenus();
     graphicsWidget = new GraphicsWidget(itemMenu);
@@ -28,6 +30,7 @@ MainWindow::MainWindow()
 
 	sideWidget = new SideWidget();
 
+	// 创建水平方向splitter
 	QSplitter* splitter = new QSplitter(Qt::Horizontal);
 	// 设置QSplitter分割线的样式表
 	splitter->setStyleSheet("QSplitter::handle { background: lightgray; border: 1px gray; }");
@@ -56,6 +59,8 @@ MainWindow::MainWindow()
 	setWindowTitle(tr("Diagramscene"));
 	setUnifiedTitleAndToolBarOnMac(true);
 
+	connect(graphicsWidget, &GraphicsWidget::showImageInTabSignal, 
+		sideWidget,&SideWidget::showImageInTabSlot);
 }
 
 void MainWindow::backgroundButtonGroupClicked(QAbstractButton* button)
@@ -83,13 +88,21 @@ void MainWindow::linePointerButtonClicked(bool checked)
 
 void MainWindow::runButtonClicked(bool checked)
 {
-	runButton->setChecked(false);
-
-	XLOG_INFO("void MainWindow::runButtonClicked(bool checked) ...", __LINE__);
-	XLOG_ERROR("ToDo, execute XGraph when runButton is clicked.", __LINE__);
-	
-    //ToDo, execute XGraph when runButton is clicked
-
+	XLOG_INFO("void MainWindow::runButtonClicked to do executeXGraph", CURRENT_THREAD_ID);
+	{
+		std::lock_guard<std::mutex> lock(xGraphMutex);
+		// 遍历xGraph的每个元素
+		//for(auto it = xGraph.begin(); it != xGraph.end(); ++it) 
+		//{
+		//	// 获取当前节点node
+		//	std::shared_ptr<GraphNode> node = *it;
+		//	// 获取当前节点的nodeId
+		//	std::string nodeId = node->nodeId;
+		//	XLOG_INFO("void MainWindow::runButtonClicked, nodeId = "+nodeId, CURRENT_THREAD_ID);
+		//}
+		XGraph::executeXGraph(xGraph);
+	}// 作用域结束时，lock_guard 会自动解锁互斥锁xGraphMutex
+	XLOG_INFO("void MainWindow::runButtonClicked xGraph is executed.", CURRENT_THREAD_ID);
 }
 
 void MainWindow::currentFontChanged(const QFont&)
@@ -394,7 +407,7 @@ QWidget* MainWindow::createCellWidget(const QString& text)
 {
 	idnames[itemtype] = text;
 	std::string itemclass = text.toStdString();
-	XBaseItem  *item = ItemRegistry::createObject(itemclass, itemMenu, nullptr);
+	XBaseItem  *item = ItemRegistry::createObject(itemclass, graphicsWidget, itemMenu, nullptr);
 	QIcon icon(item->image());
 
 	QToolButton* button = new QToolButton;

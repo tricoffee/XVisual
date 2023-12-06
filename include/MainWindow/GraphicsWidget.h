@@ -1,12 +1,16 @@
 #ifndef GraphicsWidget_H
 #define GraphicsWidget_H
+#include <QWidget>
 #include "Common/constants.h"
+#include "Common/OpenCVHeaders.h"
 #include "TableWidget/TableData.h"
+
 class DiagramScene;
 class QGraphicsView;
 class XArrow;
 class CustomTableView;
-#include <QWidget>
+class XBaseItem;
+
 class GraphicsWidget : public QWidget
 {
 	Q_OBJECT
@@ -23,13 +27,15 @@ class GraphicsWidget : public QWidget
 		void setDiagramName(const QString& name);
 		void setDiagramType(DiagramType type);
 		void setDiagramState(DiagramState state);
+	signals:
+		void showImageInTabSignal(const std::string& filename, const cv::Mat& image, XBaseItem* item);
 	public slots:
 		void bringToFront();
 		void sendToBack();
 		void deleteItem();
 		void showTableViewSlot(const QString& xName, const QString& yName, XArrow* xLineArrow,
 			QList<TableData> variablesX, QList<TableData> variablesY);
-
+		void showImageSlot(const std::string& filename, const cv::Mat& image, XBaseItem* item);
     private:
 		int scene_width;
 		int scene_height;

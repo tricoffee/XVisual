@@ -7,6 +7,12 @@
 #define REGISTER_MEMBER_STR(instance, name, value) \
     instance.registerMember(name, value)
 
+#define REGISTER_TYPE(instance, name, value) \
+    instance.registerType(#name, value)
+
+#define REGISTER_TYPE_STR(instance, name, value) \
+    instance.registerType(name, value)
+
 #define REGISTER_MEMBER_WITH_FLAG(instance, name, value, b) \
     instance.registerMember(#name, value, b)
 

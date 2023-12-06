@@ -1,6 +1,7 @@
 #include "Item/ConditionItem.h"
 #include "ItemWidget/ItemWidget.h"
 #include "GlobalStorage/ItemManager.h"
+#include "MainWindow/GraphicsWidget.h"
 
 ConditionItem::ConditionItem(QMenu* contextMenu, QGraphicsItem* parent)
 	: XBaseItem(contextMenu, parent)
@@ -9,6 +10,17 @@ ConditionItem::ConditionItem(QMenu* contextMenu, QGraphicsItem* parent)
 	myPolygon << QPointF(-100, 0) << QPointF(0, 100)
 		      << QPointF(100, 0)  << QPointF(0, -100)
 		      << QPointF(-100, 0);
+	setPolygon(myPolygon);
+	// 设置显示在Item上的文本
+	setEditText(uniqueName);
+}
+ConditionItem::ConditionItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent)
+	: XBaseItem(gWidget, contextMenu, parent)
+{
+	createUniqueName();
+	myPolygon << QPointF(-100, 0) << QPointF(0, 100)
+		<< QPointF(100, 0) << QPointF(0, -100)
+		<< QPointF(-100, 0);
 	setPolygon(myPolygon);
 	// 设置显示在Item上的文本
 	setEditText(uniqueName);

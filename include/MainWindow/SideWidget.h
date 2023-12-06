@@ -6,26 +6,57 @@
 #include <QVBoxLayout>
 #include <QSplitter>
 #include <QFontMetrics>
+#include <QFrame>
+#include "MainWindow/VariableWidget.h"
+#include "Common/OpenCVHeaders.h"
+class ImagePageWidget;
+class NamesWidget;
+class VariableWidget;
 class SideWidget : public QWidget
 {
 	Q_OBJECT
 	public:
 		SideWidget(QWidget* parent = nullptr);
+		ImagePageWidget* getImagePageWidget();
 	public slots:
-		void on_button1_clicked();
-	private:
+		void showImageInTabSlot(const std::string& filename, const cv::Mat& image, XBaseItem* item);
+    private slots:
+		void on_foldButton_clicked();
+		void tabAddSlot(const QString& itemName);
+		void tabRemoveSlot(const QString& itemName);
+    private:
 		// btnWidget is a QWidget which holds a QHBoxLayout for foldButton
 		QPushButton* foldButton;
 		QWidget* btnWidget;
 		QHBoxLayout* btnLayout;
-		// foldWidget is a QWidget which holds a QHBoxLayout
-		QPushButton* buttonS1;
-		QPushButton* buttonS2;
-		QWidget* foldWidget;
-		QHBoxLayout* foldLayout;
+
+		// imagePageWidget is a QWidget which holds a QHBoxLayout for upWidget
+		ImagePageWidget* imagePageWidget;
+		QHBoxLayout* upLayout;
+		QWidget* upWidget;
+
+		/*
+		bottomWidget是SideWidget底部的widget其遵循水平布局bottomLayout, 
+	    hSplitter被添加到bottomLayout, hSplitter包含namesWidget, variableWidget
+		*/
+		QSplitter* hSplitter;
+	    NamesWidget* namesWidget;
+		VariableWidget* variableWidget;
+		QHBoxLayout* bottomLayout;
+		QWidget* bottomWidget;
+
+		/*
+		rightWidget是btnWidget右侧的widget遵循垂直布局rightLayout, 
+		vSplitter被添加到rightLayout, vSplitter包含upWidget, bottomWidget
+		*/
+		QSplitter* vSplitter;
+		QVBoxLayout* rightLayout;
+		QWidget* rightWidget;
 
 		bool unfold;
 		QHBoxLayout* sideLayout;
+	
+
 };
 
 #endif // SIDEWIDGET_H

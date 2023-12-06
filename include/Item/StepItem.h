@@ -8,6 +8,7 @@ class StepItem : public XBaseItem
 	Q_OBJECT
 	public:
 		StepItem(QMenu* contextMenu, QGraphicsItem* parent = nullptr);
+		StepItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent = nullptr);
 		QPixmap image() override;
 		void debug();
 		void ItemXOP() override;

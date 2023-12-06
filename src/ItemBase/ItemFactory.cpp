@@ -14,14 +14,25 @@ void ItemRegistry::putConstructor(const std::string& type, Constructor construct
 		registry[type] = constructor;
 	}
 }
+//XBaseItem* ItemRegistry::createObject(const std::string& type,
+//	QMenu* contextMenu, QGraphicsItem* parent)
+//{
+//	ClassRegistry& registry = RegistryInstance();
+//	return registry[type](contextMenu, parent);
+//}
+//ClasssRegisterer::ClasssRegisterer(const std::string& type,
+//    XBaseItem* (*creator)(QMenu* contextMenu, QGraphicsItem* parent))
+//{
+//	ItemRegistry::putConstructor(type, creator);
+//}
 XBaseItem* ItemRegistry::createObject(const std::string& type,
-	QMenu* contextMenu, QGraphicsItem* parent)
+	GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent)
 {
 	ClassRegistry& registry = RegistryInstance();
-	return registry[type](contextMenu, parent);
+	return registry[type](gWidget, contextMenu, parent);
 }
 ClasssRegisterer::ClasssRegisterer(const std::string& type,
-    XBaseItem* (*creator)(QMenu* contextMenu, QGraphicsItem* parent))
+	XBaseItem* (*creator)(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent))
 {
 	ItemRegistry::putConstructor(type, creator);
 }

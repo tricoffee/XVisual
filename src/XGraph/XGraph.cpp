@@ -1,3 +1,5 @@
+#include "Common/LoggerInstance.h"
+#include "Common/XThreadMacro.h"
 #include <unordered_map>
 #include <queue>
 #include "XGraph/XGraph.h"
@@ -73,6 +75,7 @@ std::vector<std::string> XGraph::BFSWithTopologicalSort(std::vector<std::shared_
 
 void XGraph::executeGraphNode(std::shared_ptr<GraphNode>& graphNode)
 {
+    XLOG_INFO("XGraph::executeGraphNode ... ", CURRENT_THREAD_ID);
     std::string itemId = graphNode->nodeId;
     auto it = globalItemMap.find(itemId);
 	if (it != globalItemMap.end()) 
@@ -83,7 +86,7 @@ void XGraph::executeGraphNode(std::shared_ptr<GraphNode>& graphNode)
 	}
 	else 
     {
-        XLOG_ERROR("XGraph::executeGraphNode, No found itemId in globalItemMap", __LINE__);
+        XLOG_ERROR("XGraph::executeGraphNode, No found itemId in globalItemMap", CURRENT_THREAD_ID);
 	}
 
 }
@@ -93,10 +96,10 @@ void XGraph::executeGraphNode(std::shared_ptr<GraphNode>& graphNode)
 1、计算每个节点的入度；
 2、将入度为0的节点加入队列q；
 3、开始遍历队列，执行以下步骤：
-    a. 出队列一个节点(即入度为0的节点)；
-    b. 执行该节点的计算；
-    c. 遍历所有以当前节点为起点的边，减少被指向节点的入度；
-    d. 如果减少后某个节点的入度变为0，将该节点加入队列q中。
+    a、出队列一个节点(即入度为0的节点)；
+    b、执行该节点的计算；
+    c、遍历所有以当前节点为起点的边，减少被指向节点的入度；
+    d、如果减少后某个节点的入度变为0，将该节点加入队列q中。
 4、重复步骤3直到队列q为空。
 */
 void XGraph::executeXGraph(std::vector<std::shared_ptr<GraphNode>>& graph)
@@ -111,9 +114,12 @@ void XGraph::executeXGraph(std::vector<std::shared_ptr<GraphNode>>& graph)
         {
             if (inDegrees.find(neighbor->nodeId) == inDegrees.end())
             {
-                inDegrees[neighbor->nodeId] = 0;
+                inDegrees[neighbor->nodeId] = 1;
             }
-            inDegrees[neighbor->nodeId]++;
+            else
+            {
+                inDegrees[neighbor->nodeId]++;
+            }
         }
     }
 
@@ -158,8 +164,10 @@ int XGraph::findNodeIndex(const std::vector<std::shared_ptr<GraphNode>>& graph, 
 	{
 		if (graph[i]->nodeId == nodeId)
 		{
-			return i;
+            XLOG_INFO("XGraph::findNodeIndex, nodeId = " + nodeId + ", index = " + std::to_string(i), CURRENT_THREAD_ID);
+            return i;
 		}
 	}
+    XLOG_INFO("XGraph::findNodeIndex, nodeId = " + nodeId + ", index = " + std::to_string(-1), CURRENT_THREAD_ID);
 	return -1; // 如果未找到，则返回 -1
 }
