@@ -18,6 +18,7 @@
 #include "MainWindow/GraphicsWidget.h"
 #include "MainWindow/SideWidget.h"
 #include "MainWindow/ImagePageWidget.h"
+#include "Exception/UmapKeyNoFoundException.h"
 
 MainWindow::MainWindow()
 {
@@ -100,7 +101,22 @@ void MainWindow::runButtonClicked(bool checked)
 		//	std::string nodeId = node->nodeId;
 		//	XLOG_INFO("void MainWindow::runButtonClicked, nodeId = "+nodeId, CURRENT_THREAD_ID);
 		//}
-		XGraph::executeXGraph(xGraph);
+
+		try 
+		{
+			XGraph::executeXGraph(xGraph);
+		}
+		catch (UmapKeyNoFoundException& e)
+		{
+			//        std::cout << "=== === ===" << e.what() << "=== === ===" << std::endl;
+			XLOG_INFO("====== void MainWindow::runButtonClicked, UmapKeyNoFoundException  ======" + std::string(e.what()), CURRENT_THREAD_ID);
+			//throw UmapKeyNoFoundException(e.what());
+			// 捕获异常并记录错误码
+			m_lastError = XVisual::ErrorCode::UmapKeyNoFound;
+			// 发射错误信号，通知错误发生
+			emit errorOccurred(m_lastError);
+		}
+
 	}// 作用域结束时，lock_guard 会自动解锁互斥锁xGraphMutex
 	XLOG_INFO("void MainWindow::runButtonClicked xGraph is executed.", CURRENT_THREAD_ID);
 }
@@ -196,12 +212,17 @@ void MainWindow::createToolBox()
 		this, &MainWindow::buttonGroupClicked);
 
 	QGridLayout* layout = new QGridLayout;
-	layout->addWidget(createCellWidget(tr("Condition")), 0, 0);
-	layout->addWidget(createCellWidget(tr("Step")), 0, 1);
-	layout->addWidget(createCellWidget(tr("Input")), 1, 0);
-	layout->addWidget(createCellWidget(tr("Output")), 1, 1);
-	layout->addWidget(createCellWidget(tr("LoadImage")), 2, 0);
-	layout->addWidget(createCellWidget(tr("CVCrop")), 2, 1);
+
+	//layout->addWidget(createCellWidget(tr("Condition")), 0, 0);
+	//layout->addWidget(createCellWidget(tr("Step")), 0, 1);
+	//layout->addWidget(createCellWidget(tr("Input")), 1, 0);
+	//layout->addWidget(createCellWidget(tr("Output")), 1, 1);
+	//layout->addWidget(createCellWidget(tr("LoadImage")), 2, 0);
+	//layout->addWidget(createCellWidget(tr("CVCrop")), 2, 1);
+
+	layout->addWidget(createCellWidget(tr("LoadImage")), 0, 0);
+	layout->addWidget(createCellWidget(tr("CVCrop")), 0, 1);
+
 	layout->setRowStretch(3, 10);
 	layout->setColumnStretch(2, 10);
 
@@ -488,4 +509,51 @@ void MainWindow::initSceneBackground()
 	p.setBrush(QBrush(Qt::gray));
 	p.drawRect(0, 0, TILE_SIZE, TILE_SIZE);
 	graphicsWidget->setBackgroundBrushChange(QBrush(bg));
+}
+
+void MainWindow::listenForError()
+{
+	// 连接错误发生信号到槽函数处理
+	QObject::connect(this, &MainWindow::errorOccurred, [&](XVisual::ErrorCode errorCode) 
+	{
+		std::string errorCodeStr = XVisual::errorCodeToStr(errorCode);
+		std::string warningStr = "\"" + errorCodeStr + "\" occurred. Program cannot continue.";
+		QString warningQStr = QString::fromStdString(warningStr);
+		// 显示警告对话框
+		QMessageBox::critical(nullptr, "Error", warningQStr);
+
+		//// 采用 QMessageBox::information
+		//// 提示用户终止程序
+		//QMessageBox::StandardButton button = QMessageBox::information(nullptr, "Error", "Terminate program?",
+		//QMessageBox::Yes, QMessageBox::NoButton);
+		//// 如果用户选择终止程序，则退出应用
+		//if (button == QMessageBox::Yes) 
+		//{
+		//	qApp->quit();
+		//}
+
+
+		// 采用 QMessageBox::question
+		// QMessageBox::Yes 和 QMessageBox::No 两个按钮同时显示
+		// 提示用户终止程序
+		QMessageBox::StandardButton button = QMessageBox::question(nullptr, "Error", "Terminate program?",
+		QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+		// 如果用户选择终止程序，则退出应用
+		if (button == QMessageBox::Yes) 
+		{
+			qApp->quit();
+		}
+
+
+		//// 采用 QMessageBox::warning
+		//// 提示用户终止程序
+		// QMessageBox::StandardButton button = QMessageBox::warning(nullptr, "Error", "Terminate program?");
+		//// 如果用户选择终止程序，则退出应用
+		//if (button == QMessageBox::Ok) 
+		//{
+		//	qApp->quit();
+		//}
+
+
+	});
 }

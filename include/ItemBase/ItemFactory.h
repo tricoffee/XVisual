@@ -12,42 +12,32 @@ class GraphicsWidget;
 class ItemRegistry
 {
 public:
-	//typedef XBaseItem* (*Constructor)(QMenu* contextMenu, QGraphicsItem* parent);
-	typedef XBaseItem* (*Constructor)(GraphicsWidget* gWidget,QMenu* contextMenu, QGraphicsItem* parent);
-	typedef std::map<std::string, Constructor> ClassRegistry;
-	static ClassRegistry& RegistryInstance();
+	// 新增 GraphicsWidget* gWidget 参数
+	typedef XBaseItem* (*Constructor)(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent);
+	typedef std::map<std::string, Constructor> ItemClassRegistry;
+	static ItemClassRegistry& RegistryInstance();
 	static void putConstructor(const std::string& type, Constructor constructor);
-	/*static XBaseItem* createObject(const std::string& type,
-		QMenu* contextMenu, QGraphicsItem* parent = nullptr);*/
-	static XBaseItem* createObject(const std::string& type,
+	// 新增参数GraphicsWidget* gWidget
+	static XBaseItem* createObject(const std::string& type, 
 		GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent = nullptr);
+
 private:
 	ItemRegistry();
 };
-//class ClasssRegisterer 
-//{
-//public:
-//	ClasssRegisterer(const std::string& type,
-//		XBaseItem* (*creator)(QMenu* contextMenu, QGraphicsItem* parent));
-//};
-//#define REGISTER_CLASS(T) \
-//	XBaseItem* xvisual_##T##_constructor(QMenu* contextMenu, QGraphicsItem* parent) \
-//	{ \
-//		return (XBaseItem*)(new T##Item(contextMenu,parent)); \
-//	} \
-//    static ClasssRegisterer  xvisual_##T##_register(#T, xvisual_##T##_constructor)
 
-class ClasssRegisterer
+
+// 新增 GraphicsWidget* gWidget
+class ItemClassRegisterer
 {
-public:
-	ClasssRegisterer(const std::string& type,
-		XBaseItem* (*creator)(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent));
+    public:
+	     ItemClassRegisterer(const std::string& type, 
+			 XBaseItem* (*creator)(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent));
 };
-#define REGISTER_CLASS(T) \
+#define REGISTER_ITEM(T) \
 	XBaseItem* xvisual_##T##_constructor(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent) \
 	{ \
 		return (XBaseItem*)(new T##Item(gWidget,contextMenu,parent)); \
 	} \
-    static ClasssRegisterer  xvisual_##T##_register(#T, xvisual_##T##_constructor)
+    static ItemClassRegisterer  xvisual_##T##_register(#T, xvisual_##T##_constructor)
 
 #endif //ItemFactory_H

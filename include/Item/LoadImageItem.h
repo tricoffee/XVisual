@@ -7,16 +7,18 @@ class LoadImageItem : public XBaseItem
 {
     Q_OBJECT
 	public:
-		LoadImageItem(QMenu* contextMenu, QGraphicsItem* parent = nullptr);
+		//LoadImageItem(QMenu* contextMenu, QGraphicsItem* parent = nullptr);
+		// 新增 GraphicsWidget* gWidget 参数
 		LoadImageItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent = nullptr);
 		QPixmap image() override;
 		void debug();
-		void initParameters() override;
-		void ItemXOP() override;
+		void initParams() override;
+		void xOperate() override;
     protected:
-	   void createUniqueName() override;
+	   void createUniqueName(const QString& classNameQStr) override;
 	   void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event) override;
 	private:
+		QString lastImagePath; // 声明存储上次选中的文件路径的私有成员变量
 
 };
 #endif //LoadImageItem_H

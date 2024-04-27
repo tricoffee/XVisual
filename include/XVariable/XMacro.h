@@ -7,14 +7,23 @@
 #define REGISTER_MEMBER_STR(instance, name, value) \
     instance.registerMember(name, value)
 
+#define REGISTER_MEMBER_ATTR(instance, name, value, isFromOutSide) \
+    instance.registerMember(#name, value, isFromOutSide)
+
+#define REGISTER_MEMBER_ATTR_STR(instance, name, value, isFromOutSide) \
+    instance.registerMember(name, value, isFromOutSide)
+
 #define REGISTER_TYPE(instance, name, value) \
     instance.registerType(#name, value)
 
 #define REGISTER_TYPE_STR(instance, name, value) \
     instance.registerType(name, value)
 
-#define REGISTER_MEMBER_WITH_FLAG(instance, name, value, b) \
-    instance.registerMember(#name, value, b)
+//#define REGISTER_MEMBER_WITH_FLAG(instance, name, value, b) \
+//    instance.registerMember(#name, value, b)
+//
+//#define REGISTER_MEMBER_WITH_FLAG_STR(instance, name, value, b) \
+//    instance.registerMember(name, value, b)
 
 #define GET_MEMBER_WITH_TYPE(instance, type, name) \
     instance.getMemberWithT<type>(#name)
@@ -46,8 +55,11 @@
 #define GET_SOURCEFROM_STR(instance, name) \
     instance.getSourceFrom(name)
 
-#define IS_MEMBER_FROM_INNER(instance, name) \
-    instance.isFromInner(#name)
+#define IS_MEMBER_FROM_OUTSIDE(instance, name) \
+    instance.isFromOutside(#name)
+
+#define IS_MEMBER_FROM_OUTSIDE_STR(instance, name) \
+    instance.isFromOutside(name)
 
 #define ACQUIRE_NAMES(instance) \
     instance.acquireNames()

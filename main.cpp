@@ -9,6 +9,7 @@ int main(int argv, char* args[])
 	Q_INIT_RESOURCE(XVisual);
 	QApplication app(argv, args);
 	MainWindow mainWindow;
+	mainWindow.listenForError(); // 启动错误监听
 	//mainWindow.setGeometry(100, 100, 800, 500);
 	// 设置窗口初始状态为最大化
 	mainWindow.setWindowState(mainWindow.windowState() | Qt::WindowMaximized);

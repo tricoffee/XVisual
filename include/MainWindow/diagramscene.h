@@ -8,7 +8,6 @@
 
 #include "ItemBase/XArrow.h"
 #include "ItemBase/XBaseItem.h"
-#include "Item/ConditionItem.h"
 #include "Common/constants.h"
 #include "MainWindow/mainwindow.h"
 

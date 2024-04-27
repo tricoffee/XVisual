@@ -17,29 +17,16 @@
 #include "GlobalStorage/GlobalStorage.h"
 #include "XGraph/XGraph.h"
 #include "MainWindow/GraphicsWidget.h"
+#include "Exception/UmapKeyNoFoundException.h"
+#include "Common/StrUtils.h"
 
-XBaseItem::XBaseItem(QMenu* contextMenu,QGraphicsItem* parent)
-	: QGraphicsPolygonItem(parent), myContextMenu(contextMenu), sources(Source::getInstance()), dests(Dest::getInstance())
-{
-	QString uniqueName = ItemManager::instance().getUniqueItemName("XBase");
-	setObjectName(uniqueName);
-	setFlag(QGraphicsItem::ItemIsMovable, true);
-	setFlag(QGraphicsItem::ItemIsSelectable, true);
-	setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
-	// 创建Item的Uuid
-	createUuid();
-	// 给Item初始化一个代理
-	initProxy();
-	// 给代理设置一个widget，并且setPos
-	setWidget();
-	// Item接收其代理维护的QWidget对象xitemWidget里面的一个QTextEdit发过来的信号
-	connect(xitemWidget->getEdit(), &XTextEdit::TextEditFocusOutSignal,
-		this, &XBaseItem::TextEditFocusOutSlot);
-}
+// 现版本, 新增一个父类(基类)Colleague, sources和dests的实例化转由在其父类(基类)Colleague实现
 XBaseItem::XBaseItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent)
-	: QGraphicsPolygonItem(parent), myContextMenu(contextMenu), sources(Source::getInstance()), dests(Dest::getInstance())
+	: QGraphicsPolygonItem(parent), myContextMenu(contextMenu)
 {
-	QString uniqueName = ItemManager::instance().getUniqueItemName("XBase");
+	std::string classNameStr = "XBase";
+	QString classNameQStr = QString::fromStdString(classNameStr);
+	createUniqueName(classNameQStr);
 	setObjectName(uniqueName);
 	setFlag(QGraphicsItem::ItemIsMovable, true);
 	setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -54,8 +41,22 @@ XBaseItem::XBaseItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem*
 	connect(xitemWidget->getEdit(), &XTextEdit::TextEditFocusOutSignal,
 		this, &XBaseItem::TextEditFocusOutSlot);
 	// 连接发送showImage信号到槽函数
-	//GraphicsWidget* gWidget = static_cast<GraphicsWidget*>(widget);
 	connect(this, &XBaseItem::showImageSignal, gWidget, &GraphicsWidget::showImageSlot);
+
+
+	// 创建xHandle
+	//xHandle = HandleRegistry::createObject(classNameStr);
+
+	//std::string delimiter = "_";
+	//std::string uuidStr2 = extractSubstrAfterDelimiter(uuid, delimiter);
+	//const std::string handleUuid = "Handle_" + uuidStr2;
+	//xHandle->setUuid(handleUuid);
+
+	//xHandle->setUuid("Handle_" + uuid);
+
+	//xHandle->setUuidConsistentWithItem(uuid);
+
+	//initParams();
 }
 void XBaseItem::removeArrow(XArrow* arrow)
 {
@@ -142,97 +143,38 @@ void XBaseItem::setWidget()
 	proxyWidget->setWidget(xitemWidget);
 	proxyWidget->setPos(-xitemWidget->width() / 2, -xitemWidget->height() / 2);
 }
-void XBaseItem::createUuid()
+void XBaseItem::createUniqueName(const QString& classNameQStr)
 {
-	QUuid id = QUuid::createUuid();
-	uuid = id.toString().toStdString();
-}
-const std::string& XBaseItem::getUuid() const
-{
-	return uuid;
-}
-void XBaseItem::createUniqueName()
-{
-
+	uniqueName = ItemManager::instance().getUniqueItemName(classNameQStr);
 }
 const QString& XBaseItem::getUniqueName()
 {
 	return uniqueName;
 }
-Source& XBaseItem::getSources()
+void XBaseItem::setColleagueType()
 {
-	//qDebug() << "Source& XBaseItem::getSources() ";
-	return sources;
+	colleagueType = ColleagueType::HandleType;
 }
-Dest& XBaseItem::getDests()
+void XBaseItem::createUuid()
 {
-	//qDebug() << "Dest& XBaseItem::getDests() ";
-	return dests;
+	QUuid id = QUuid::createUuid();
+	uuid = "Item_" + id.toString().toStdString();
 }
-void XBaseItem::initParameters()
+// initParams()初始化参数，因为纯虚函数无法创建对象，所以在此用虚函数而不是纯虚函数，而XBaseItem不需要做具体的逻辑, 具体逻辑在子类中实现
+void XBaseItem::initParams()
 {
 
 }
-void XBaseItem::ItemXOP()
+// xOperate()执行计算逻辑，因为纯虚函数无法创建对象，所以在此用虚函数而不是纯虚函数，而XBaseItem不需要做具体的逻辑, 具体逻辑在子类中实现
+void XBaseItem::xOperate()
 {
 
 }
 /*
 从sourceFrom查找sources里面的每个参数的来源并且初始化该参数
 */
-void XBaseItem::initItemOperands()
+void XBaseItem::initOperands()
 {
-	XLOG_INFO("XBaseItem::initItemOperands ...... ", CURRENT_THREAD_ID);
-	// To-DO, XBaseItem再添加一个成员变量, isSourceFromOutside, 条件isSourceFromOutside == true为真时, 直接返回true
-	if (isSourceFromOutside == true)
-	{
-		return;
-	}
-	std::vector<std::string> xVaribleNames = ACQUIRE_NAMES(sources);
-	int num = xVaribleNames.size();
-	XLOG_INFO("XBaseItem::initItemOperands,xVaribleNames.size() = "+ std::to_string(num), CURRENT_THREAD_ID);
-	for (const auto& xName : xVaribleNames) 
-	{
-		XLOG_INFO("XBaseItem::initItemOperands: " + xName, CURRENT_THREAD_ID);
-		SourceFrom sourceFrom;
-		loadSourceFrom(xName, sourceFrom);
-		std::string yItemId = sourceFrom.itemId;
-		std::string yName = sourceFrom.variableName;
-		XBaseItem* yItem = nullptr;
-		{
-			std::lock_guard<std::mutex> lock(itemMapMutex);
-			yItem = globalItemMap[yItemId];
-		} // 作用域结束时，lock_guard 会自动解锁互斥锁itemMapMutex
-		// To-DO, XBaseItem再添加一个成员变量, isSourceFromOutside, 并且if条件修改为yItem != nullptr && isSourceFromOutside == false
-		if (yItem != nullptr && isSourceFromOutside == false)
-		{
-			auto yValue = GET_MEMBER_STR(yItem->getDests(), yName);
-			REGISTER_MEMBER_STR(sources, xName, yValue);
-		}
-	}
+	xHandle->initOperands();
 }
-/*
-设置某个变量的sourceFrom，让我们知道它从哪里来
-*/
-void XBaseItem::setSourceFrom(const std::string& xVariableName,const SourceFrom& sourceFrom)
-{
-	// To-DO, XBaseItem再添加一个成员变量, isSourceFromOutside, 条件isSourceFromOutside == true为真时, 直接返回true
-	if (isSourceFromOutside == true)
-	{
-		return;
-	}
-	SET_SOURCEFROM_STR(sources, xVariableName, sourceFrom);
-}
-/*
-按名字查找某个变量的sourceFrom，在执行计算图前初始化参数时会调用这个函数
-*/
-void XBaseItem::loadSourceFrom(const std::string& xVariableName, SourceFrom& sourceFrom)
-{
-	// To-DO, XBaseItem再添加一个成员变量, isSourceFromOutside, 条件isSourceFromOutside == true为真时, 直接返回true
-	if (isSourceFromOutside == true)
-	{
-		return;
-	}
-	sourceFrom = GET_SOURCEFROM_STR(sources, xVariableName);
-}
-REGISTER_CLASS(XBase);
+REGISTER_ITEM(XBase);

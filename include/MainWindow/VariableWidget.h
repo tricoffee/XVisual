@@ -32,7 +32,9 @@
 //};
 
 #include <QTreeWidget>
+
 class XBaseItem;
+class XBaseHandle;
 class VariableWidget : public QWidget
 {
 	Q_OBJECT

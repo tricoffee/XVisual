@@ -6,6 +6,7 @@
 
 #include <QMainWindow>
 #include "TableWidget/TableData.h"
+#include "Common/ErrorCode.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -30,6 +31,14 @@ public:
 	MainWindow();
 	std::map<int, QString> idnames;
 	void inintActionConnection();
+	XVisual::ErrorCode lastError() const
+	{
+		return m_lastError;
+	}
+signals:
+	void errorOccurred(XVisual::ErrorCode errorCode);
+public slots:
+	void listenForError();
 private slots:
 	void backgroundButtonGroupClicked(QAbstractButton* button);
 	void buttonGroupClicked(QAbstractButton* button);
@@ -98,6 +107,8 @@ private:
 
 	GraphicsWidget* graphicsWidget;
 	SideWidget* sideWidget;
+
+	XVisual::ErrorCode m_lastError = XVisual::ErrorCode::Success;
 };
 
 #endif // MAINWINDOW_H

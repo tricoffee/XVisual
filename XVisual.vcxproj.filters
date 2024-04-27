@@ -81,6 +81,21 @@
     <Filter Include="Source Files\GlobalStorage">
       <UniqueIdentifier>{c6e4e81f-d7f8-4d8a-a92e-a147978d9244}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Exception">
+      <UniqueIdentifier>{42f6811b-012d-42f5-bc99-d1ad59b2489b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Handle">
+      <UniqueIdentifier>{9635f1a6-6545-4a33-b65f-abfca76e7ac8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Handle">
+      <UniqueIdentifier>{9b5ca692-da4c-4fa9-9d83-df08112f1f0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\HandleBase">
+      <UniqueIdentifier>{ed91a103-a87a-4104-a0b7-c8f1bc9fc08e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\HandleBase">
+      <UniqueIdentifier>{15535857-d1e6-4bf9-a006-03bddd76464d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="XVisual.qrc">
@@ -130,19 +145,7 @@
     <ClCompile Include="src\MainWindow\mainwindow.cpp">
       <Filter>Source Files\MainWindow</Filter>
     </ClCompile>
-    <ClCompile Include="src\Item\ConditionItem.cpp">
-      <Filter>Source Files\Item</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Item\InputItem.cpp">
-      <Filter>Source Files\Item</Filter>
-    </ClCompile>
     <ClCompile Include="src\Item\LoadImageItem.cpp">
-      <Filter>Source Files\Item</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Item\OutputItem.cpp">
-      <Filter>Source Files\Item</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Item\StepItem.cpp">
       <Filter>Source Files\Item</Filter>
     </ClCompile>
     <ClCompile Include="src\Item\CVCropItem.cpp">
@@ -190,6 +193,27 @@
     <ClCompile Include="src\MainWindow\RowWidget.cpp">
       <Filter>Source Files\MainWindow</Filter>
     </ClCompile>
+    <ClCompile Include="src\Common\ZoomableGraphicsView.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Handle\LoadImageHandle.cpp">
+      <Filter>Source Files\Handle</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HandleBase\Colleague.cpp">
+      <Filter>Source Files\HandleBase</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HandleBase\XBaseHandle.cpp">
+      <Filter>Source Files\HandleBase</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HandleBase\HandleFactory.cpp">
+      <Filter>Source Files\HandleBase</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Handle\CVCropHandle.cpp">
+      <Filter>Source Files\Handle</Filter>
+    </ClCompile>
+    <ClCompile Include="include\Common\StrUtils.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="include\ItemBase\XArrow.h">
@@ -207,19 +231,7 @@
     <QtMoc Include="include\MainWindow\mainwindow.h">
       <Filter>Header Files\MainWindow</Filter>
     </QtMoc>
-    <QtMoc Include="include\Item\ConditionItem.h">
-      <Filter>Header Files\Item</Filter>
-    </QtMoc>
-    <QtMoc Include="include\Item\InputItem.h">
-      <Filter>Header Files\Item</Filter>
-    </QtMoc>
     <QtMoc Include="include\Item\LoadImageItem.h">
-      <Filter>Header Files\Item</Filter>
-    </QtMoc>
-    <QtMoc Include="include\Item\OutputItem.h">
-      <Filter>Header Files\Item</Filter>
-    </QtMoc>
-    <QtMoc Include="include\Item\StepItem.h">
       <Filter>Header Files\Item</Filter>
     </QtMoc>
     <QtMoc Include="include\Item\CVCropItem.h">
@@ -315,6 +327,42 @@
       <Filter>Header Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="include\Common\OpenCVHeaders.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\ZoomableGraphicsView.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Exception\MyException.h">
+      <Filter>Header Files\Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Exception\UmapKeyNoFoundException.h">
+      <Filter>Header Files\Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Exception\ExceptionUtils.h">
+      <Filter>Header Files\Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\ErrorCode.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Handle\LoadImageHandle.h">
+      <Filter>Header Files\Handle</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HandleBase\Colleague.h">
+      <Filter>Header Files\HandleBase</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HandleBase\ColleagueType.h">
+      <Filter>Header Files\HandleBase</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HandleBase\XBaseHandle.h">
+      <Filter>Header Files\HandleBase</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HandleBase\HandleFactory.h">
+      <Filter>Header Files\HandleBase</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Handle\CVCropHandle.h">
+      <Filter>Header Files\Handle</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\StrUtils.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
   </ItemGroup>

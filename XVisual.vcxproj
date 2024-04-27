@@ -68,8 +68,14 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>
+      </PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
@@ -97,8 +103,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="include\Common\StrUtils.cpp" />
     <ClCompile Include="src\Common\constants.cpp" />
     <ClCompile Include="src\Common\LoggerInstance.cpp" />
+    <ClCompile Include="src\Common\ZoomableGraphicsView.cpp" />
     <ClCompile Include="src\Common\ZoomImageLabel.cpp">
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
       <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
@@ -107,18 +115,19 @@
     </ClCompile>
     <ClCompile Include="src\CustomDialog\CropDialog.cpp" />
     <ClCompile Include="src\GlobalStorage\GlobalStorage.cpp" />
+    <ClCompile Include="src\HandleBase\Colleague.cpp" />
+    <ClCompile Include="src\HandleBase\HandleFactory.cpp" />
+    <ClCompile Include="src\HandleBase\XBaseHandle.cpp" />
+    <ClCompile Include="src\Handle\CVCropHandle.cpp" />
+    <ClCompile Include="src\Handle\LoadImageHandle.cpp" />
     <ClCompile Include="src\ItemBase\ItemFactory.cpp" />
     <ClCompile Include="src\ItemBase\XArrow.cpp" />
     <ClCompile Include="src\ItemBase\XBaseItem.cpp" />
     <ClCompile Include="src\ItemWidget\DiagramProxyWidget.cpp" />
     <ClCompile Include="src\ItemWidget\ItemWidget.cpp" />
     <ClCompile Include="src\ItemWidget\XTextEdit.cpp" />
-    <ClCompile Include="src\Item\ConditionItem.cpp" />
     <ClCompile Include="src\Item\CVCropItem.cpp" />
-    <ClCompile Include="src\Item\InputItem.cpp" />
     <ClCompile Include="src\Item\LoadImageItem.cpp" />
-    <ClCompile Include="src\Item\OutputItem.cpp" />
-    <ClCompile Include="src\Item\StepItem.cpp" />
     <ClCompile Include="src\MainWindow\diagramscene.cpp" />
     <ClCompile Include="src\MainWindow\GraphicsWidget.cpp" />
     <ClCompile Include="src\MainWindow\ImagePageWidget.cpp" />
@@ -143,25 +152,33 @@
     <QtMoc Include="include\ItemBase\XBaseItem.h" />
     <ClInclude Include="include\Common\Aux.h" />
     <ClInclude Include="include\Common\constants.h" />
+    <ClInclude Include="include\Common\ErrorCode.h" />
     <ClInclude Include="include\Common\LoggerInstance.h" />
     <ClInclude Include="include\Common\LogMacro.h" />
     <QtMoc Include="include\CustomDialog\CropDialog.h" />
     <ClInclude Include="include\Common\OpenCVHeaders.h" />
+    <ClInclude Include="include\Common\StrUtils.h" />
     <ClInclude Include="include\Common\XThreadMacro.h" />
     <QtMoc Include="include\Common\ZoomImageLabel.h" />
+    <ClInclude Include="include\Common\ZoomableGraphicsView.h" />
+    <ClInclude Include="include\Exception\ExceptionUtils.h" />
+    <ClInclude Include="include\Exception\MyException.h" />
+    <ClInclude Include="include\Exception\UmapKeyNoFoundException.h" />
     <ClInclude Include="include\GlobalStorage\GlobalStorage.h" />
     <ClInclude Include="include\GlobalStorage\ItemManager.h" />
+    <ClInclude Include="include\HandleBase\Colleague.h" />
+    <ClInclude Include="include\HandleBase\ColleagueType.h" />
+    <ClInclude Include="include\HandleBase\HandleFactory.h" />
+    <ClInclude Include="include\HandleBase\XBaseHandle.h" />
+    <ClInclude Include="include\Handle\CVCropHandle.h" />
+    <ClInclude Include="include\Handle\LoadImageHandle.h" />
     <ClInclude Include="include\ItemBase\ItemFactory.h" />
     <ClInclude Include="include\ItemWidget\DiagramProxyWidget.h" />
     <ClInclude Include="include\ItemWidget\ItemWidget.h" />
     <QtMoc Include="include\ItemWidget\XTextEdit.h" />
     <QtMoc Include="include\MainWindow\diagramscene.h" />
     <QtMoc Include="include\MainWindow\mainwindow.h" />
-    <QtMoc Include="include\Item\ConditionItem.h" />
-    <QtMoc Include="include\Item\InputItem.h" />
     <QtMoc Include="include\Item\LoadImageItem.h" />
-    <QtMoc Include="include\Item\OutputItem.h" />
-    <QtMoc Include="include\Item\StepItem.h" />
     <QtMoc Include="include\Item\CVCropItem.h" />
     <QtMoc Include="include\MainWindow\GraphicsWidget.h" />
     <QtMoc Include="include\MainWindow\SideWidget.h" />

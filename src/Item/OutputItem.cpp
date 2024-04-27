@@ -47,4 +47,4 @@ void OutputItem::createUniqueName()
 	uniqueName = ItemManager::instance().getUniqueItemName("Output");
 	setObjectName(uniqueName);
 }
-REGISTER_CLASS(Output);
+REGISTER_ITEM(Output);

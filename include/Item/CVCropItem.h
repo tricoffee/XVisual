@@ -10,15 +10,16 @@ class CVCropItem : public XBaseItem
 {
 	Q_OBJECT
 public:
-	CVCropItem(QMenu* contextMenu, QGraphicsItem* parent = nullptr);
+	//CVCropItem(QMenu* contextMenu, QGraphicsItem* parent = nullptr);
+	// 新增 GraphicsWidget 参数
 	CVCropItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent = nullptr);
 	QPixmap image() override;
 	void debug();
-	void initParameters() override;
+	void initParams() override;
 	void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event);
-	void ItemXOP() override;
+	void xOperate() override;
 protected:
-	void createUniqueName() override;
+	void createUniqueName(const QString& classNameQStr) override;
 private:
 	cv::Rect regionOfInterest;
 };

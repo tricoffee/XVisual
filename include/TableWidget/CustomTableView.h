@@ -3,6 +3,7 @@
 #include <QTableView>
 #include <QGraphicsLineItem>
 class XBaseItem;
+class XBaseHandle;
 class CustomTableView : public QTableView
 {
 	Q_OBJECT
@@ -16,6 +17,10 @@ class CustomTableView : public QTableView
 		XBaseItem* xItem;
 	    QString yItemId;
 	    QString xItemId;
+		XBaseHandle* yHandle;
+		XBaseHandle* xHandle;
+		QString yHandleId;
+		QString xHandleId;
 		signals:
 			void changeLineArrowColorSignal(const QColor& color);
 
