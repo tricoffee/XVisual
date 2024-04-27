@@ -9,6 +9,7 @@
 #include <QtMath>
 #include "MainWindow/MainWindow.h"
 #include "MainWindow/GraphicsWidget.h"
+#include "HandleBase/XBaseHandle.h"
 
 XArrow::XArrow(XBaseItem* startItem, XBaseItem* endItem, QGraphicsItem* parent)
 	: QGraphicsLineItem(parent), myStartItem(startItem), myEndItem(endItem)
@@ -105,16 +106,22 @@ void XArrow::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 	std::string xItemId = const_cast<std::string&>(myEndItem->getUuid());
 	QString yItemName = const_cast<QString&>(myStartItem->getUniqueName());
 	QString xItemName = const_cast<QString&>(myEndItem->getUniqueName());
-	Dest& dest = myStartItem->getDests();
-	Source& source = myEndItem->getSources();
+	XBaseHandle* myStartHandle = myStartItem->getXHandle();
+	XBaseHandle* myEndHandle = myEndItem->getXHandle();
+	Dest& dest = myStartHandle->getDests();
+	Source& source = myEndHandle->getSources();
 	std::vector<std::string> yNames = ACQUIRE_NAMES(dest);
 	std::vector<std::string> xNames = ACQUIRE_NAMES(source);
 	int yNum = yNames.size();
 	int xNum = xNames.size();
 	//qDebug() << "yNum = " << yNum;
 	//qDebug() << "xNum = " << xNum;
+
+
 	XLOG_INFO("yNames.size() = " + std::to_string(yNum), CURRENT_THREAD_ID);
 	XLOG_INFO("xNames.size() = " + std::to_string(xNum), CURRENT_THREAD_ID);
+
+
 	QList<TableData> variablesY;
 	QList<TableData> variablesX;
 	for (int j = 0; j < yNum; ++j)
@@ -123,6 +130,8 @@ void XArrow::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 		std::string yTypeName = (*GET_MEMBER_TYPE_STR(dest, yName)).name();
 		TableData yData{ yItemId,yName,yTypeName };
 		variablesY << yData;
+		XLOG_INFO("yName = " + yName, CURRENT_THREAD_ID);
+		XLOG_INFO("yTypeName = " + yTypeName, CURRENT_THREAD_ID);
 	}
 	for (int i = 0; i < xNum; ++i)
 	{
@@ -130,8 +139,12 @@ void XArrow::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 		std::string xTypeName = (*GET_MEMBER_TYPE_STR(source, xName)).name();
 		TableData xData{ xItemId,xName,xTypeName };
 		variablesX << xData;
+		XLOG_INFO("xName = " + xName, CURRENT_THREAD_ID);
+		XLOG_INFO("xTypeName = " + xTypeName, CURRENT_THREAD_ID);
 	}
 	emit showTableViewSingle(xItemName,yItemName,this,variablesX, variablesY);
+
+
 	return QGraphicsLineItem::mouseDoubleClickEvent(event);
 }
 

@@ -47,4 +47,4 @@ void ConditionItem::createUniqueName()
 	uniqueName = ItemManager::instance().getUniqueItemName("Condition");
 	setObjectName(uniqueName);
 }
-REGISTER_CLASS(Condition);
+REGISTER_ITEM(Condition);

@@ -9,6 +9,8 @@
 #include <stdexcept>
 #include <QDebug>
 #include "SourceFrom.h"
+#include "Exception/UmapKeyNoFoundException.h"
+#include "Exception/ExceptionUtils.h"
 class Param
 {
 	public:
@@ -22,11 +24,11 @@ class Param
 		}
 
 		template<typename T>
-		void registerMember(const std::string& variableName, const T& value, bool from_inner)
+		void registerMember(const std::string& variableName, const T& value, bool from_outside)
 		{
-			qDebug() << "void registerMember(const std::string& name, const T& value, bool from_inner)";
+			qDebug() << "void registerMember(const std::string& name, const T& value, bool from_outside)";
 			memberMap[variableName] = value;
-			memberFrom[variableName] = from_inner;
+			memberFrom[variableName] = from_outside;
 		}
 
 		template<typename T>
@@ -96,7 +98,7 @@ class Param
 			}
 		}
 
-		bool isFromInner(const std::string& variableName)
+		bool isFromOutside(const std::string& variableName)
 		{
 			try
 			{
@@ -123,15 +125,23 @@ class Param
 
 		SourceFrom& getSourceFrom(const std::string& variableName)
 		{
+			qDebug() << "SourceFrom& getSourceFrom(const std::string& variableName) \n variableName " << QString::fromStdString(variableName);
 			try
-			{
-				qDebug() << "SourceFrom& getSourceFrom(const std::string& variableName) \n variableName " << QString::fromStdString(variableName);
-				SourceFrom sfrom = sourceMap.at(variableName);
-				qDebug() << "sourceMap.at(variableName) itemId  " << QString::fromStdString(sfrom.itemId);
-				qDebug() << "sourceMap.at(variableName) name  " << QString::fromStdString(sfrom.variableName);
-				return sourceMap.at(variableName);
+			{	
+				bool b;
+				keyExists(sourceMap, variableName, b);
 			}
-			catch (const std::out_of_range& e)
+			catch (UmapKeyNoFoundException& e)
+			{
+				//        std::cout << "=== === ===" << e.what() << "=== === ===" << std::endl;
+				throw UmapKeyNoFoundException(e.what());
+			}
+			SourceFrom sfrom = sourceMap.at(variableName);
+			qDebug() << "sourceMap.at(variableName) itemId  " << QString::fromStdString(sfrom.itemId);
+			qDebug() << "sourceMap.at(variableName) name  " << QString::fromStdString(sfrom.variableName);
+			return sourceMap.at(variableName);
+
+			/*catch (const std::out_of_range& e)
 			{
 				std::cerr << "Member not found: " << variableName << std::endl;
 				std::cout << "Error code: " << -1 << std::endl;
@@ -142,7 +152,7 @@ class Param
 				std::cerr << "Invalid member type for: " << variableName << std::endl;
 				std::cout << "Error code: " << -1 << std::endl;
 				throw std::runtime_error("Invalid member type for: " + variableName);
-			}
+			}*/
 		}
 
 		std::vector<std::string> acquireNames()

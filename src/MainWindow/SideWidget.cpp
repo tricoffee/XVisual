@@ -5,7 +5,12 @@
 #include "MainWindow/NamesWidget.h"
 #include "MainWindow/VariableWidget.h"
 #include "Common/Aux.h"
-#include "Common/ZoomImageLabel.h"
+
+
+//#include "Common/ZoomImageLabel.h"
+
+
+#include "Common/ZoomableGraphicsView.h"
 #include "ItemBase/XBaseItem.h"
 
 SideWidget::SideWidget(QWidget* parent) : QWidget(parent), unfold(false)
@@ -195,27 +200,32 @@ ImagePageWidget* SideWidget::getImagePageWidget()
 void SideWidget::showImageInTabSlot(const std::string& filename, const cv::Mat& image, XBaseItem* item)
 {
     XLOG_INFO("SideWidget::showImageInTabSlot ...", CURRENT_THREAD_ID);
-	 // 创建一个QLabel用于显示图像
-	//QLabel* imageLabel = new QLabel();
 
-    ZoomImageLabel* imageLabel = new ZoomImageLabel();
-
+    // 弃用代码段
+	 // //  创建一个ZoomImageLabel用于显示图像
+    // ZoomImageLabel* imageLabel = new ZoomImageLabel();
 	// 将CV::Mat转换为QImage
-	QImage qImage = cvMatToQImage(image);
+	// QImage qImage = cvMatToQImage(image);
+	// // 将QImage转换为QPixmap
+	// QPixmap pixmap = QPixmap::fromImage(qImage);
+	// // 在QLabel上显示QPixmap
+	// imageLabel->setPixmap(pixmap);
+    // imageLabel->setScaledContents(true);
+    // // 获取tabWidget
+    // QTabWidget* tabWidget = imagePageWidget->getTabWidget();
+	// // 将QWidget添加为新的标签页
+	// int tabIndex = tabWidget->addTab(imageLabel, QString::fromStdString(filename));
 
-	// 将QImage转换为QPixmap
-	QPixmap pixmap = QPixmap::fromImage(qImage);
 
-	// 在QLabel上显示QPixmap
-	imageLabel->setPixmap(pixmap);
 
-    imageLabel->setScaledContents(true);
 
-    // 获取tabWidget
-    QTabWidget* tabWidget = imagePageWidget->getTabWidget();
-
-	// 将QWidget添加为新的标签页
-	int tabIndex = tabWidget->addTab(imageLabel, QString::fromStdString(filename));
+    // 创建一个ZoomableGraphicsView用于显示图像
+    ZoomableGraphicsView* imageShowWidget = new ZoomableGraphicsView();
+    imageShowWidget->initLoad(image);
+     // 获取 tabWidget
+	QTabWidget* tabWidget = imagePageWidget->getTabWidget();
+	// 将 imageShowWidget 添加为新的标签页
+    int tabIndex = tabWidget->addTab(imageShowWidget, QString::fromStdString(filename));
 
 	// 使新添加的标签页成为活动页
 	tabWidget->setCurrentIndex(tabIndex);

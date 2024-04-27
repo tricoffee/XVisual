@@ -12,6 +12,7 @@
 class ImagePageWidget;
 class NamesWidget;
 class VariableWidget;
+class XBaseItem;
 class SideWidget : public QWidget
 {
 	Q_OBJECT

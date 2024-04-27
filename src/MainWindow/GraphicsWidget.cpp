@@ -196,6 +196,31 @@ void GraphicsWidget::showTableViewSlot(const QString& xName, const QString& yNam
 
 	tableView->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
+	// 恢复上次使用的数据模型状态
+	if (lastTableViewModel)
+	{
+		// 复制上次模型的数据到当前模型
+		for (int row = 0; row < lastTableViewModel->rowCount(); ++row)
+		{
+			QModelIndex lastModelIndex = lastTableViewModel->index(row, 1); // 第二列的索引
+			if (lastModelIndex.isValid())
+			{
+				QString selectedText = lastModelIndex.data().toString();
+				QModelIndex currentIndex = model->index(row, 1); // 当前模型对应的索引
+				model->setData(currentIndex, selectedText); // 设置当前模型的 ComboBox 选中项
+			}
+		}
+	}
+
+	// 保存当前数据模型到 lastModel
+	if (lastTableViewModel)
+	{
+		delete lastTableViewModel; // 删除旧的 lastModel
+	}
+
+	lastTableViewModel = model; // 更新 lastModel
+
+
 	tableView->show();
 }
 

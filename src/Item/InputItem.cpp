@@ -74,4 +74,4 @@ void InputItem::createUniqueName()
 	uniqueName = ItemManager::instance().getUniqueItemName("Input");
 	setObjectName(uniqueName);
 }
-REGISTER_CLASS(Input);
+REGISTER_ITEM(Input);

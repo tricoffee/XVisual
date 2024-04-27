@@ -2,8 +2,10 @@
 #define GlobalStorage_H
 #include <unordered_map>
 #include <mutex>
-#include "ItemBase/XBaseItem.h"
 #include "XGraph/XGraph.h"
+#include "ItemBase/XBaseItem.h"
+#include "HandleBase/XBaseHandle.h"
+
 
 /*
 extern关键字用于声明全局变量，但它不分配存储空间。
@@ -18,9 +20,41 @@ extern关键字用于声明全局变量，但它不分配存储空间。
 extern std::unordered_map<std::string, XBaseItem*> globalItemMap;
 //互斥锁(mutex)来保护全局globalItemMap，这样可以确保同时只有一个线程访问它，以避免资源竞争和数据不一致
 extern std::mutex itemMapMutex;
+//一个全局的std::unordered_map用来存储handleId和对应的XBaseHandle*
+extern std::unordered_map<std::string, XBaseHandle*> globalHandleMap;
+//互斥锁(mutex)来保护全局globalHandleMap，这样可以确保同时只有一个线程访问它，以避免资源竞争和数据不一致
+extern std::mutex handleMapMutex;
 //一个全局的xGraph用来存储itemId标识的GraphNode
 extern std::vector<std::shared_ptr<GraphNode>> xGraph;
 //互斥锁(mutex)来保护全局的xGraph，这样可以确保同时只有一个线程访问它，以避免资源竞争和数据不一致
 extern std::mutex xGraphMutex;
+//一个全局的xHandleGraph用来存储handleId标识的GraphNode
+extern std::vector<std::shared_ptr<GraphNode>> xHandleGraph;
+//互斥锁(mutex)来保护全局的xHandleGraph，这样可以确保同时只有一个线程访问它，以避免资源竞争和数据不一致
+extern std::mutex xHandleGraphMutex;
+
+
+template<typename T>
+struct GlobalMap
+{
+	std::unordered_map<std::string, T*> map;
+	std::mutex mutex;
+};
+
+
+// 全局的 ItemMap 和 HandleMap
+extern GlobalMap<XBaseItem> GglobalItemMap;
+extern GlobalMap<XBaseHandle> GglobalHandleMap;
+
+
+// Unused
+////一个全局的itemHandleUMap用来存储XBaseItem*和XHandle*之间的映射关系
+//extern std::unordered_map<XBaseItem*, XBaseHandle*> itemHandleUMap;
+////互斥锁(mutex)来保护全局的itemHandleUMap，这样可以确保同时只有一个线程访问它，以避免资源竞争和数据不一致
+//extern std::mutex itemHandleUMapMutex;
+////一个全局的itemHandleIdMap用来存储xItemId和xHandleId之间的映射关系
+//extern std::unordered_map<std::string, std::string> itemHandleIdMap;
+////互斥锁(mutex)来保护全局的itemHandleIdMap，这样可以确保同时只有一个线程访问它，以避免资源竞争和数据不一致
+//extern std::mutex itemHandleIdMapMutex;
 
 #endif //GlobalStorage_H

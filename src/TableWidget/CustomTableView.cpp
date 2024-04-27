@@ -3,6 +3,7 @@
 #include "TableWidget/CustomTableView.h"
 #include "ItemBase/XArrow.h"
 #include "ItemBase/XBaseItem.h"
+#include "HandleBase/XBaseHandle.h"
 #include <QString>
 CustomTableView::CustomTableView(QWidget* parent) : QTableView(parent)
 {
@@ -14,17 +15,29 @@ CustomTableView::CustomTableView(QGraphicsLineItem* lineArrow, QWidget* parent) 
 	xItem = aLineArrow->getEndItem();
 	yItemId = QString::fromStdString(yItem->getUuid());
 	xItemId = QString::fromStdString(xItem->getUuid());
+
+
+	yHandle = yItem->getXHandle();
+	xHandle = xItem->getXHandle();
+	yHandleId = QString::fromStdString(yHandle->getUuid());
+	xHandleId = QString::fromStdString(xHandle->getUuid());
+
+
+	//yHandleId = QString::fromStdString(yItem->getXHandle()->getUuid());
+	//xHandleId = QString::fromStdString(xItem->getXHandle()->getUuid());
+
+
 	connect(this, &CustomTableView::changeLineArrowColorSignal,
 		aLineArrow, &XArrow::changeLineArrowColorSlots);
 }
 void CustomTableView::closeEvent(QCloseEvent* event)
 {
 	//qDebug() << "CustomTableView::closeEvent(QCloseEvent* event)";
-	//qDebug() << "yItemId" << yItemId;
-	//qDebug() << "xItemId" << xItemId;
+	//qDebug() << "yHandleId" << yItemId;
+	//qDebug() << "xHandleId" << xItemId;
 	XLOG_INFO("CustomTableView::closeEvent(QCloseEvent* event)", CURRENT_THREAD_ID);
-	XLOG_INFO("CustomTableView::closeEvent, yItemId = " + yItemId.toStdString(), CURRENT_THREAD_ID);
-	XLOG_INFO("CustomTableView::closeEvent, xItemId = " + xItemId.toStdString(), CURRENT_THREAD_ID);
+	XLOG_INFO("CustomTableView::closeEvent, yHandleId = " + yHandleId.toStdString(), CURRENT_THREAD_ID);
+	XLOG_INFO("CustomTableView::closeEvent, xHandleId = " + xHandleId.toStdString(), CURRENT_THREAD_ID);
 	QColor color = Qt::black;
 	emit changeLineArrowColorSignal(color);
 	QAbstractItemModel* model = this->model();
@@ -44,6 +57,7 @@ void CustomTableView::closeEvent(QCloseEvent* event)
 		QVariant yData = model->data(yIndex);
 		QString yVariableName = "";
 		QString yVariableType = "";
+
 		if (yData.canConvert<QString>())
 		{
 			QString yText = yData.toString();
@@ -72,6 +86,7 @@ void CustomTableView::closeEvent(QCloseEvent* event)
 		QString xVariableName = "";
 		//variable type
 		QString xVariableType = "";
+
 		if (xData.canConvert<QString>())
 		{
 			QString xText = xData.toString();
@@ -93,11 +108,12 @@ void CustomTableView::closeEvent(QCloseEvent* event)
 				XLOG_INFO("Input does not contain expected parts.", CURRENT_THREAD_ID);
 			}
 		}
-		//qDebug() << "xVariableName yItemId, yVariableName:" << xVariableName << yItemId << yVariableName;
+
+		//qDebug() << "xVariableName yHandleId, yVariableName:" << xVariableName << yHandleId << yVariableName;
 		XLOG_INFO("CustomTableView::closeEvent, xVariableName.toStdString() = "+xVariableName.toStdString(), CURRENT_THREAD_ID);
-		XLOG_INFO("CustomTableView::closeEvent, yItemId.toStdString() = " + yItemId.toStdString(), CURRENT_THREAD_ID);
+		XLOG_INFO("CustomTableView::closeEvent, yHandleId.toStdString() = " + yHandleId.toStdString(), CURRENT_THREAD_ID);
 		XLOG_INFO("CustomTableView::closeEvent, yVariableName.toStdString() = " + yVariableName.toStdString(), CURRENT_THREAD_ID);
-		SourceFrom soureFrom{yItemId.toStdString(),yVariableName.toStdString()};
-		xItem->setSourceFrom(xVariableName.toStdString(), soureFrom);
+		SourceFrom soureFrom{yHandleId.toStdString(),yVariableName.toStdString()};
+		xHandle->setSourceFrom(xVariableName.toStdString(), soureFrom);
 	}
 }

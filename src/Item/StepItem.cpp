@@ -47,4 +47,4 @@ void StepItem::createUniqueName()
 	uniqueName = ItemManager::instance().getUniqueItemName("Step");
 	setObjectName(uniqueName);
 }
-REGISTER_CLASS(Step);
+REGISTER_ITEM(Step);

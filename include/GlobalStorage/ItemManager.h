@@ -1,3 +1,5 @@
+#ifndef ItemManager_H
+#define ItemManager_H
 #include <QString>
 #include <QHash>
 class ItemManager
@@ -36,3 +38,4 @@ private:
 	ItemManager() {}
 	QHash<QString, int> itemCounts;
 };
+#endif // ItemManager_H

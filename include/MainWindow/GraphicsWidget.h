@@ -4,6 +4,7 @@
 #include "Common/constants.h"
 #include "Common/OpenCVHeaders.h"
 #include "TableWidget/TableData.h"
+#include <QStandardItemModel>
 
 class DiagramScene;
 class QGraphicsView;
@@ -43,6 +44,7 @@ class GraphicsWidget : public QWidget
 		DiagramScene* scene;
 		QGraphicsView* view;
 		CustomTableView* tableView = nullptr;
+		QStandardItemModel* lastTableViewModel=nullptr; // 上一次使用的数据模型
 };
 
 #endif //GraphicsWidget_H

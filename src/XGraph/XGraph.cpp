@@ -5,7 +5,8 @@
 #include "XGraph/XGraph.h"
 #include "GlobalStorage/GlobalStorage.h"
 #include "Common/LoggerInstance.h"
-#include "ItemBase/XBaseItem.h"
+#include "Exception/UmapKeyNoFoundException.h"
+#include "Common/StrUtils.h"
 
 /*
 广度优先遍历按照拓扑排序的顺序访问节点
@@ -73,23 +74,61 @@ std::vector<std::string> XGraph::BFSWithTopologicalSort(std::vector<std::shared_
     return result;
 }
 
+
 void XGraph::executeGraphNode(std::shared_ptr<GraphNode>& graphNode)
 {
-    XLOG_INFO("XGraph::executeGraphNode ... ", CURRENT_THREAD_ID);
-    std::string itemId = graphNode->nodeId;
-    auto it = globalItemMap.find(itemId);
-	if (it != globalItemMap.end()) 
+	XLOG_INFO("XGraph::executeGraphNode ... ", CURRENT_THREAD_ID);
+	std::string nId = graphNode->nodeId;
+    std::string typeStr = extractSubstrBeforeDelimiter(nId, "_");
+    if ("Item" == typeStr)
     {
-		XBaseItem* item = it->second;
-        item->initItemOperands();
-        item->ItemXOP();
-	}
-	else 
-    {
-        XLOG_ERROR("XGraph::executeGraphNode, No found itemId in globalItemMap", CURRENT_THREAD_ID);
+		auto it = globalItemMap.find(nId);
+		if (it != globalItemMap.end())
+		{
+			XBaseItem* item = it->second;
+			item->initOperands();
+			try
+			{
+				item->xOperate();
+			}
+			catch (UmapKeyNoFoundException& e)
+			{
+				//        std::cout << "=== === ===" << e.what() << "=== === ===" << std::endl;
+				XLOG_INFO("====== void XGraph::executeGraphNode, UmapKeyNoFoundException  ======" + std::string(e.what()), CURRENT_THREAD_ID);
+				throw UmapKeyNoFoundException(e.what());
+			}
+		}
+		else
+		{
+			XLOG_ERROR("XGraph::executeGraphNode, No found handleId in globalHandleMap", CURRENT_THREAD_ID);
+		}
+    }
+	else if ("Handle" == typeStr)
+	{
+		auto it = globalHandleMap.find(nId);
+		if (it != globalHandleMap.end())
+		{
+			XBaseHandle* handle = it->second;
+			handle->initOperands();
+			try
+			{
+				handle->xOperate();
+			}
+			catch (UmapKeyNoFoundException& e)
+			{
+				//        std::cout << "=== === ===" << e.what() << "=== === ===" << std::endl;
+				XLOG_INFO("====== void XGraph::executeGraphNode, UmapKeyNoFoundException  ======" + std::string(e.what()), CURRENT_THREAD_ID);
+				throw UmapKeyNoFoundException(e.what());
+			}
+		}
+		else
+		{
+			XLOG_ERROR("XGraph::executeGraphNode, No found handleId in globalHandleMap", CURRENT_THREAD_ID);
+		}
 	}
 
 }
+
 
 /*
 广度优先遍历按照拓扑排序的顺序访问节点
@@ -138,8 +177,17 @@ void XGraph::executeXGraph(std::vector<std::shared_ptr<GraphNode>>& graph)
         std::shared_ptr<GraphNode> node = q.front();
         q.pop();
 
-        // 执行节点nodeId
-        executeGraphNode(node);
+        try
+        {
+			// 执行节点nodeIdF
+			executeGraphNode(node);
+        }
+		catch (UmapKeyNoFoundException& e)
+		{
+			//        std::cout << "=== === ===" << e.what() << "=== === ===" << std::endl;
+			XLOG_INFO("====== void XGraph::executeXGraph, UmapKeyNoFoundException  ======" + std::string(e.what()), CURRENT_THREAD_ID);
+			throw UmapKeyNoFoundException(e.what());
+		}
 
         /*
          遍历所有以当前节点为起点的边，减少被指向节点的入度；

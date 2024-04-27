@@ -1,3 +1,6 @@
+#ifndef ZoomImageLabel_H
+#define ZoomImageLabel_H
+
 #include <QLabel>
 #include <QPixmap>
 #include <QImage>
@@ -17,3 +20,5 @@ class ZoomImageLabel : public QLabel
 		QPixmap originalPixmap;
 		double scaleFactor;
 };
+
+#endif // ZoomImageLabel_H

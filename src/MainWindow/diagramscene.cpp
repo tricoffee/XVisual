@@ -11,12 +11,9 @@
 #include <mutex>
 #include "GlobalStorage/GlobalStorage.h"
 #include "MainWindow/GraphicsWidget.h"
+#include "ItemBase/XBaseItem.h"
 
-class XBaseItem;
-class ConditionItem;
-
-DiagramScene::DiagramScene(QMenu* itemMenu, QObject* parent)
-	: QGraphicsScene(parent)
+DiagramScene::DiagramScene(QMenu* itemMenu, QObject* parent): QGraphicsScene(parent)
 {
 	myItemMenu = itemMenu;
 	lineItem = nullptr;
@@ -105,13 +102,16 @@ void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
 	if (DiagramType::Item == diagramType && DiagramState::Insert == diagramState)
 	{
 		std::string itemclass = diagramName.toStdString();
-		//item = ItemRegistry::createObject(itemclass, myItemMenu, nullptr);
+		// 新增 GraphicsWidget* graphicsWidget
 		item = ItemRegistry::createObject(itemclass, graphicsWidget, myItemMenu, nullptr);
 		item->setPos(mouseEvent->scenePos());
 		item->setBrush(myItemColor);
 		item->debug();
 		std::string itemId = item->getUuid();
 		addItem(item);
+
+
+
 		{
 			std::lock_guard<std::mutex> lock(itemMapMutex); 
 			globalItemMap[itemId] = item;
@@ -121,6 +121,32 @@ void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
 			// 创建标识为itemId的节点
 			xGraph.push_back(std::make_shared<GraphNode>(itemId));
 		}// 作用域结束时，lock_guard 会自动解锁互斥锁xGraphMutex
+
+
+
+		// XBaseHandle* handle = item->getXHandle();
+		std::string handleId = item->getXHandle()->getUuid();
+		{
+			std::lock_guard<std::mutex> lock(handleMapMutex);
+			globalHandleMap[handleId] = item->getXHandle();
+
+			// 使用范围循环遍历unordered_map
+			for (const auto& pair : globalHandleMap)
+			{
+				// std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
+				std::string keyStr = pair.first;
+				std::string uuidStr = pair.second->getUuid();
+				XLOG_INFO("globalHandleMap pair, key = " + keyStr + "uuid = " + uuidStr, CURRENT_THREAD_ID);
+			}
+		}// 作用域结束时，lock_guard 会自动解锁互斥锁handleMapMutex
+
+		//将item对应的handleId存储在xHandleGraph
+		{
+			std::lock_guard<std::mutex> lock(xHandleGraphMutex);
+			// 创建标识为itemId的节点
+			xHandleGraph.push_back(std::make_shared<GraphNode>(handleId));
+		}// 作用域结束时，lock_guard 会自动解锁互斥锁xHandleGraphMutex
+
 		diagramState = DiagramState::Move;
 		diagramType = DiagramType::Item;
 		QGraphicsScene::mousePressEvent(mouseEvent);
