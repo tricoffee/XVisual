@@ -1,0 +1,232 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{6D5CAF48-0A82-44E4-AD7C-27086249BADC}</ProjectGuid>
+    <Keyword>QtVS_v304</Keyword>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">10.0.19041.0</WindowsTargetPlatformVersion>
+    <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
+    <QtInstall>6.4.2_msvc2019_64</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+    <QtBuildConfig>debug</QtBuildConfig>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
+    <QtInstall>6.4.2_msvc2019_64</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+    <QtBuildConfig>release</QtBuildConfig>
+  </PropertyGroup>
+  <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
+    <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
+  </Target>
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(QtMsBuild)\Qt.props" />
+    <Import Project="..\..\..\CPP_Props\opencv4.4.0_debug.props" />
+    <Import Project="..\..\..\CPP_Props\glog_debugx64.props" />
+    <Import Project="..\..\..\CPP_Props\gflags_debugx64.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(QtMsBuild)\Qt.props" />
+    <Import Project="..\..\..\CPP_Props\opencv4.4.0_release.props" />
+    <Import Project="..\..\..\CPP_Props\glog_releasex64.props" />
+    <Import Project="..\..\..\CPP_Props\gflags_releasex64.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <IncludePath>C:\NDev\CPPDev\XVisual\XVisual\include;$(IncludePath);C:\NDev\ThirdParty\cJsonLib\include;</IncludePath>
+    <SourcePath>$(VC_SourcePath);C:\NDev\ThirdParty\cJsonLib\src;</SourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <IncludePath>C:\NDev\CPPDev\XVisual\XVisual\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>
+      </PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
+    <ClCompile>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
+    <ClCompile>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <Optimization>MaxSpeed</Optimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\ThirdParty\cJsonLib\src\cJSON.c" />
+    <ClCompile Include="src\Common\constants.cpp" />
+    <ClCompile Include="src\Common\JsonFileUtils.cpp" />
+    <ClCompile Include="src\Common\LoggerInstance.cpp" />
+    <ClCompile Include="src\Common\StrUtils.cpp" />
+    <ClCompile Include="src\Common\UuidGenerator.cpp" />
+    <ClCompile Include="src\Common\XParser.cpp" />
+    <ClCompile Include="src\Common\XType.cpp" />
+    <ClCompile Include="src\Common\ZoomableGraphicsView.cpp" />
+    <ClCompile Include="src\Common\ZoomImageLabel.cpp">
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
+    </ClCompile>
+    <ClCompile Include="src\CustomDialog\CropDialog.cpp" />
+    <ClCompile Include="src\GlobalStorage\ColleagueManager.cpp" />
+    <ClCompile Include="src\GlobalStorage\GlobalStorage.cpp" />
+    <ClCompile Include="src\GlobalStorage\GlobalVariable.cpp" />
+    <ClCompile Include="src\GlobalStorage\HandleGlobalStorage.cpp" />
+    <ClCompile Include="src\GlobalStorage\HandleManager.cpp" />
+    <ClCompile Include="src\GlobalStorage\ItemManager.cpp" />
+    <ClCompile Include="src\HandleBase\Colleague.cpp" />
+    <ClCompile Include="src\HandleBase\ColleagueType.cpp" />
+    <ClCompile Include="src\HandleBase\HandleFactory.cpp" />
+    <ClCompile Include="src\HandleBase\XBaseHandle.cpp" />
+    <ClCompile Include="src\Handle\CVCropHandle.cpp" />
+    <ClCompile Include="src\Handle\LoadImageHandle.cpp" />
+    <ClCompile Include="src\ItemBase\ItemFactory.cpp" />
+    <ClCompile Include="src\ItemBase\XArrow.cpp" />
+    <ClCompile Include="src\ItemBase\XBaseItem.cpp" />
+    <ClCompile Include="src\ItemWidget\DiagramProxyWidget.cpp" />
+    <ClCompile Include="src\ItemWidget\ItemWidget.cpp" />
+    <ClCompile Include="src\ItemWidget\XTextEdit.cpp" />
+    <ClCompile Include="src\Item\CVCropItem.cpp" />
+    <ClCompile Include="src\Item\LoadImageItem.cpp" />
+    <ClCompile Include="src\MainWindow\diagramscene.cpp" />
+    <ClCompile Include="src\MainWindow\GraphicsWidget.cpp" />
+    <ClCompile Include="src\MainWindow\ImagePageWidget.cpp" />
+    <ClCompile Include="src\MainWindow\mainwindow.cpp" />
+    <ClCompile Include="src\MainWindow\NamesWidget.cpp" />
+    <ClCompile Include="src\MainWindow\RowWidget.cpp" />
+    <ClCompile Include="src\MainWindow\SideWidget.cpp" />
+    <ClCompile Include="src\MainWindow\VariableWidget.cpp" />
+    <ClCompile Include="src\TableWidget\ComboBoxDelegate.cpp" />
+    <ClCompile Include="src\TableWidget\CustomTableView.cpp" />
+    <ClCompile Include="src\TableWidget\LabelDelegate.cpp" />
+    <ClCompile Include="src\XGraph\XGraph.cpp" />
+    <ClCompile Include="src\XVariable\Dest.cpp" />
+    <ClCompile Include="src\XVariable\Param.cpp" />
+    <ClCompile Include="src\XVariable\Source.cpp" />
+    <QtRcc Include="XVisual.qrc" />
+    <QtUic Include="XVisual.ui" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="include\ItemBase\XArrow.h" />
+    <QtMoc Include="include\ItemBase\XBaseItem.h" />
+    <ClInclude Include="..\..\..\ThirdParty\cJsonLib\include\cJSON.h" />
+    <ClInclude Include="include\Common\Aux.h" />
+    <ClInclude Include="include\Common\ColleagueNULLValueMacro.h" />
+    <ClInclude Include="include\Common\ColleagueUtils.h" />
+    <ClInclude Include="include\Common\constants.h" />
+    <ClInclude Include="include\Common\ErrorCode.h" />
+    <ClInclude Include="include\Common\ColleagueData.h" />
+    <ClInclude Include="include\Common\JsonFileUtils.h" />
+    <ClInclude Include="include\Common\LoggerInstance.h" />
+    <ClInclude Include="include\Common\LogMacro.h" />
+    <QtMoc Include="include\CustomDialog\CropDialog.h" />
+    <ClInclude Include="include\Common\OpenCVHeaders.h" />
+    <ClInclude Include="include\Common\StrUtils.h" />
+    <ClInclude Include="include\Common\TypeClassifier.h" />
+    <ClInclude Include="include\Common\UuidGenerator.h" />
+    <ClInclude Include="include\Common\XParser.h" />
+    <ClInclude Include="include\Common\XThreadMacro.h" />
+    <QtMoc Include="include\Common\ZoomImageLabel.h" />
+    <ClInclude Include="include\Common\XType.h" />
+    <ClInclude Include="include\Common\ZoomableGraphicsView.h" />
+    <ClInclude Include="include\Exception\ExceptionUtils.h" />
+    <ClInclude Include="include\Exception\MyException.h" />
+    <ClInclude Include="include\Exception\UmapKeyNoFoundException.h" />
+    <ClInclude Include="include\GlobalStorage\ColleagueManager.h" />
+    <ClInclude Include="include\GlobalStorage\GlobalStorage.h" />
+    <ClInclude Include="include\GlobalStorage\GlobalVariable.h" />
+    <ClInclude Include="include\GlobalStorage\HandleGlobalStorage.h" />
+    <ClInclude Include="include\GlobalStorage\HandleManager.h" />
+    <ClInclude Include="include\GlobalStorage\ItemManager.h" />
+    <ClInclude Include="include\HandleBase\Colleague.h" />
+    <ClInclude Include="include\HandleBase\ColleagueType.h" />
+    <ClInclude Include="include\HandleBase\HandleFactory.h" />
+    <ClInclude Include="include\HandleBase\XBaseHandle.h" />
+    <ClInclude Include="include\Handle\CVCropHandle.h" />
+    <ClInclude Include="include\Handle\LoadImageHandle.h" />
+    <ClInclude Include="include\ItemBase\ItemFactory.h" />
+    <ClInclude Include="include\ItemWidget\DiagramProxyWidget.h" />
+    <ClInclude Include="include\ItemWidget\ItemWidget.h" />
+    <QtMoc Include="include\ItemWidget\XTextEdit.h" />
+    <QtMoc Include="include\MainWindow\diagramscene.h" />
+    <QtMoc Include="include\MainWindow\mainwindow.h" />
+    <QtMoc Include="include\Item\LoadImageItem.h" />
+    <QtMoc Include="include\Item\CVCropItem.h" />
+    <QtMoc Include="include\MainWindow\GraphicsWidget.h" />
+    <QtMoc Include="include\MainWindow\SideWidget.h" />
+    <QtMoc Include="include\MainWindow\NamesWidget.h" />
+    <QtMoc Include="include\MainWindow\VariableWidget.h" />
+    <QtMoc Include="include\MainWindow\ImagePageWidget.h" />
+    <QtMoc Include="include\MainWindow\RowWidget.h" />
+    <ClInclude Include="include\TableWidget\ComboBoxDelegate.h" />
+    <QtMoc Include="include\TableWidget\CustomTableView.h" />
+    <ClInclude Include="include\TableWidget\LabelDelegate.h" />
+    <ClInclude Include="include\TableWidget\TableData.h" />
+    <ClInclude Include="include\XGraph\GraphNode.h" />
+    <ClInclude Include="include\XGraph\XGraph.h" />
+    <ClInclude Include="include\XVariable\Dest.h" />
+    <ClInclude Include="include\XVariable\Param.h" />
+    <ClInclude Include="include\XVariable\Source.h" />
+    <ClInclude Include="include\XVariable\SourceFrom.h" />
+    <ClInclude Include="include\XVariable\XMacro.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
+    <Import Project="$(QtMsBuild)\qt.targets" />
+  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

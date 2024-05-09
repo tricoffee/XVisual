@@ -1,0 +1,447 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>qml;cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>qrc;rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Form Files">
+      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
+      <Extensions>ui</Extensions>
+    </Filter>
+    <Filter Include="Translation Files">
+      <UniqueIdentifier>{639EADAA-A684-42e4-A9AD-28FC9BCB8F7C}</UniqueIdentifier>
+      <Extensions>ts</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Item">
+      <UniqueIdentifier>{82fe8d3f-c0f5-49b3-a19e-ca323949d6e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Item">
+      <UniqueIdentifier>{1e18e1a4-917c-46d5-b4ea-ffbc3dc37131}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ItemWidget">
+      <UniqueIdentifier>{ae79e475-8a1b-4258-9c92-9c98a839e3ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ItemBase">
+      <UniqueIdentifier>{355126de-4ba1-4b0f-a3d9-b2df43ab9239}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ItemBase">
+      <UniqueIdentifier>{59feb333-5340-493a-a29f-d82ad329cd43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ItemWidget">
+      <UniqueIdentifier>{cea4cb23-565d-4d46-b6b8-e231eb272d3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\XVariable">
+      <UniqueIdentifier>{6f1f7f48-b416-47f0-b763-53f3ee990fc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\XVariable">
+      <UniqueIdentifier>{feb91d72-4101-456f-912b-74e5fe5b263c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Common">
+      <UniqueIdentifier>{129df7ce-37bc-4089-8e48-8f7e8d0544bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Common">
+      <UniqueIdentifier>{7ed4abe6-6a73-45ab-a6b9-bf1ea489a819}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\MainWindow">
+      <UniqueIdentifier>{2efcc8d7-1af9-4f55-b69f-cac1b52a5535}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\MainWindow">
+      <UniqueIdentifier>{903d2881-f282-4f92-9107-cfcc32f4e252}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\TableWidget">
+      <UniqueIdentifier>{e73b4680-b4d6-462e-8e74-b50bc50b3548}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\TableWidget">
+      <UniqueIdentifier>{e757435a-c6e8-4a79-8f7c-778555722d22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\XGraph">
+      <UniqueIdentifier>{e4850742-634f-4628-9313-8b4af84ca8a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\XGraph">
+      <UniqueIdentifier>{293b2eac-b72f-4117-9bb7-428fbedc4555}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GlobalStorage">
+      <UniqueIdentifier>{bbfc8904-b33d-47cc-b47c-a45a77b507d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CustomDialog">
+      <UniqueIdentifier>{2df7b4e4-b97e-4148-a84d-c95d3bb32508}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CustomDialog">
+      <UniqueIdentifier>{151e1ce6-8fcd-49fa-8db7-336f0b5a7346}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GlobalStorage">
+      <UniqueIdentifier>{c6e4e81f-d7f8-4d8a-a92e-a147978d9244}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Exception">
+      <UniqueIdentifier>{42f6811b-012d-42f5-bc99-d1ad59b2489b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Handle">
+      <UniqueIdentifier>{9635f1a6-6545-4a33-b65f-abfca76e7ac8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Handle">
+      <UniqueIdentifier>{9b5ca692-da4c-4fa9-9d83-df08112f1f0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\HandleBase">
+      <UniqueIdentifier>{ed91a103-a87a-4104-a0b7-c8f1bc9fc08e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\HandleBase">
+      <UniqueIdentifier>{15535857-d1e6-4bf9-a006-03bddd76464d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CJSON">
+      <UniqueIdentifier>{055acfae-7410-405a-8750-efc16cdc3266}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CJSON">
+      <UniqueIdentifier>{3d4f4d5b-c862-40eb-9a3b-74ca4b9d4de3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="XVisual.qrc">
+      <Filter>Resource Files</Filter>
+    </QtRcc>
+    <QtUic Include="XVisual.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ItemBase\ItemFactory.cpp">
+      <Filter>Source Files\ItemBase</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ItemBase\XArrow.cpp">
+      <Filter>Source Files\ItemBase</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ItemBase\XBaseItem.cpp">
+      <Filter>Source Files\ItemBase</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ItemWidget\DiagramProxyWidget.cpp">
+      <Filter>Source Files\ItemWidget</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ItemWidget\ItemWidget.cpp">
+      <Filter>Source Files\ItemWidget</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ItemWidget\XTextEdit.cpp">
+      <Filter>Source Files\ItemWidget</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XVariable\Dest.cpp">
+      <Filter>Source Files\XVariable</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XVariable\Param.cpp">
+      <Filter>Source Files\XVariable</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XVariable\Source.cpp">
+      <Filter>Source Files\XVariable</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\constants.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MainWindow\diagramscene.cpp">
+      <Filter>Source Files\MainWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MainWindow\mainwindow.cpp">
+      <Filter>Source Files\MainWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Item\LoadImageItem.cpp">
+      <Filter>Source Files\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Item\CVCropItem.cpp">
+      <Filter>Source Files\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TableWidget\ComboBoxDelegate.cpp">
+      <Filter>Source Files\TableWidget</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TableWidget\LabelDelegate.cpp">
+      <Filter>Source Files\TableWidget</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TableWidget\CustomTableView.cpp">
+      <Filter>Source Files\TableWidget</Filter>
+    </ClCompile>
+    <ClCompile Include="src\XGraph\XGraph.cpp">
+      <Filter>Source Files\XGraph</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MainWindow\GraphicsWidget.cpp">
+      <Filter>Source Files\MainWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MainWindow\SideWidget.cpp">
+      <Filter>Source Files\MainWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\LoggerInstance.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MainWindow\NamesWidget.cpp">
+      <Filter>Source Files\MainWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MainWindow\VariableWidget.cpp">
+      <Filter>Source Files\MainWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MainWindow\ImagePageWidget.cpp">
+      <Filter>Source Files\MainWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CustomDialog\CropDialog.cpp">
+      <Filter>Source Files\CustomDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GlobalStorage\GlobalStorage.cpp">
+      <Filter>Source Files\GlobalStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\ZoomImageLabel.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MainWindow\RowWidget.cpp">
+      <Filter>Source Files\MainWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\ZoomableGraphicsView.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Handle\LoadImageHandle.cpp">
+      <Filter>Source Files\Handle</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HandleBase\Colleague.cpp">
+      <Filter>Source Files\HandleBase</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HandleBase\XBaseHandle.cpp">
+      <Filter>Source Files\HandleBase</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HandleBase\HandleFactory.cpp">
+      <Filter>Source Files\HandleBase</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Handle\CVCropHandle.cpp">
+      <Filter>Source Files\Handle</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\StrUtils.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HandleBase\ColleagueType.cpp">
+      <Filter>Source Files\HandleBase</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GlobalStorage\HandleGlobalStorage.cpp">
+      <Filter>Source Files\GlobalStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\UuidGenerator.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ThirdParty\cJsonLib\src\cJSON.c">
+      <Filter>Source Files\CJSON</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GlobalStorage\GlobalVariable.cpp">
+      <Filter>Source Files\GlobalStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GlobalStorage\ItemManager.cpp">
+      <Filter>Source Files\GlobalStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GlobalStorage\HandleManager.cpp">
+      <Filter>Source Files\GlobalStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GlobalStorage\ColleagueManager.cpp">
+      <Filter>Source Files\GlobalStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\XType.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\JsonFileUtils.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\XParser.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="include\ItemBase\XArrow.h">
+      <Filter>Header Files\ItemBase</Filter>
+    </QtMoc>
+    <QtMoc Include="include\ItemBase\XBaseItem.h">
+      <Filter>Header Files\ItemBase</Filter>
+    </QtMoc>
+    <QtMoc Include="include\ItemWidget\XTextEdit.h">
+      <Filter>Header Files\ItemWidget</Filter>
+    </QtMoc>
+    <QtMoc Include="include\MainWindow\diagramscene.h">
+      <Filter>Header Files\MainWindow</Filter>
+    </QtMoc>
+    <QtMoc Include="include\MainWindow\mainwindow.h">
+      <Filter>Header Files\MainWindow</Filter>
+    </QtMoc>
+    <QtMoc Include="include\Item\LoadImageItem.h">
+      <Filter>Header Files\Item</Filter>
+    </QtMoc>
+    <QtMoc Include="include\Item\CVCropItem.h">
+      <Filter>Header Files\Item</Filter>
+    </QtMoc>
+    <QtMoc Include="include\TableWidget\CustomTableView.h">
+      <Filter>Header Files\TableWidget</Filter>
+    </QtMoc>
+    <QtMoc Include="include\CustomDialog\CropDialog.h">
+      <Filter>Header Files\CustomDialog</Filter>
+    </QtMoc>
+    <QtMoc Include="include\MainWindow\GraphicsWidget.h">
+      <Filter>Header Files\MainWindow</Filter>
+    </QtMoc>
+    <QtMoc Include="include\MainWindow\SideWidget.h">
+      <Filter>Header Files\MainWindow</Filter>
+    </QtMoc>
+    <QtMoc Include="include\MainWindow\NamesWidget.h">
+      <Filter>Header Files\MainWindow</Filter>
+    </QtMoc>
+    <QtMoc Include="include\MainWindow\VariableWidget.h">
+      <Filter>Header Files\MainWindow</Filter>
+    </QtMoc>
+    <QtMoc Include="include\MainWindow\ImagePageWidget.h">
+      <Filter>Header Files\MainWindow</Filter>
+    </QtMoc>
+    <QtMoc Include="include\Common\ZoomImageLabel.h">
+      <Filter>Header Files\Common</Filter>
+    </QtMoc>
+    <QtMoc Include="include\MainWindow\RowWidget.h">
+      <Filter>Header Files\MainWindow</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\ItemBase\ItemFactory.h">
+      <Filter>Header Files\ItemBase</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ItemWidget\DiagramProxyWidget.h">
+      <Filter>Header Files\ItemWidget</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ItemWidget\ItemWidget.h">
+      <Filter>Header Files\ItemWidget</Filter>
+    </ClInclude>
+    <ClInclude Include="include\XVariable\Dest.h">
+      <Filter>Header Files\XVariable</Filter>
+    </ClInclude>
+    <ClInclude Include="include\XVariable\Source.h">
+      <Filter>Header Files\XVariable</Filter>
+    </ClInclude>
+    <ClInclude Include="include\XVariable\XMacro.h">
+      <Filter>Header Files\XVariable</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\constants.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\XVariable\SourceFrom.h">
+      <Filter>Header Files\XVariable</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TableWidget\TableData.h">
+      <Filter>Header Files\TableWidget</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GlobalStorage\GlobalStorage.h">
+      <Filter>Header Files\GlobalStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="include\XVariable\Param.h">
+      <Filter>Header Files\XVariable</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TableWidget\LabelDelegate.h">
+      <Filter>Header Files\TableWidget</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TableWidget\ComboBoxDelegate.h">
+      <Filter>Header Files\TableWidget</Filter>
+    </ClInclude>
+    <ClInclude Include="include\XGraph\XGraph.h">
+      <Filter>Header Files\XGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="include\XGraph\GraphNode.h">
+      <Filter>Header Files\XGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\LoggerInstance.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\LogMacro.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\XThreadMacro.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\Aux.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\OpenCVHeaders.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\ZoomableGraphicsView.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Exception\MyException.h">
+      <Filter>Header Files\Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Exception\UmapKeyNoFoundException.h">
+      <Filter>Header Files\Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Exception\ExceptionUtils.h">
+      <Filter>Header Files\Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\ErrorCode.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Handle\LoadImageHandle.h">
+      <Filter>Header Files\Handle</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HandleBase\Colleague.h">
+      <Filter>Header Files\HandleBase</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HandleBase\ColleagueType.h">
+      <Filter>Header Files\HandleBase</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HandleBase\XBaseHandle.h">
+      <Filter>Header Files\HandleBase</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HandleBase\HandleFactory.h">
+      <Filter>Header Files\HandleBase</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Handle\CVCropHandle.h">
+      <Filter>Header Files\Handle</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\StrUtils.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\UuidGenerator.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\ColleagueUtils.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GlobalStorage\HandleGlobalStorage.h">
+      <Filter>Header Files\GlobalStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\ThirdParty\cJsonLib\include\cJSON.h">
+      <Filter>Header Files\CJSON</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GlobalStorage\GlobalVariable.h">
+      <Filter>Header Files\GlobalStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GlobalStorage\ItemManager.h">
+      <Filter>Header Files\GlobalStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GlobalStorage\HandleManager.h">
+      <Filter>Header Files\GlobalStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GlobalStorage\ColleagueManager.h">
+      <Filter>Header Files\GlobalStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\XType.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\TypeClassifier.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\JsonFileUtils.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\XParser.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\ColleagueData.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\ColleagueNULLValueMacro.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
