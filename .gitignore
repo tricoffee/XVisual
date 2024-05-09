@@ -32,9 +32,17 @@
 .app
 
 # Projects Relative
-X64
+x64
 Debug
 GlogDemo/Debug
+XInfer/x64
+XVisual/x64
+XInfer/logs
+XInfer/InferLog
+XInfer/main_V0.cpp
+XInfer/main_V1.cpp
+XVisual/logs
+.vs
 
 #logs
 logs
