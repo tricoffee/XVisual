@@ -1,3 +1,5 @@
+#include "Common/LoggerInstance.h"
+#include "Common/XThreadMacro.h"
 #include "HandleBase/XBaseHandle.h"
 #include "GlobalStorage/HandleGlobalStorage.h"
 #include "Exception/UmapKeyNoFoundException.h"

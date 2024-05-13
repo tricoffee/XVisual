@@ -1,3 +1,5 @@
+#include "Common/LoggerInstance.h"
+#include "Common/XThreadMacro.h"
 #include "Handle/CVCropHandle.h"
 #include "Common/OpenCVHeaders.h"
 
@@ -62,11 +64,11 @@ XVisual::ErrorCode CVCropHandle::writeInnerParam(cJSON* cjson_innerParam)
 void CVCropHandle::initParams()
 {
 	cv::Mat image;
-	REGISTER_MEMBER_ATTR(sources, image, image, false);
-	REGISTER_TYPE(sources, image, image);
+	REGISTER_MEMBER_ATTR_STR(sources, "image", image, false);
+	REGISTER_TYPE_STR(sources, "image", image);
 	cv::Mat croppedImage;
-	REGISTER_MEMBER_ATTR(dests, croppedImage, croppedImage, false);
-	REGISTER_TYPE(dests, croppedImage, croppedImage);
+	REGISTER_MEMBER_ATTR_STR(dests, "croppedImage", croppedImage, false);
+	REGISTER_TYPE_STR(dests, "croppedImage", croppedImage);
 	cv::Rect regionOfInterest;
 	regionOfInterest.x = 0;
 	regionOfInterest.y = 0;
@@ -102,11 +104,11 @@ void CVCropHandle::xOperate()
 			croppedImage = image.clone();
 			XLOG_INFO("CVCropHandle::xOperate, Region of Intersest is invalid, the cropped image is equivalent to the original image ", CURRENT_THREAD_ID);
 		}
-		REGISTER_MEMBER(dests, croppedImage, croppedImage);
+		REGISTER_MEMBER_STR(dests, "croppedImage", croppedImage);
 	}
 	else
 	{
-		XLOG_INFO("CVCropHandle::xOperate, image is empty ", CURRENT_THREAD_ID);
+		XLOG_INFO("CVCropHandle::xOperate, image is EMPTY ", CURRENT_THREAD_ID);
 	}
 }
 void CVCropHandle::setRoI(const cv::Rect& roi)

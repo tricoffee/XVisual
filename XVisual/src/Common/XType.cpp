@@ -1,6 +1,6 @@
 #include "Common/XType.h"
 
-std::pair<std::string, XType> Number2XType(int number)
+std::pair<std::string, XType> EnumNumber2XType(int number)
 {
 	std::string typeStr = "XType::Unknown";
 	XType cType = XType::Unknown;

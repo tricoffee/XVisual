@@ -261,7 +261,7 @@ void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
 		item = ItemRegistry::createObject(itemclass, graphicsWidget, myItemMenu, nullptr);
 		item->setPos(mouseEvent->scenePos());
 		item->setBrush(myItemColor);
-		item->debug();
+		// item->debug();
 		std::string itemId = item->getUuid();
 		addItem(item);
 
@@ -277,8 +277,6 @@ void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
 		}// 作用域结束时，lock_guard 会自动解锁互斥锁xGraphMutex
 
 
-
-		// XBaseHandle* handle = item->getXHandle();
 		std::string handleId = item->getXHandle()->getUuid();
 		{
 			std::lock_guard<std::mutex> lock(handleMapMutex);
@@ -385,7 +383,7 @@ void DiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* mouseEvent)
 					startItem->addArrow(arrow);
 					endItem->addArrow(arrow);
 					addItem(arrow);
-					qDebug() << "arrow->setZValue(-9999.99)" << -9999.99;
+					// qDebug() << "arrow->setZValue(-9999.99)" << -9999.99;
 					QLineF line(pa, pb);
 					arrow->setLine(line);
 					arrow->setZValue(-9999.99);

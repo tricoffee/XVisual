@@ -16,6 +16,8 @@
 class XBaseItem;
 class LoadImageItem;
 class CVCropItem;
+class ImagePreItem;
+class TFDetectItem;
 
 class XBaseHandle : public Colleague
 {
@@ -40,6 +42,8 @@ class XBaseHandle : public Colleague
 		friend class XBaseItem;
 		friend class LoadImageItem;
 		friend class CVCropItem;
+		friend class ImagePreItem;
+		friend class TFDetectItem;
 	protected:
 		Source sources;
 		Dest dests;

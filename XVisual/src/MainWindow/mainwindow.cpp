@@ -684,6 +684,8 @@ void MainWindow::createToolBox()
 
 	layout->addWidget(createCellWidget(tr("LoadImage")), 0, 0);
 	layout->addWidget(createCellWidget(tr("CVCrop")), 0, 1);
+	layout->addWidget(createCellWidget(tr("ImagePre")), 1, 0);
+	layout->addWidget(createCellWidget(tr("TFDetect")), 1, 1);
 
 	layout->setRowStretch(3, 10);
 	layout->setColumnStretch(2, 10);
@@ -910,6 +912,10 @@ QWidget* MainWindow::createCellWidget(const QString& text)
 	std::string itemclass = text.toStdString();
 	XBaseItem  *item = ItemRegistry::createObject(itemclass, graphicsWidget, itemMenu, nullptr);
 	QIcon icon(item->image());
+	// 在这里 item 仅仅是为了获得image图形, 所以用完就删除
+	// The item here is only for obtaining image graphics, so it will be deleted after used
+	delete item;
+	item = nullptr;
 
 	QToolButton* button = new QToolButton;
 	button->setIcon(icon);

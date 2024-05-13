@@ -1,23 +1,29 @@
-#ifndef LoadImageHandle_H
-#define LoadImageHandle_H
+#ifndef ImagePreHandle_H
+#define ImagePreHandle_H
 
 #include <iostream>
 #include "HandleBase/XBaseHandle.h"
+#include "Common/PreParam.h"
 
 class Colleague;
-class LoadImageHandle : public XBaseHandle
+class ImagePreHandle : public XBaseHandle
 {
 	public:
-		LoadImageHandle();
-		~LoadImageHandle();
+		ImagePreHandle();
+		~ImagePreHandle();
 		XVisual::ErrorCode setInnerParam(cJSON* innerParamPtr) override;
 		XVisual::ErrorCode setOuterParam(std::unordered_map<std::string, cJSON*> outerParamUMap) override;
 		XVisual::ErrorCode writeOuterParam(cJSON* cjson_variableSource, const std::string& xName) override;
 		XVisual::ErrorCode writeInnerParam(cJSON* cjson_innerParam) override;
 		void initParams() override;
 		void xOperate() override;
+		void setImagePreParams(const PreParam& mImagePreParams);
+		PreParam getImagePreParams();
+	protected:
+
 	private:
 
 };
 
-#endif // LoadImageHandle_H
+#endif // ImagePreHandle_H
+

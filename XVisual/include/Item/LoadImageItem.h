@@ -15,7 +15,6 @@ class LoadImageItem : public XBaseItem
 		void initParams() override;
 		void xOperate() override;
     protected:
-
 	   void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event) override;
 	private:
 

@@ -4,8 +4,6 @@
 #include <iostream>
 #include "HandleBase/XBaseHandle.h"
 
-//class XBaseItem;
-//class CVCropItem;
 class Colleague;
 class CVCropHandle : public XBaseHandle
 {
@@ -20,8 +18,6 @@ class CVCropHandle : public XBaseHandle
 		void xOperate() override;
 		void setRoI(const cv::Rect& regionOfInterest);
 		cv::Rect getRoI();
-		//friend class XBaseItem;
-		//friend class CVCropItem;
 	protected:
 
 	private:

@@ -10,7 +10,7 @@
 int main()
 {
 	// const char* filename1 = "C:\\NDev\\CPPDev\\CodeBlocksWorkspace\\CPPTutorial\\cJsonDemo\\sample3.json";
-	const char* filename = "C:\\NDev\\CPPDev\\XVisual\\XVisual\\logs\\output.json";
+	const char* filename = "C:\\NDev\\CPPDev\\XVisual\\XVisual\\logs\\output1.json";
 	XInfer& infer = XInfer::getInstance();
 	infer.init(filename);
 	infer.build();

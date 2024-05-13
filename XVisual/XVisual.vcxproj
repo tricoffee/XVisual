@@ -58,6 +58,7 @@
     <Import Project="..\..\..\CPP_Props\opencv4.4.0_release.props" />
     <Import Project="..\..\..\CPP_Props\glog_releasex64.props" />
     <Import Project="..\..\..\CPP_Props\gflags_releasex64.props" />
+    <Import Project="..\..\..\CPP_Props\tf2.9.3_release.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
@@ -65,7 +66,9 @@
     <SourcePath>$(VC_SourcePath);C:\NDev\ThirdParty\cJsonLib\src;</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <IncludePath>C:\NDev\CPPDev\XVisual\XVisual\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\NDev\CPPDev\XVisual\XVisual\include;$(IncludePath);C:\NDev\ThirdParty\cJsonLib\include;</IncludePath>
+    <SourcePath>$(VC_SourcePath);C:\NDev\ThirdParty\cJsonLib\src;</SourcePath>
+    <LibraryPath>C:\AIDev\tf293_py391_Bazel541_OK;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -77,7 +80,13 @@
     <ClCompile>
       <PreprocessorDefinitions>
       </PreprocessorDefinitions>
+      <LanguageStandard>$(Qt_STDCPP_)</LanguageStandard>
+      <LanguageStandard_C>Default</LanguageStandard_C>
+      <RuntimeLibrary>$(Qt_RUNTIME_)</RuntimeLibrary>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
     <ClCompile>
@@ -106,6 +115,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\ThirdParty\cJsonLib\src\cJSON.c" />
     <ClCompile Include="src\Common\constants.cpp" />
+    <ClCompile Include="src\Common\ImagePre.cpp" />
     <ClCompile Include="src\Common\JsonFileUtils.cpp" />
     <ClCompile Include="src\Common\LoggerInstance.cpp" />
     <ClCompile Include="src\Common\StrUtils.cpp" />
@@ -131,7 +141,9 @@
     <ClCompile Include="src\HandleBase\HandleFactory.cpp" />
     <ClCompile Include="src\HandleBase\XBaseHandle.cpp" />
     <ClCompile Include="src\Handle\CVCropHandle.cpp" />
+    <ClCompile Include="src\Handle\ImagePreHandle.cpp" />
     <ClCompile Include="src\Handle\LoadImageHandle.cpp" />
+    <ClCompile Include="src\Handle\TFDetectHandle.cpp" />
     <ClCompile Include="src\ItemBase\ItemFactory.cpp" />
     <ClCompile Include="src\ItemBase\XArrow.cpp" />
     <ClCompile Include="src\ItemBase\XBaseItem.cpp" />
@@ -139,7 +151,9 @@
     <ClCompile Include="src\ItemWidget\ItemWidget.cpp" />
     <ClCompile Include="src\ItemWidget\XTextEdit.cpp" />
     <ClCompile Include="src\Item\CVCropItem.cpp" />
+    <ClCompile Include="src\Item\ImagePreItem.cpp" />
     <ClCompile Include="src\Item\LoadImageItem.cpp" />
+    <ClCompile Include="src\Item\TFDetectItem.cpp" />
     <ClCompile Include="src\MainWindow\diagramscene.cpp" />
     <ClCompile Include="src\MainWindow\GraphicsWidget.cpp" />
     <ClCompile Include="src\MainWindow\ImagePageWidget.cpp" />
@@ -148,9 +162,20 @@
     <ClCompile Include="src\MainWindow\RowWidget.cpp" />
     <ClCompile Include="src\MainWindow\SideWidget.cpp" />
     <ClCompile Include="src\MainWindow\VariableWidget.cpp" />
+    <ClCompile Include="src\ParamWidgetDialog\ComboDialog.cpp" />
+    <ClCompile Include="src\ParamWidgetDialog\ComboWindow.cpp" />
+    <ClCompile Include="src\ParamWidget\Normalize01ParamWidget.cpp" />
+    <ClCompile Include="src\ParamWidget\ParamWidgetFactory.cpp" />
+    <ClCompile Include="src\ParamWidget\PreParamWidget.cpp" />
+    <ClCompile Include="src\ParamWidget\ResizeParamWidget.cpp" />
+    <ClCompile Include="src\ParamWidget\ResizePasteParamWidget.cpp" />
     <ClCompile Include="src\TableWidget\ComboBoxDelegate.cpp" />
     <ClCompile Include="src\TableWidget\CustomTableView.cpp" />
     <ClCompile Include="src\TableWidget\LabelDelegate.cpp" />
+    <ClCompile Include="src\TFModel\BoxUtils.cpp" />
+    <ClCompile Include="src\TFModel\ModelUtils.cpp" />
+    <ClCompile Include="src\TFModel\TensorFlowModel.cpp" />
+    <ClCompile Include="src\TFModel\TFType2CPPType.cpp" />
     <ClCompile Include="src\XGraph\XGraph.cpp" />
     <ClCompile Include="src\XVariable\Dest.cpp" />
     <ClCompile Include="src\XVariable\Param.cpp" />
@@ -167,13 +192,17 @@
     <ClInclude Include="include\Common\ColleagueNULLValueMacro.h" />
     <ClInclude Include="include\Common\ColleagueUtils.h" />
     <ClInclude Include="include\Common\constants.h" />
+    <ClInclude Include="include\Common\DebugConfigMacro.h" />
+    <ClInclude Include="include\Common\DeletePtrMacro.h" />
     <ClInclude Include="include\Common\ErrorCode.h" />
     <ClInclude Include="include\Common\ColleagueData.h" />
+    <ClInclude Include="include\Common\ImagePre.h" />
     <ClInclude Include="include\Common\JsonFileUtils.h" />
     <ClInclude Include="include\Common\LoggerInstance.h" />
     <ClInclude Include="include\Common\LogMacro.h" />
     <QtMoc Include="include\CustomDialog\CropDialog.h" />
     <ClInclude Include="include\Common\OpenCVHeaders.h" />
+    <ClInclude Include="include\Common\PreParam.h" />
     <ClInclude Include="include\Common\StrUtils.h" />
     <ClInclude Include="include\Common\TypeClassifier.h" />
     <ClInclude Include="include\Common\UuidGenerator.h" />
@@ -196,7 +225,9 @@
     <ClInclude Include="include\HandleBase\HandleFactory.h" />
     <ClInclude Include="include\HandleBase\XBaseHandle.h" />
     <ClInclude Include="include\Handle\CVCropHandle.h" />
+    <ClInclude Include="include\Handle\ImagePreHandle.h" />
     <ClInclude Include="include\Handle\LoadImageHandle.h" />
+    <ClInclude Include="include\Handle\TFDetectHandle.h" />
     <ClInclude Include="include\ItemBase\ItemFactory.h" />
     <ClInclude Include="include\ItemWidget\DiagramProxyWidget.h" />
     <ClInclude Include="include\ItemWidget\ItemWidget.h" />
@@ -211,10 +242,23 @@
     <QtMoc Include="include\MainWindow\VariableWidget.h" />
     <QtMoc Include="include\MainWindow\ImagePageWidget.h" />
     <QtMoc Include="include\MainWindow\RowWidget.h" />
+    <QtMoc Include="include\Item\TFDetectItem.h" />
+    <QtMoc Include="include\ParamWidget\PreParamWidget.h" />
+    <QtMoc Include="include\ParamWidget\Normalize01ParamWidget.h" />
+    <QtMoc Include="include\ParamWidgetDialog\ComboWindow.h" />
+    <QtMoc Include="include\ParamWidgetDialog\ComboDialog.h" />
+    <QtMoc Include="include\Item\ImagePreItem.h" />
+    <ClInclude Include="include\ParamWidget\ParamWidgetFactory.h" />
+    <QtMoc Include="include\ParamWidget\ResizeParamWidget.h" />
+    <QtMoc Include="include\ParamWidget\ResizePasteParamWidget.h" />
     <ClInclude Include="include\TableWidget\ComboBoxDelegate.h" />
     <QtMoc Include="include\TableWidget\CustomTableView.h" />
     <ClInclude Include="include\TableWidget\LabelDelegate.h" />
     <ClInclude Include="include\TableWidget\TableData.h" />
+    <ClInclude Include="include\TFModel\BoxUtils.h" />
+    <ClInclude Include="include\TFModel\ModelUtils.h" />
+    <ClInclude Include="include\TFModel\TensorFlowModel.h" />
+    <ClInclude Include="include\TFModel\TFType2CPPType.h" />
     <ClInclude Include="include\XGraph\GraphNode.h" />
     <ClInclude Include="include\XGraph\XGraph.h" />
     <ClInclude Include="include\XVariable\Dest.h" />

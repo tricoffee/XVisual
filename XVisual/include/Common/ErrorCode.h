@@ -19,8 +19,10 @@ namespace XVisual
 		ParseInnerParamFromJsonFailed = 307,
 		ParseInnerParamElementFailed = 308,
 		ParseOuterParamFromJsonFailed = 309,
-		ParseJsonUnknownError = 310,
+		ParseJsonUnknownObjectItemError = 310,
+		ParseJsonUnknownError = 311,
 		UnknownXVariableNameError = 501,
+		UnknownPreParamPreTagError = 601,
 	};
 
 	/*

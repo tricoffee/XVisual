@@ -13,10 +13,7 @@
 std::string strip(const std::string& str);
 std::string stripPrefix(const std::string& str, const std::string& prefix);
 std::string stripSuffix(const std::string& str, const std::string& suffix);
-/*
-InputShape1Str parsingand outputShape1Str parsing
-How to use it, please refer to demo5 in StrUtilsDemo.cpp
-*/
+
 template<typename T>
 std::vector<T> parseShape(const std::string& shapeStr)
 {

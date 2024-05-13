@@ -2,9 +2,6 @@
 #define CVCropItem_H
 
 #include "ItemBase/XBaseItem.h"
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
 
 class CVCropItem : public XBaseItem
 {
@@ -16,10 +13,9 @@ class CVCropItem : public XBaseItem
 		QPixmap image() override;
 		void debug();
 		void initParams() override;
-		void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event);
 		void xOperate() override;
 	protected:
-
+		void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event);
 	private:
 
 };

@@ -13,6 +13,6 @@ enum class XType
 	CVRect = 3
 };
 
-std::pair<std::string, XType> Number2XType(int number);
+std::pair<std::string, XType> EnumNumber2XType(int number);
 
 #endif //XType_H

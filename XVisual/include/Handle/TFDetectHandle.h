@@ -1,23 +1,27 @@
-#ifndef LoadImageHandle_H
-#define LoadImageHandle_H
+#ifndef TFDetectHandle_H
+#define TFDetectHandle_H
 
 #include <iostream>
 #include "HandleBase/XBaseHandle.h"
 
+class TensorFlowModel;
 class Colleague;
-class LoadImageHandle : public XBaseHandle
+class TFDetectHandle : public XBaseHandle
 {
 	public:
-		LoadImageHandle();
-		~LoadImageHandle();
+		TFDetectHandle();
+		~TFDetectHandle();
 		XVisual::ErrorCode setInnerParam(cJSON* innerParamPtr) override;
 		XVisual::ErrorCode setOuterParam(std::unordered_map<std::string, cJSON*> outerParamUMap) override;
 		XVisual::ErrorCode writeOuterParam(cJSON* cjson_variableSource, const std::string& xName) override;
 		XVisual::ErrorCode writeInnerParam(cJSON* cjson_innerParam) override;
 		void initParams() override;
 		void xOperate() override;
+	protected:
+		
 	private:
-
+		TensorFlowModel* model;
 };
 
-#endif // LoadImageHandle_H
+#endif // TFDetectHandle_H
+

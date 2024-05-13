@@ -1,3 +1,5 @@
+#include "Common/LoggerInstance.h"
+#include "Common/XThreadMacro.h"
 #include "Handle/LoadImageHandle.h"
 #include "Common/OpenCVHeaders.h"
 
@@ -63,11 +65,11 @@ XVisual::ErrorCode LoadImageHandle::writeInnerParam(cJSON* cjson_innerParam)
 void LoadImageHandle::initParams() 
 {
 	std::string imagePath;
-	REGISTER_MEMBER_ATTR(sources, imagePath, imagePath, true);
-	REGISTER_TYPE(sources, imagePath, imagePath);
+	REGISTER_MEMBER_ATTR_STR(sources, "imagePath", imagePath, true);
+	REGISTER_TYPE_STR(sources, "imagePath", imagePath);
 	cv::Mat image;
-	REGISTER_MEMBER_ATTR(dests, image, image, false);
-	REGISTER_TYPE(dests, image, image);
+	REGISTER_MEMBER_ATTR_STR(dests, "image", image, false);
+	REGISTER_TYPE_STR(dests, "image", image);
 }
 void LoadImageHandle::xOperate()
 {

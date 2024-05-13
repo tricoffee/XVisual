@@ -1,6 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LocalDebuggerEnvironment>PATH=$(QtDllPath);C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin;C:\WinApp\protobuf\cmake\build-Release\Release;C:\AIDev\tf293_py391_Bazel541_OK;C:\WinApp\opencv\build\x64\vc15\bin;$(LocalDebuggerEnvironment)</LocalDebuggerEnvironment>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <QtLastBackgroundBuild>2024-04-24T02:28:36.1411342Z</QtLastBackgroundBuild>
     <QtTouchProperty>
