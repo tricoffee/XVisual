@@ -15,6 +15,7 @@ class ImagePre
 		ImagePre(const PreParam& params, bool printDebugInfo=false);
 		void preprocess(const cv::Mat& srcImage, cv::Mat& dstImage);
 		void decode(const cv::Mat& srcImage, cv::Mat& dstImage);
+		void revertBox(int& x1, int& y1, int& x2, int& y2);
 		std::unordered_map<std::string, std::any> getDecodeParams();
 		PreParam getPreParam();
 		XVisual::ErrorCode readPreParam(cJSON* cjson_preParamPtr);
@@ -29,9 +30,12 @@ class ImagePre
 		// Member function: Scaling images
 		void resize(const cv::Mat& inImage, cv::Mat& outImage);
 
-		// Member function: Restores the processed image to its original size
+		// Member function: Restores the processed image to the spatial scale of the original image
 		void decode_resize_paste(const cv::Mat& srcImage, cv::Mat& dstImage);
 		void decode_resize(const cv::Mat& inImage, cv::Mat& outImage);
+
+		void revertBox_resize_paste(int& x1, int& y1, int& x2, int& y2);
+		void revertBox_resize(int& x1, int& y1, int& x2, int& y2);
 
 		void normalize_01(const cv::Mat& srcImage, cv::Mat& dstImage);
 		void decode_normalize_01(const cv::Mat& srcImage, cv::Mat& dstImage);

@@ -1,13 +1,13 @@
-#ifndef CVCropItem_H
-#define CVCropItem_H
+#ifndef RevertBoxItem_H
+#define RevertBoxItem_H
 
 #include "ItemBase/XBaseItem.h"
 
-class CVCropItem : public XBaseItem
+class RevertBoxItem : public XBaseItem
 {
-		Q_OBJECT
+	Q_OBJECT
 	public:
-		CVCropItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent = nullptr);
+		RevertBoxItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent = nullptr);
 		QPixmap image() override;
 		void debug();
 		void initParams() override;
@@ -18,5 +18,4 @@ class CVCropItem : public XBaseItem
 
 };
 
-#endif //CVCropItem_H
-
+#endif //RevertBoxItem_H

@@ -131,39 +131,117 @@ void XArrow::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 
 	XBaseHandle* myStartHandle = myStartItem->getXHandle();
 	XBaseHandle* myEndHandle = myEndItem->getXHandle();
-	Dest& dest = myStartHandle->getDests();
-	Source& source = myEndHandle->getSources();
-	std::vector<std::string> yNames = ACQUIRE_NAMES(dest);
-	std::vector<std::string> xNames = ACQUIRE_NAMES(source);
+	Dest& dests = myStartHandle->getDests();
+	Source& sources = myEndHandle->getSources();
+	std::vector<std::string> yNames_raw = ACQUIRE_NAMES(dests);
+	std::vector<std::string> xNames_raw = ACQUIRE_NAMES(sources);
+	int yNum_raw = yNames_raw.size();
+	int xNum_raw = xNames_raw.size();
+
+	XLOG_INFO("yNames_raw.size() = " + std::to_string(yNum_raw), CURRENT_THREAD_ID);
+	XLOG_INFO("xNames_raw.size() = " + std::to_string(xNum_raw), CURRENT_THREAD_ID);
+
+	// 按照typeid过滤掉不匹配的xName和yName
+
+	std::unordered_map<std::string, bool> x_matched;
+	for (const auto& x_name : xNames_raw)
+	{
+		x_matched[x_name] = false;
+	}
+
+	std::unordered_map<std::string, bool> y_matched;
+	for (const auto& y_name : yNames_raw)
+	{
+		y_matched[y_name] = false;
+	}
+
+	for (int p = 0; p < xNum_raw; ++p)
+	{
+		std::string x_name = xNames_raw[p];
+		std::string xType_Name = (*GET_MEMBER_TYPE_STR(sources, x_name)).name();
+		for (int q = 0; q < yNum_raw; ++q)
+		{
+			std::string y_name = yNames_raw[q];
+			std::string yType_Name = (*GET_MEMBER_TYPE_STR(dests, y_name)).name();
+			if (xType_Name == yType_Name)
+			{
+				x_matched[x_name] = true;
+				y_matched[y_name] = true;
+			}
+		}
+	}
+
+	// 获取 x_matched 里面不为 false 的 key，并另存到一个 std::vector<std::string>
+	std::vector<std::string> xNames;
+
+	// 遍历 unordered_map 并检查值
+	for (const auto& pair : x_matched)
+	{
+		if (pair.second) 
+		{
+			xNames.push_back(pair.first);
+		}
+	}
+
+	// 获取 y_matched 里面不为 false 的 key，并另存到一个 std::vector<std::string>
+	std::vector<std::string> yNames;
+
+	// 遍历 unordered_map 并检查值
+	for (const auto& pair : y_matched)
+	{
+		if (pair.second)
+		{
+			yNames.push_back(pair.first);
+		}
+	}
+
 	int yNum = yNames.size();
 	int xNum = xNames.size();
-	//qDebug() << "yNum = " << yNum;
-	//qDebug() << "xNum = " << xNum;
-
 
 	XLOG_INFO("yNames.size() = " + std::to_string(yNum), CURRENT_THREAD_ID);
 	XLOG_INFO("xNames.size() = " + std::to_string(xNum), CURRENT_THREAD_ID);
-
 
 	QList<TableData> variablesY;
 	QList<TableData> variablesX;
 	for (int j = 0; j < yNum; ++j)
 	{
 		std::string yName = yNames[j];
-		std::string yTypeName = (*GET_MEMBER_TYPE_STR(dest, yName)).name();
-		TableData yData{ yItemId,yName,yTypeName };
-		variablesY << yData;
-		XLOG_INFO("yName = " + yName, CURRENT_THREAD_ID);
-		XLOG_INFO("yTypeName = " + yTypeName, CURRENT_THREAD_ID);
+		if (IS_MEMBER_FROM_OUTSIDE_STR(dests, yName))
+		{
+			//do nothing
+		}
+		else
+		{
+			std::string yTypeName = (*GET_MEMBER_TYPE_STR(dests, yName)).name();
+			TableData yData{ yItemId,yName,yTypeName };
+			variablesY << yData;
+			XLOG_INFO("yName = " + yName, CURRENT_THREAD_ID);
+			XLOG_INFO("yTypeName = " + yTypeName, CURRENT_THREAD_ID);
+		}
 	}
+	
+	// 追加一个 unSelectedData 表示未选中的
+	if (variablesY.size() > 0)
+	{
+		TableData unSelectedData = { TableData_UnSelectedItemId, TableData_UnSelectedName, TableData_UnSelectedType };
+		variablesY << unSelectedData;
+	}
+
 	for (int i = 0; i < xNum; ++i)
 	{
 		std::string xName = xNames[i];
-		std::string xTypeName = (*GET_MEMBER_TYPE_STR(source, xName)).name();
-		TableData xData{ xItemId,xName,xTypeName };
-		variablesX << xData;
-		XLOG_INFO("xName = " + xName, CURRENT_THREAD_ID);
-		XLOG_INFO("xTypeName = " + xTypeName, CURRENT_THREAD_ID);
+		if (IS_MEMBER_FROM_OUTSIDE_STR(sources, xName))
+		{
+			//do nothing
+		}
+		else
+		{
+			std::string xTypeName = (*GET_MEMBER_TYPE_STR(sources, xName)).name();
+			TableData xData{ xItemId,xName,xTypeName };
+			variablesX << xData;
+			XLOG_INFO("xName = " + xName, CURRENT_THREAD_ID);
+			XLOG_INFO("xTypeName = " + xTypeName, CURRENT_THREAD_ID);
+		}
 	}
 	emit showTableViewSingle(xItemName,yItemName,this,variablesX, variablesY);
 

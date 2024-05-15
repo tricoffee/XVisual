@@ -70,6 +70,23 @@ void ImagePre::decode(const cv::Mat& srcImage, cv::Mat& dstImage)
 	}
 }
 
+//Revert coordinate points leftTopPoint(x1, y1) and bottomRightPoint(x2, y2) to the spatial scale of the original image
+void ImagePre::revertBox(int& x1, int& y1, int& x2, int& y2)
+{
+	if ("ResizePaste" == params_.preTag)
+	{
+		revertBox_resize_paste(x1, y1, x2, y2);
+	}
+	else if ("Resize" == params_.preTag)
+	{
+		revertBox_resize(x1, y1, x2, y2);
+	}
+	else if ("Normalize01" == params_.preTag)
+	{
+		//do nothing
+	}
+}
+
 std::unordered_map<std::string, std::any> ImagePre::getDecodeParams()
 {
 	return params_.decodeParams;
@@ -461,6 +478,80 @@ void ImagePre::decode_resize(const cv::Mat& inImage, cv::Mat& outImage)
 #ifdef DEBUG_PRINT
 	XLOG_INFO(" @@@ ImagePre::decode_resize, dstWidth = " + std::to_string(dstWidth) + " @@@ ", CURRENT_THREAD_ID);
 	XLOG_INFO(" @@@ ImagePre::decode_resize, dstHeight = " + std::to_string(dstHeight) + " @@@ ", CURRENT_THREAD_ID);
+#endif
+}
+
+// Member function: Revert the box(x1,y1,x2,y2) to the spatial scale of the original image
+void ImagePre::revertBox_resize_paste(int& x1,int& y1,int& x2,int& y2)
+{
+	std::unordered_map<std::string, std::any> inParams = std::any_cast<std::unordered_map<std::string, std::any>>(params_.params);
+	std::unordered_map<std::string, std::any> decodeParams = std::any_cast<std::unordered_map<std::string, std::any>>(params_.decodeParams);
+
+	int dx = std::any_cast<int>(decodeParams["dx"]);
+	int dy = std::any_cast<int>(decodeParams["dy"]);
+	int dstW = std::any_cast<int>(inParams["dstWidth"]);
+	int dstH = std::any_cast<int>(inParams["dstHeight"]);
+	int scaleW = dstW - 2 * dx;
+	int scaleH = dstH - 2 * dy;
+
+	float sx = std::any_cast<float>(decodeParams["sx"]);
+	float sy = std::any_cast<float>(decodeParams["sy"]);
+
+	// Calculate the width and height of the original image
+	int rawWidth = static_cast<int>(scaleW / sx);
+	int rawHeight = static_cast<int>(scaleH / sy);
+
+	// Infer topLeftPoint(x1,y1), bottomRightPoint(x2,y2)  in the scale space of the original image
+	x1 = static_cast<int>((x1 - dx) / sx);
+	y1 = static_cast<int>((y1 - dy) / sy);
+	x2 = static_cast<int>((x2 - dx) / sx);
+	y2 = static_cast<int>((y2 - dy) / sy);
+
+	// Filter out illegal boxes that exceed the original image size
+	x1 = std::max(x1, 0);
+	y1 = std::max(y1, 0);
+	x2 = std::min(x2, rawWidth - 1);
+	y2 = std::min(y2, rawHeight - 1);
+
+#ifdef DEBUG_PRINT
+	XLOG_INFO(" @@@ ImagePre::revertBox_resize_paste, rawWidth = " + std::to_string(rawWidth) + " @@@ ", CURRENT_THREAD_ID);
+	XLOG_INFO(" @@@ ImagePre::revertBox_resize_paste, rawHeight = " + std::to_string(rawHeight) + " @@@ ", CURRENT_THREAD_ID);
+#endif
+}
+
+// Member function: Reverts the box(x1,y1,x2,y2) to the spatial scale of the original image
+void ImagePre::revertBox_resize(int& x1, int& y1, int& x2, int& y2)
+{
+	std::unordered_map<std::string, std::any> inParams = std::any_cast<std::unordered_map<std::string, std::any>>(params_.params);
+	std::unordered_map<std::string, std::any> decodeParams = std::any_cast<std::unordered_map<std::string, std::any>>(params_.decodeParams);
+
+	int dstW = std::any_cast<int>(inParams["targetWidth"]);
+	int dstH = std::any_cast<int>(inParams["targetHeight"]);
+	int scaleW = dstW;
+	int scaleH = dstH;
+
+	float sx = std::any_cast<float>(decodeParams["sx"]);
+	float sy = std::any_cast<float>(decodeParams["sy"]);
+
+	// Calculate the width and height of the original image
+	int rawWidth = static_cast<int>(scaleW / sx);
+	int rawHeight = static_cast<int>(scaleH / sy);
+
+	// Infer topLeftPoint(x1,y1), bottomRightPoint(x2,y2)  in the scale space of the original image
+	x1 = static_cast<int>(x1 / sx);
+	y1 = static_cast<int>(y1 / sy);
+	x2 = static_cast<int>(x2 / sx);
+	y2 = static_cast<int>(y2 / sy);
+
+	// Filter out illegal boxes that exceed the original image size
+	x1 = std::max(x1, 0);
+	y1 = std::max(y1, 0);
+	x2 = std::min(x2, rawWidth - 1);
+	y2 = std::min(y2, rawHeight - 1);
+
+#ifdef DEBUG_PRINT
+	XLOG_INFO(" @@@ ImagePre::revertBox_resize, rawWidth = " + std::to_string(rawWidth) + " @@@ ", CURRENT_THREAD_ID);
+	XLOG_INFO(" @@@ ImagePre::revertBox_resize, rawHeight = " + std::to_string(rawHeight) + " @@@ ", CURRENT_THREAD_ID);
 #endif
 }
 

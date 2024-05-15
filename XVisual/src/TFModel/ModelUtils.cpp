@@ -2,12 +2,15 @@
 #include <fstream>
 #include <vector>
 #include "Common/StrUtils.h"
+#include "Common/LoggerInstance.h"
+#include "Common/XThreadMacro.h"
 
 void acquireModelInfo(std::string saved_model_txt_fnm,
 	std::string& inputKey1, std::string& inputType1Str, std::string& inputShape1Str, std::string& inputName1Str,
 	std::string& outputKey1, std::string& outputType1Str, std::string& outputShape1Str, std::string& outputName1Str
 )
 {
+
 	//    std::cout << "acquireModelInfo ========" << std::endl;
 	std::ifstream file(saved_model_txt_fnm);
 	std::string line;
@@ -68,6 +71,7 @@ void acquireModelInfo(std::string saved_model_txt_fnm,
 	{
 	    //std::cout << "没有打开" << saved_model_txt_fnm << std::endl;
 	}
+	XLOG_INFO(" Open " + saved_model_txt_fnm + " Successfully! ", CURRENT_THREAD_ID);
 
 	if (inputKey1LineIndex != -1)
 	{
@@ -86,6 +90,11 @@ void acquireModelInfo(std::string saved_model_txt_fnm,
 		inputName1Str = extractSubstrBeforeDelimiter(inputName1Str_2, ":");
 	}
 
+	XLOG_INFO(" inputKey1 = " + inputKey1, CURRENT_THREAD_ID);
+	XLOG_INFO(" inputType1Str = " + inputType1Str, CURRENT_THREAD_ID);
+	XLOG_INFO(" inputShape1Str = " + inputShape1Str, CURRENT_THREAD_ID);
+	XLOG_INFO(" inputName1Str = " + inputName1Str, CURRENT_THREAD_ID);
+
 	if (outputKey1LineIndex != -1)
 	{
 		outputType1LineIndex = outputKey1LineIndex + 1;
@@ -102,5 +111,14 @@ void acquireModelInfo(std::string saved_model_txt_fnm,
 		std::string outputName1Str_2 = strip(outputName1Str_1);
 		outputName1Str = extractSubstrBeforeDelimiter(outputName1Str_2, ":");
 	}
+
+	XLOG_INFO(" outputKey1 = " + outputKey1, CURRENT_THREAD_ID);
+	XLOG_INFO(" outputType1Str = " + outputType1Str, CURRENT_THREAD_ID);
+	XLOG_INFO(" outputShape1Str = " + outputShape1Str, CURRENT_THREAD_ID);
+	XLOG_INFO(" outputName1Str = " + outputName1Str, CURRENT_THREAD_ID);
+
+#ifdef DEBUG_TF
+
+#endif 
 
 }

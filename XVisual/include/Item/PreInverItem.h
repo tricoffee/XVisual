@@ -1,15 +1,15 @@
-#ifndef ImagePreItem_H
-#define ImagePreItem_H
+#ifndef PreInverItem_H
+#define PreInverItem_H
 
 #include "ItemBase/XBaseItem.h"
 //#include "Common/DebugConfigMacro.h"
 #include "Common/PreParam.h"
 
-class ImagePreItem : public XBaseItem
+class PreInverItem : public XBaseItem
 {
 	Q_OBJECT
 	public:
-		ImagePreItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent = nullptr);
+		PreInverItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent = nullptr);
 		QPixmap image() override;
 		void debug();
 		void initParams() override;
@@ -22,6 +22,7 @@ class ImagePreItem : public XBaseItem
 	#endif
 };
 
-#endif //ImagePreItem_H
+#endif //PreInverItem_H
+
 
 

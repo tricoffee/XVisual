@@ -12,6 +12,7 @@
 #include "MainWindow/GraphicsWidget.h"
 #include "Handle/TFDetectHandle.h"
 #include "Common/StrUtils.h"
+#include "Common/DetectResult.h"
 
 TFDetectItem::TFDetectItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent)
 	: XBaseItem(gWidget, contextMenu, parent)
@@ -77,6 +78,7 @@ void TFDetectItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 	{
 		// Save the currently selected file path
 		XLOG_INFO("TFDetectItem::mouseDoubleClickEvent, savedModelDir is not empty ...", CURRENT_THREAD_ID);
+		XLOG_INFO("TFDetectItem::mouseDoubleClickEvent, savedModelDir = " + savedModelDir.toStdString(), CURRENT_THREAD_ID);
 		REGISTER_MEMBER_STR(s, "savedModelPath", savedModelDir.toStdString());
 	}
 	else
@@ -89,9 +91,9 @@ void TFDetectItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 }
 void TFDetectItem::xOperate()
 {
-	//xHandle->xOperate();
-	//Source& s = xHandle->getSources();
+	xHandle->xOperate();
 	//Dest& d = xHandle->getDests();
+	//std::vector<DetectResult> detectResults = GET_MEMBER_WITH_TYPE_STR(d, std::vector<DetectResult>, "detectResults");
 }
 
 REGISTER_ITEM(TFDetect);

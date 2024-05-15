@@ -271,9 +271,6 @@
     <ClCompile Include="src\Common\XParser.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="src\TFModel\BoxUtils.cpp">
-      <Filter>Source Files\TFModel</Filter>
-    </ClCompile>
     <ClCompile Include="src\TFModel\ModelUtils.cpp">
       <Filter>Source Files\TFModel</Filter>
     </ClCompile>
@@ -317,6 +314,30 @@
       <Filter>Source Files\Item</Filter>
     </ClCompile>
     <ClCompile Include="src\Common\ImagePre.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Item\PreInverItem.cpp">
+      <Filter>Source Files\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Handle\PreInverHandle.cpp">
+      <Filter>Source Files\Handle</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Item\RevertBoxItem.cpp">
+      <Filter>Source Files\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Handle\RevertBoxHandle.cpp">
+      <Filter>Source Files\Handle</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\BoxUtils.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Item\DrawBoxItem.cpp">
+      <Filter>Source Files\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Handle\DrawBoxHandle.cpp">
+      <Filter>Source Files\Handle</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\FileUtils.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
   </ItemGroup>
@@ -391,6 +412,15 @@
       <Filter>Header Files\ParamWidgetDialog</Filter>
     </QtMoc>
     <QtMoc Include="include\Item\ImagePreItem.h">
+      <Filter>Header Files\Item</Filter>
+    </QtMoc>
+    <QtMoc Include="include\Item\PreInverItem.h">
+      <Filter>Header Files\Item</Filter>
+    </QtMoc>
+    <QtMoc Include="include\Item\RevertBoxItem.h">
+      <Filter>Header Files\Item</Filter>
+    </QtMoc>
+    <QtMoc Include="include\Item\DrawBoxItem.h">
       <Filter>Header Files\Item</Filter>
     </QtMoc>
   </ItemGroup>
@@ -536,9 +566,6 @@
     <ClInclude Include="include\TFModel\ModelUtils.h">
       <Filter>Header Files\TFModel</Filter>
     </ClInclude>
-    <ClInclude Include="include\TFModel\BoxUtils.h">
-      <Filter>Header Files\TFModel</Filter>
-    </ClInclude>
     <ClInclude Include="include\TFModel\TensorFlowModel.h">
       <Filter>Header Files\TFModel</Filter>
     </ClInclude>
@@ -564,6 +591,24 @@
       <Filter>Header Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="include\Common\PreParam.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Handle\PreInverHandle.h">
+      <Filter>Header Files\Handle</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\DetectResult.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Handle\RevertBoxHandle.h">
+      <Filter>Header Files\Handle</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\BoxUtils.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Handle\DrawBoxHandle.h">
+      <Filter>Header Files\Handle</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\FileUtils.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
   </ItemGroup>

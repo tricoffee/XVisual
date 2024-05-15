@@ -2,6 +2,6 @@
 #ifndef DebugConfigMacro_H
 #define DebugConfigMacro_H
 
-#define DEBUG
+#define DEBUG_PRINT
 
 #endif // DebugConfigMacro_H

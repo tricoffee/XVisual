@@ -336,6 +336,9 @@ void MainWindow::loadButtonClicked(bool checked)
 			//item_childrean 维系每个item节点的孩子节点
 			std::unordered_map<std::string, std::set<std::string>> itemChildrenLinks;
 
+			//维系qItemId的每个sourceFrom
+			std::unordered_map<std::string, std::unordered_map<std::string, SourceFrom>> qItemIdSourceFromUMap;
+
 			// Done, iterate XInfer::constructHandle over classInfoArr 
 		    // iterate over classInfoArr 
 			for (int i = 0; i < cJSON_GetArraySize(classInfoArr); i++)
@@ -562,6 +565,9 @@ void MainWindow::loadButtonClicked(bool checked)
 				data.innerParam = innerParam;
 				mScene->addItemByJson(data);
 
+				// update qItemIdSourceFromUMap
+				qItemIdSourceFromUMap[data.itemColleagueId] = data.sourceFromUMap;
+
 			} // end  for "for (int i = 0; i < cJSON_GetArraySize(classInfoArr); i++"
 
 
@@ -569,7 +575,7 @@ void MainWindow::loadButtonClicked(bool checked)
 			{
 				std::string pItemId = eMap.first;
 				std::set<std::string> qItemId_set = eMap.second;
-				mScene->addArrowByJson(eMap);
+				mScene->addArrowByJson(eMap, qItemIdSourceFromUMap);
 			}
 
 		}
@@ -685,9 +691,12 @@ void MainWindow::createToolBox()
 	layout->addWidget(createCellWidget(tr("LoadImage")), 0, 0);
 	layout->addWidget(createCellWidget(tr("CVCrop")), 0, 1);
 	layout->addWidget(createCellWidget(tr("ImagePre")), 1, 0);
-	layout->addWidget(createCellWidget(tr("TFDetect")), 1, 1);
+	layout->addWidget(createCellWidget(tr("PreInver")), 1, 1);
+	layout->addWidget(createCellWidget(tr("TFDetect")), 2, 0);
+	layout->addWidget(createCellWidget(tr("RevertBox")), 2, 1);
+	layout->addWidget(createCellWidget(tr("DrawBox")), 3, 0);
 
-	layout->setRowStretch(3, 10);
+	layout->setRowStretch(10, 10);
 	layout->setColumnStretch(2, 10);
 
 	QWidget* itemWidget = new QWidget;

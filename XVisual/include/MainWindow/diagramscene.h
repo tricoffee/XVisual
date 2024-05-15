@@ -41,7 +41,8 @@ public:
 	void setDiagramName(const QString& name);
 	void setView(QWidget* view);
 	void addItemByJson(ColleagueData data);
-	void addArrowByJson(const std::pair<std::string, std::set<std::string>>& itemChildren);
+	void addArrowByJson(const std::pair<std::string, std::set<std::string>>& itemChildren,
+		const std::unordered_map<std::string, std::unordered_map<std::string, SourceFrom>>& qItemIdSourceFromUMap);
 protected:
 	void mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent) override;
 	void mouseMoveEvent(QGraphicsSceneMouseEvent* mouseEvent) override;

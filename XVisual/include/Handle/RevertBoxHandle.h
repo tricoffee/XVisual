@@ -1,16 +1,15 @@
-#ifndef TFDetectHandle_H
-#define TFDetectHandle_H
+#ifndef RevertBoxHandle_H
+#define RevertBoxHandle_H
 
 #include <iostream>
 #include "HandleBase/XBaseHandle.h"
 
-class TensorFlowModel;
 class Colleague;
-class TFDetectHandle : public XBaseHandle
+class RevertBoxHandle : public XBaseHandle
 {
 	public:
-		TFDetectHandle();
-		~TFDetectHandle();
+		RevertBoxHandle();
+		~RevertBoxHandle();
 		XVisual::ErrorCode setInnerParam(cJSON* innerParamPtr) override;
 		XVisual::ErrorCode setOuterParam(std::unordered_map<std::string, cJSON*> outerParamUMap) override;
 		XVisual::ErrorCode writeOuterParam(cJSON* cjson_variableSource, const std::string& xName) override;
@@ -18,10 +17,10 @@ class TFDetectHandle : public XBaseHandle
 		void initParams() override;
 		void xOperate() override;
 	protected:
-		
+
 	private:
-		TensorFlowModel* model = nullptr;
+
 };
 
-#endif // TFDetectHandle_H
+#endif // RevertBoxHandle_H
 

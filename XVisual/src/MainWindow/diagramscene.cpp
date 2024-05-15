@@ -155,27 +155,28 @@ void DiagramScene::addItemByJson(ColleagueData data)
 	XLOG_INFO(" == DiagramScene::addItemByJson == ", CURRENT_THREAD_ID);
 }
 
-void DiagramScene::addArrowByJson(const std::pair<std::string, std::set<std::string>>& itemChildren)
+void DiagramScene::addArrowByJson(const std::pair<std::string, std::set<std::string>>& itemChildren,
+	const std::unordered_map<std::string, std::unordered_map<std::string, SourceFrom>>& qItemIdSourceFromUMap)
 {
 	std::string pItemId = itemChildren.first;
 	std::set<std::string> qItemIds = itemChildren.second;
 
-	XBaseItem* startItem = nullptr;
+	XBaseItem* pItem = nullptr;
 	{
 		std::lock_guard<std::mutex> lock(itemMapMutex);
-		startItem = globalItemMap[pItemId];
+		pItem = globalItemMap[pItemId];
 	}// 作用域结束时，lock_guard 会自动解锁互斥锁itemMapMutex
 
-	XBaseItem* endItem = nullptr;
+	XBaseItem* qItem = nullptr;
 	for (const auto& qItemId : qItemIds)
 	{
 		{
 			std::lock_guard<std::mutex> lock(itemMapMutex);
-			endItem = globalItemMap[qItemId];
+			qItem = globalItemMap[qItemId];
 		}// 作用域结束时，lock_guard 会自动解锁互斥锁itemMapMutex
 
 
-		lineItem = new QGraphicsLineItem(QLineF(startItem->scenePos(), endItem->scenePos()));
+		lineItem = new QGraphicsLineItem(QLineF(pItem->scenePos(), qItem->scenePos()));
 		lineItem->setPen(QPen(myLineColor, 2));
 		addItem(lineItem);
 		diagramState = DiagramState::Move;
@@ -185,59 +186,83 @@ void DiagramScene::addArrowByJson(const std::pair<std::string, std::set<std::str
 		QPointF pb = lineItem->line().p2();
 		removeItem(lineItem);
 		delete lineItem;
-	    arrow = new XArrow(graphicsWidget, startItem, endItem);
+	    arrow = new XArrow(graphicsWidget, pItem, qItem); // pItem ---> qItem
 		arrow->setColor(myLineColor);
-		startItem->addArrow(arrow);
-		endItem->addArrow(arrow);
+		pItem->addArrow(arrow);
+		qItem->addArrow(arrow);
 		addItem(arrow);
 		//qDebug() << "arrow->setZValue(-9999.99)" << -9999.99;
 		QLineF line(pa, pb);
 		arrow->setLine(line);
 		arrow->setZValue(-9999.99);
-		if (!startItem->childs.contains(endItem))
+		if (!pItem->childs.contains(qItem))
 		{
-			startItem->childs.emplace_back(endItem);
+			pItem->childs.emplace_back(qItem);
 		}
-		if (!endItem->parents.contains(startItem))
+		if (!qItem->parents.contains(pItem))
 		{
-			endItem->parents.emplace_back(startItem);
+			qItem->parents.emplace_back(pItem);
 		}
 		lineItem = nullptr;
-		if (startItem != nullptr)
+		if (pItem != nullptr)
 		{
-			XLOG_INFO("DiagramScene::addArrowByJson, startItem != nullptr ...  ", CURRENT_THREAD_ID);
+			XLOG_INFO("DiagramScene::addArrowByJson, pItem != nullptr ...  ", CURRENT_THREAD_ID);
 			std::lock_guard<std::mutex> lock(xGraphMutex);
-			// 获取节点startItem->getUuid()在xGraph里面的索引startIndex
-			int startIndex = XGraph::findNodeIndex(xGraph, startItem->getUuid());
-			if (endItem != nullptr)
+			// 获取节点pItem->getUuid()在xGraph里面的索引pIndex
+			int pIndex = XGraph::findNodeIndex(xGraph, pItem->getUuid());
+			if (qItem != nullptr)
 			{
 				XLOG_INFO("DiagramScene::addArrowByJson, endItem != nullptr ...  ", CURRENT_THREAD_ID);
-				// 获取节点endItem->getUuid()在xGraph里面的索引endIndex
-				int endIndex = XGraph::findNodeIndex(xGraph, endItem->getUuid());
-				// 把xGraph[endIndex]设置为xGraph[startIndex]的邻节点, 添加边, 标识为yItemId的节点---》指向---》标识为xItemId的节点(即getUuid()的返回值)的节点, 这个逻辑应该紧跟连线动作释放之后
-				xGraph[startIndex]->neighbors.push_back(xGraph[endIndex]);
+				// 获取节点qItem->getUuid()在xGraph里面的索引qIndex
+				int qIndex = XGraph::findNodeIndex(xGraph, qItem->getUuid());
+				// 把xGraph[qIndex]设置为xGraph[pIndex]的邻节点, 添加边, 标识为pItemId的节点---》指向---》标识为qItemId的节点(即getUuid()的返回值)的节点, 这个逻辑应该紧跟连线动作释放之后
+				xGraph[pIndex]->neighbors.push_back(xGraph[qIndex]);
 			}
 		}//作用域结束时，lock_guard会自动解锁互斥锁xGraphMutex
 
-
-		XBaseHandle* endHandle = endItem->getXHandle();
-		Source& endS = endHandle->getSources();
-		std::vector<std::string> endSourceNames = ACQUIRE_NAMES(endS);
-		std::unordered_map<std::string, TableData> defaultValuesUMap;
-		for (const auto& endSourceName : endSourceNames)
+		// sourceFromUMap 维护 qItemId 里面每个变量的 sourceFrom
+		std::unordered_map<std::string, SourceFrom> sourceFromUMap;
+		if (qItemIdSourceFromUMap.find(qItemId) != qItemIdSourceFromUMap.end())
 		{
-			SourceFrom sourceFrom;
-			endHandle->loadSourceFrom(endSourceName, sourceFrom);
-			// Done, 从sourceFrom解析出TableData, 并更新defaultValuesUMap
-			std::string yItemId = pItemId; // pItem ---> qItem
-			std::string yName = sourceFrom.variableName;
-			XBaseHandle* startHandle = startItem->getXHandle();
-			Dest& startD = startHandle->getDests();
-			std::string yTypeName = (*GET_MEMBER_TYPE_STR(startD, yName)).name();
-			TableData yData{ yItemId,yName,yTypeName };
-			defaultValuesUMap[endSourceName] = yData;
+			sourceFromUMap = qItemIdSourceFromUMap.at(qItemId);
 		}
 
+		XBaseHandle* qHandle = qItem->getXHandle();
+		Source& qS = qHandle->getSources();
+		std::vector<std::string> qSourceNames = ACQUIRE_NAMES(qS);
+		std::unordered_map<std::string, TableData> defaultValuesUMap;
+		for (const auto& qSourceName : qSourceNames)
+		{
+			//IS_MEMBER_FROM_OUTSIDE_STR为true,主要针对需要从流程外部获取的值(比如imagePath,savedModelPath)
+			if (IS_MEMBER_FROM_OUTSIDE_STR(qS, qSourceName))
+			{
+				//do nothing
+			}
+			else
+			{
+				XLOG_INFO("DiagramScene::addArrowByJson, uniqueName " + qHandle->getUniqueName(), CURRENT_THREAD_ID);
+
+				//Done, 从 qItemId 的 sourceFromUMap 解析出 qSourceName 的 TableData, 并且 yItemId == pItem->getXHandle()->getUuid() 时, 更新 defaultValuesUMap
+				if(sourceFromUMap.find(qSourceName) != sourceFromUMap.end())
+				{
+					SourceFrom sourceFrom = sourceFromUMap.at(qSourceName);
+					std::string yItemId = sourceFrom.itemId; // 这里yItemId实际上是Handle的Id
+					std::string yName = sourceFrom.variableName;
+					XLOG_INFO("DiagramScene::addArrowByJson, yItemId " + yItemId, CURRENT_THREAD_ID);
+					XLOG_INFO("DiagramScene::addArrowByJson, pItemId " + pItem->getXHandle()->getUuid(), CURRENT_THREAD_ID);
+					if (yItemId == pItem->getXHandle()->getUuid())
+					{
+						XBaseHandle* pHandle = pItem->getXHandle();
+						Dest& pD = pHandle->getDests();
+						std::string yTypeName = (*GET_MEMBER_TYPE_STR(pD, yName)).name();
+						TableData yData{ yItemId,yName,yTypeName };
+						defaultValuesUMap[qSourceName] = yData;
+					}
+				}
+			}
+		}
+
+		XLOG_INFO("DiagramScene::addArrowByJson, defaultValuesUMap.size() = " + std::to_string(defaultValuesUMap.size()), CURRENT_THREAD_ID);
 
 		// Done, 重写 XArrow::setDefaultYforVariablesX 方法，将参数调整为 std::unordered_map<std::string, TableData>
 		// Done, 相应的 XArrow::getDefaultYforVariablesX 方法也要重写

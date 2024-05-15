@@ -1,4 +1,6 @@
 #include "TFModel/TensorFlowModel.h"
+#include "Common/LoggerInstance.h"
+#include "Common/XThreadMacro.h"
 
 TensorFlowModel::TensorFlowModel() : status_(nullptr), session_(nullptr), graph_(nullptr), session_opts_(nullptr), run_options_(nullptr), metagraph_(nullptr) {}
 
@@ -59,6 +61,7 @@ void TensorFlowModel::printOperations(const std::string& tfOperNameRecordDir)
 
 bool TensorFlowModel::loadSavedModel(const std::string& saved_model_dir)
 {
+
 	// 定义数据目录和文件名
 	// e.g., saved_model_dir = "C:\\NDev\\code\\logs\\mAP_Shiyan3_11\\exported_model"
 	const std::string file_name = "saved_model_info.txt";
@@ -67,12 +70,15 @@ bool TensorFlowModel::loadSavedModel(const std::string& saved_model_dir)
 	std::filesystem::path file_path = saved_model_dir;
 	file_path /= file_name; // 使用 /= 运算符进行路径拼接
 
+	std::string filePath2 = file_path.string();
+
+	XLOG_INFO("TensorFlowModel::loadSavedModel, file_path = " + filePath2, CURRENT_THREAD_ID);
+
 	acquireModelInfo(file_path.string(), input_key_, inputType1Str_, inputShape1Str_, inputName1Str_,
 		output_key_, outputType1Str_, outputShape1Str_, outputName1Str_);
 
-
-	std::cout << "input_key_ =" << input_key_ << std::endl;
-	std::cout << "ouput_key_ =" << output_key_ << std::endl;
+	//std::cout << "input_key_ =" << input_key_ << std::endl;
+	//std::cout << "ouput_key_ =" << output_key_ << std::endl;
 
 
 	input_key_ = "image_input";
@@ -88,6 +94,7 @@ bool TensorFlowModel::loadSavedModel(const std::string& saved_model_dir)
 	//            const char* tag1 = "serve";
 	//            const char* const tags[] = { tag1 };
 	//            int num_tags = 1;
+
 
 	session_ = TF_LoadSessionFromSavedModel(session_opts_, run_options_,
 		saved_model_dir.c_str(), tags_,
@@ -199,6 +206,10 @@ void TensorFlowModel::loadInputData(cv::Mat image)
 	input_data_ = static_cast<float*>(TF_TensorData(InputValues_[0])); // 获取输入张量的数据指针
 	const int height = image.rows;
 	const int width = image.cols;
+
+	image_height_ = height;
+	image_width_ = width;
+
 	const int channels = image.channels();
 
 	for (int y = 0; y < height; ++y)
@@ -219,7 +230,8 @@ void TensorFlowModel::doRun()
 	TF_SessionRun(session_, nullptr, inputs_, InputValues_, NumInputs_, outputs_, OutputValues_, NumOutputs_, nullptr, 0, nullptr, status_);
 }
 
-void TensorFlowModel::getResults(float sx, float sy, float dx, float dy, int imageWidth, int imageHeight, std::vector<std::vector<float> >& results)
+// The coordinate size of the Results obtained here is relative to the model input scale, not to the original image size
+void TensorFlowModel::getResults(std::vector<DetectResult>& results)
 {
 	// 获取输出张量的值
 	float* output_data = static_cast<float*>(TF_TensorData(OutputValues_[0])); // 获取输出张量的数据指针
@@ -227,5 +239,6 @@ void TensorFlowModel::getResults(float sx, float sy, float dx, float dy, int ima
 	std::vector<int64_t> output_dims = parseShape<int64_t>(outputShape1Str_);
 	output_dims[0] = 1;
 	const int output_elements_num = std::accumulate(output_dims.begin(), output_dims.end(), 1, std::multiplies<int64_t>());
-	acquireValidBoxes(output_data, output_elements_num, sx, sy, dx, dy, imageWidth, imageHeight, results);
+	acquireValidBoxes(output_data, output_elements_num, image_width_, image_height_, results);
 }
+

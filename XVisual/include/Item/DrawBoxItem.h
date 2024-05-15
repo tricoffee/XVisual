@@ -1,13 +1,13 @@
-#ifndef CVCropItem_H
-#define CVCropItem_H
+#ifndef DrawBoxItem_H
+#define DrawBoxItem_H
 
 #include "ItemBase/XBaseItem.h"
 
-class CVCropItem : public XBaseItem
+class DrawBoxItem : public XBaseItem
 {
-		Q_OBJECT
+	Q_OBJECT
 	public:
-		CVCropItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent = nullptr);
+		DrawBoxItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent = nullptr);
 		QPixmap image() override;
 		void debug();
 		void initParams() override;
@@ -18,5 +18,4 @@ class CVCropItem : public XBaseItem
 
 };
 
-#endif //CVCropItem_H
-
+#endif //DrawBoxItem_H

@@ -23,7 +23,6 @@ XVisual::ErrorCode LoadImageHandle::setInnerParam(cJSON* innerParamPtr)
 XVisual::ErrorCode LoadImageHandle::setOuterParam(std::unordered_map<std::string, cJSON*> outerParamUMap)
 {
 	// Done, 解析outerParamUMap, 将sources的某个key相对应的值重置为解析出来的value
-
 	if (!outerParamUMap.empty())
 	{
 		auto it = outerParamUMap.find("imagePath");
@@ -42,7 +41,6 @@ XVisual::ErrorCode LoadImageHandle::setOuterParam(std::unordered_map<std::string
 	{
 		return  XVisual::ErrorCode::ParseOuterParamFromJsonFailed;
 	}
-	
 	return XVisual::ErrorCode::Success;
 }
 XVisual::ErrorCode LoadImageHandle::writeOuterParam(cJSON* cjson_variableSource, const std::string& xName)

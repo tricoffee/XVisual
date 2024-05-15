@@ -5,18 +5,18 @@
 #include <optional>
 #include <QInputDialog>
 #include "Common/XThreadMacro.h"
-#include "Item/CVCropItem.h"
+#include "Item/DrawBoxItem.h"
 #include "ItemWidget/ItemWidget.h"
 #include "GlobalStorage/ItemManager.h"
 #include "CustomDialog/CropDialog.h"
 #include "MainWindow/GraphicsWidget.h"
-#include "Handle/CVCropHandle.h"
+#include "Handle/DrawBoxHandle.h"
 #include "Common/StrUtils.h"
 
-CVCropItem::CVCropItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent)
-	: XBaseItem(gWidget,contextMenu, parent)
+DrawBoxItem::DrawBoxItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent)
+	: XBaseItem(gWidget, contextMenu, parent)
 {
-	std::string classNameStr = "CVCrop";
+	std::string classNameStr = "DrawBox";
 	setClassName(classNameStr);
 	createUniqueName(classNameStr);
 	setObjectName(QString::fromStdString(uniqueName));
@@ -45,58 +45,36 @@ CVCropItem::CVCropItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsIte
 	xHandle->setUuidConsistentWithItem(uuid);
 	initParams();
 }
-QPixmap CVCropItem::image()
+QPixmap DrawBoxItem::image()
 {
 	XBaseItem::myPolygon = myPolygon;
 	return XBaseItem::image();
 }
-void CVCropItem::debug()
+void DrawBoxItem::debug()
 {
-	qDebug() << "CVCropItem::debug() ... ";
-	qDebug() << "CVCropItem::boundingRect() " << boundingRect();
-	qDebug() << "CVCropItem::boundingRect().width() " << boundingRect().width();
-	qDebug() << "CVCropItem::boundingRect().height() " << boundingRect().height();
-	qDebug() << "CVCropItem::uuid " << QString::fromStdString(uuid);
+	qDebug() << "DrawBoxItem::debug() ... ";
+	qDebug() << "DrawBoxItem::boundingRect() " << boundingRect();
+	qDebug() << "DrawBoxItem::boundingRect().width() " << boundingRect().width();
+	qDebug() << "DrawBoxItem::boundingRect().height() " << boundingRect().height();
+	qDebug() << "DrawBoxItem::uuid " << QString::fromStdString(uuid);
 }
-void CVCropItem::initParams()
+void DrawBoxItem::initParams()
 {
 
 }
-void CVCropItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
+void DrawBoxItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 {
-	//Done 使用CropDialog获取用户输入的裁剪区域坐标和尺寸
-	CVCropHandle* cvHandle = dynamic_cast<CVCropHandle*>(xHandle);
-	cv::Rect regionOfInterest = cvHandle->getRoI();
-	CropDialog dialog;
-	// 使用 setX, setY, setWidth 和 setHeight 来设置初始值
-	dialog.setX(regionOfInterest.x);
-	dialog.setY(regionOfInterest.y);
-	dialog.setWidth(regionOfInterest.width);
-	dialog.setHeight(regionOfInterest.height);
-	if (dialog.exec() == QDialog::Accepted) 
-	{
-		int x = dialog.getX();
-		int y = dialog.getY();
-		int width = dialog.getWidth();
-		int height = dialog.getHeight();
-		// 定义裁剪区域(x, y, width, height)
-		regionOfInterest = cv::Rect(x, y, width, height);
-		cvHandle->setRoI(regionOfInterest);
-	}
 	// Call the base class event handler
 	QGraphicsPolygonItem::mouseDoubleClickEvent(event);
 }
-void CVCropItem::xOperate()
+void DrawBoxItem::xOperate()
 {
 	xHandle->xOperate();
-	//Source& s = xHandle->getSources();
 	Dest& d = xHandle->getDests();
-	// cv::Mat image = GET_MEMBER_WITH_TYPE_STR(s, cv::Mat, "image");
-	cv::Mat croppedImage = GET_MEMBER_WITH_TYPE_STR(d, cv::Mat, "croppedImage");
-	// std::string imageFilename = uniqueName.toStdString() + "_croppedImage.png";
+	cv::Mat resultImage = GET_MEMBER_WITH_TYPE_STR(d, cv::Mat, "resultImage");
 	// Done,Add code for sending show image signals to display images on SideWidgets
 	std::string filename = uniqueName;
-	emit showImageSignal(filename, croppedImage, this);
+	emit showImageSignal(filename, resultImage, this);
 }
 
-REGISTER_ITEM(CVCrop);
+REGISTER_ITEM(DrawBox);

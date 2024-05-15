@@ -173,6 +173,8 @@ void GraphicsWidget::showTableViewSlot(const QString& xName, const QString& yNam
 	// must ensure the length of defaultValues is equal to the length of variablesX
 	std::unordered_map<std::string, TableData>& defaultValues = xLineArrow->getDefaultYforVariablesX();
 
+	XLOG_INFO("GraphicsWidget::showTableViewSlot, defaultValues.size() = " + std::to_string(defaultValues.size()), CURRENT_THREAD_ID);
+
 	tableView = new CustomTableView(xLineArrow);
 	// 设置对象名称为 "tableView"
 	tableView->setObjectName("tableView");
@@ -243,11 +245,6 @@ void GraphicsWidget::showTableViewSlot(const QString& xName, const QString& yNam
 				model->setData(currentIndex, selectedText); // 设置当前模型的 ComboBox 选中项
 			}
 		}
-	}
-
-	if (lastModel)
-	{
-		delete lastModel; // 删除旧的 lastModel
 	}
 
 	// 保存当前数据模型到 lastModel, 设置 xLineArrow 的 latestTableViewModel 就是设置这里的局部变量 lastModel

@@ -105,11 +105,20 @@ void CustomTableView::closeEvent(QCloseEvent* event)
 			}
 		}
 
-		//qDebug() << "xVariableName yHandleId, yVariableName:" << xVariableName << yHandleId << yVariableName;
-		XLOG_INFO("CustomTableView::closeEvent, xVariableName.toStdString() = "+xVariableName.toStdString(), CURRENT_THREAD_ID);
-		XLOG_INFO("CustomTableView::closeEvent, yHandleId.toStdString() = " + yHandleId.toStdString(), CURRENT_THREAD_ID);
-		XLOG_INFO("CustomTableView::closeEvent, yVariableName.toStdString() = " + yVariableName.toStdString(), CURRENT_THREAD_ID);
-		SourceFrom soureFrom{yHandleId.toStdString(),yVariableName.toStdString()};
-		xHandle->setSourceFrom(xVariableName.toStdString(), soureFrom);
+		if ((yVariableName.toStdString() == TableData_UnSelectedName) || (yVariableType.toStdString() == TableData_UnSelectedType))
+		{
+			XLOG_INFO("@@@ CustomTableView::closeEvent, xVariableName.toStdString() = " + xVariableName.toStdString(), CURRENT_THREAD_ID);
+			XLOG_INFO("@@@ CustomTableView::closeEvent, yHandleId.toStdString() = " + yHandleId.toStdString(), CURRENT_THREAD_ID);
+		}
+		else
+		{
+			XLOG_INFO("CustomTableView::closeEvent, xVariableName.toStdString() = " + xVariableName.toStdString(), CURRENT_THREAD_ID);
+			XLOG_INFO("CustomTableView::closeEvent, yHandleId.toStdString() = " + yHandleId.toStdString(), CURRENT_THREAD_ID);
+			XLOG_INFO("CustomTableView::closeEvent, yVariableName.toStdString() = " + yVariableName.toStdString(), CURRENT_THREAD_ID);
+			XLOG_INFO("CustomTableView::closeEvent, yVariableType.toStdString() = " + yVariableType.toStdString(), CURRENT_THREAD_ID);
+			SourceFrom soureFrom{ yHandleId.toStdString(),yVariableName.toStdString() };
+			xHandle->setSourceFrom(xVariableName.toStdString(), soureFrom);
+		}
+
 	}
 }

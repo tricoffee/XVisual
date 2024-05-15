@@ -7,8 +7,6 @@ class LoadImageItem : public XBaseItem
 {
     Q_OBJECT
 	public:
-		//LoadImageItem(QMenu* contextMenu, QGraphicsItem* parent = nullptr);
-		// 新增 GraphicsWidget* gWidget 参数
 		LoadImageItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent = nullptr);
 		QPixmap image() override;
 		void debug();

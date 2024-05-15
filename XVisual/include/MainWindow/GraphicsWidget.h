@@ -45,8 +45,6 @@ class GraphicsWidget : public QWidget
 		DiagramScene* scene;
 		QGraphicsView* view;
 		CustomTableView* tableView = nullptr;
-
-		// QStandardItemModel* lastTableViewModel=nullptr; // 上一次使用的数据模型, 该参数已弃用，改由XArrow的latestModel维护
 };
 
 #endif //GraphicsWidget_H

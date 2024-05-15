@@ -10,8 +10,9 @@
 #include "tensorflow/core/platform/protobuf.h"
 #include "Common/StrUtils.h"
 #include "TFModel/TFType2CPPType.h"
-#include "TFModel/BoxUtils.h"
+#include "Common/BoxUtils.h"
 #include "TFModel/ModelUtils.h"
+#include "Common/DetectResult.h"
 
 class TensorFlowModel
 {
@@ -27,12 +28,10 @@ class TensorFlowModel
 		int num_tags_ = 1;
 		int NumInputs_ = 1;
 		int NumOutputs_ = 1;
-		//    std::string input_key_ = "image_input";
-		//    std::string output_key_ = "detections";
+
 		std::string input_name_ = "";
 		std::string output_name_ = "";
-		//        const char* input_name_cstr_;
-		//        const char* output_name_cstr_;
+
 		TF_Output* inputs_ = nullptr;
 		TF_Output* outputs_ = nullptr;
 		TF_Tensor** InputValues_ = nullptr;
@@ -49,6 +48,10 @@ class TensorFlowModel
 		std::string outputShape1Str_ = "";
 		std::string outputName1Str_ = "";
 
+		// image_width_, image_height_ is expected to match the input size of TFModel
+		int image_height_ = 416; // When TensorFlowModel::loadInputData is called, image_height_ will be updated
+		int image_width_ = 416; // When TensorFlowModel::loadInputData is called, image_width_ will be updated
+
 	public:
 		TensorFlowModel();
 
@@ -62,7 +65,8 @@ class TensorFlowModel
 
 		void doRun();
 
-		void getResults(float sx, float sy, float dx, float dy, int imageWidth, int imageHeight, std::vector<std::vector<float> >& results);
+		// The coordinate size of the Results obtained here is relative to the model input scale, not to the original image size
+		void getResults(std::vector<DetectResult >& results);
 };
 
 

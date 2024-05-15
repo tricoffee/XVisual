@@ -7,8 +7,6 @@ class TFDetectItem : public XBaseItem
 {
 	Q_OBJECT
 	public:
-		//TFDetectItem(QMenu* contextMenu, QGraphicsItem* parent = nullptr);
-		// 新增 GraphicsWidget 参数
 		TFDetectItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent = nullptr);
 		QPixmap image() override;
 		void debug();

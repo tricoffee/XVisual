@@ -61,7 +61,7 @@ void ImagePreItem::debug()
 }
 void ImagePreItem::initParams()
 {
-
+	//do nothing
 }
 void ImagePreItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 {
@@ -74,7 +74,7 @@ void ImagePreItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 	{
 		dialog.getParams(mParam);
 		imagePreHandle->setImagePreParams(mParam);
-#ifdef DEBUG 
+#ifdef DEBUG_PRINT 
 		printPreParam(mParam);
 #endif 
 	}
@@ -90,7 +90,7 @@ void ImagePreItem::xOperate()
 	std::string filename = uniqueName;
 	emit showImageSignal(filename, outputImage, this);
 }
-#ifdef DEBUG
+#ifdef DEBUG_PRINT
 void ImagePreItem::printPreParam(const PreParam& mParam)
 {
 	if ("Normalize01" == mParam.preTag)
