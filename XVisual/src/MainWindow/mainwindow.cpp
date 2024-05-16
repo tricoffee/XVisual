@@ -20,7 +20,7 @@
 #include "MainWindow/SideWidget.h"
 #include "MainWindow/ImagePageWidget.h"
 #include "Exception/UmapKeyNoFoundException.h"
-#include "cJson.h"
+#include "CJSON/cJson.h"
 #include <fstream>
 #include <set>
 #include <any>

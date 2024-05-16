@@ -1,4 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LocalDebuggerEnvironment>PATH=$(QtDllPath);C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin;C:\NDev\ThirdParty\protobuf_build\Release;C:\AIDev\tf293_py391_Bazel541_OK;C:\WinApp\opencv\build\x64\vc15\bin;C:\Program Files (x86)\glog\bin;C:\Program Files (x86)\gflags\bin;$(LocalDebuggerEnvironment)</LocalDebuggerEnvironment>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
 </Project>

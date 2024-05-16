@@ -144,7 +144,7 @@ XVisual::ErrorCode XInfer::build()
 							data.sourceFromUMap[source_node_name] = sourceFrom;
 							if (!sourceFrom.itemId.empty())
 							{
-								idLink[sourceFrom.itemId] = colleagueIdStr;
+								idLink[sourceFrom.itemId].insert(colleagueIdStr);
 							}
 						}
 						else
@@ -166,16 +166,21 @@ XVisual::ErrorCode XInfer::build()
 
 		}
 
+		
 		for (const auto& e : idLink)
 		{
 			std::string startStr = e.first;
-			std::string endStr = e.second;
+			std::set<std::string> endStrList = e.second;
 			// 在 xHandleGraph 里面检索节点 startStr 对应的索引 startIndex
 			int startIndex = XGraph::findNodeIndex(xHandleGraph, startStr);
-			// 在 xHandleGraph 里面检索节点 endStr 对应的索引endIndex
-			int endIndex = XGraph::findNodeIndex(xHandleGraph, endStr);
-			// 把xHandleGraph[endIndex]设置为xHandleGraph[startIndex]的邻节点, 添加边, 标识为yHandleId的节点---》指向---》标识为xHandleId的节点(即getUuid()的返回值)的节点, 这个逻辑应该紧跟连线动作释放之后
-			xHandleGraph[startIndex]->neighbors.push_back(xHandleGraph[endIndex]);
+			for (const auto& endStr : endStrList)
+			{
+				// 在 xHandleGraph 里面检索节点 endStr 对应的索引endIndex
+				int endIndex = XGraph::findNodeIndex(xHandleGraph, endStr);
+				// 把xHandleGraph[endIndex]设置为xHandleGraph[startIndex]的邻节点, 添加边, 标识为yHandleId的节点---》指向---》标识为xHandleId的节点(即getUuid()的返回值)的节点, 这个逻辑应该紧跟连线动作释放之后
+				xHandleGraph[startIndex]->neighbors.push_back(xHandleGraph[endIndex]);
+			}
+
 		}
 
 		return XVisual::ErrorCode::Success;
@@ -249,12 +254,13 @@ XVisual::ErrorCode XInfer::exec()
 XVisual::ErrorCode XInfer::getResult(std::any& result)
 {
 	std::string nId = nodeIdTopoSequence.back();
+	XLOG_INFO("*** *** *** handleId = " + nId + "*** *** *** \n", CURRENT_THREAD_ID);
 	auto it = globalHandleMap.find(nId);
 	if (it != globalHandleMap.end())
 	{
 		XBaseHandle* iElement = it->second;
 		Dest& d = iElement->getDests();
-		result = GET_MEMBER_WITH_TYPE_STR(d, cv::Mat, "croppedImage");
+		result = GET_MEMBER_WITH_TYPE_STR(d, cv::Mat, "resultImage");
 	}
 	return XVisual::ErrorCode::Success;
 }

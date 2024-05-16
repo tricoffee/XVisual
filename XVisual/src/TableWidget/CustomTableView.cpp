@@ -107,6 +107,7 @@ void CustomTableView::closeEvent(QCloseEvent* event)
 
 		if ((yVariableName.toStdString() == TableData_UnSelectedName) || (yVariableType.toStdString() == TableData_UnSelectedType))
 		{
+			// do nothing
 			XLOG_INFO("@@@ CustomTableView::closeEvent, xVariableName.toStdString() = " + xVariableName.toStdString(), CURRENT_THREAD_ID);
 			XLOG_INFO("@@@ CustomTableView::closeEvent, yHandleId.toStdString() = " + yHandleId.toStdString(), CURRENT_THREAD_ID);
 		}

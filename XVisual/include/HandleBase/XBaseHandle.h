@@ -10,7 +10,7 @@
 #include "XVariable/Dest.h"
 #include "XVariable/XMacro.h"
 #include "XVariable/SourceFrom.h"
-#include "cJSON.h"
+#include "CJSON/cJSON.h"
 #include "Common/ErrorCode.h"
 
 class XBaseItem;
@@ -44,6 +44,8 @@ class XBaseHandle : public Colleague
 		friend class CVCropItem;
 		friend class ImagePreItem;
 		friend class TFDetectItem;
+		friend class RevertBoxItem;
+		friend class DrawBoxItem;
 	protected:
 		Source sources;
 		Dest dests;

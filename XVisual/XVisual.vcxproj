@@ -62,12 +62,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <IncludePath>C:\NDev\CPPDev\XVisual\XVisual\include;$(IncludePath);C:\NDev\ThirdParty\cJsonLib\include;</IncludePath>
-    <SourcePath>$(VC_SourcePath);C:\NDev\ThirdParty\cJsonLib\src;</SourcePath>
+    <IncludePath>C:\NDev\CPPDev\XVisual\XVisual\include;$(IncludePath);</IncludePath>
+    <SourcePath>$(VC_SourcePath);</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <IncludePath>C:\NDev\CPPDev\XVisual\XVisual\include;$(IncludePath);C:\NDev\ThirdParty\cJsonLib\include;</IncludePath>
-    <SourcePath>$(VC_SourcePath);C:\NDev\ThirdParty\cJsonLib\src;</SourcePath>
+    <IncludePath>C:\NDev\CPPDev\XVisual\XVisual\include;$(IncludePath);</IncludePath>
+    <SourcePath>$(VC_SourcePath);</SourcePath>
     <LibraryPath>C:\AIDev\tf293_py391_Bazel541_OK;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -113,7 +113,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\ThirdParty\cJsonLib\src\cJSON.c" />
+    <ClCompile Include="src\CJSON\cJSON.c" />
     <ClCompile Include="src\Common\BoxUtils.cpp" />
     <ClCompile Include="src\Common\constants.cpp" />
     <ClCompile Include="src\Common\FileUtils.cpp" />
@@ -194,7 +194,7 @@
   <ItemGroup>
     <QtMoc Include="include\ItemBase\XArrow.h" />
     <QtMoc Include="include\ItemBase\XBaseItem.h" />
-    <ClInclude Include="..\..\..\ThirdParty\cJsonLib\include\cJSON.h" />
+    <ClInclude Include="include\CJSON\cJSON.h" />
     <ClInclude Include="include\Common\Aux.h" />
     <ClInclude Include="include\Common\BoxUtils.h" />
     <ClInclude Include="include\Common\ColleagueNULLValueMacro.h" />

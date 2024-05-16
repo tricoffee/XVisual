@@ -42,13 +42,9 @@ void DrawBoxHandle::initParams()
 	std::vector<DetectResult> detections;
 	REGISTER_MEMBER_ATTR_STR(sources, "detections", detections, false);
 	REGISTER_TYPE_STR(sources, "detections", detections);
-
-//#ifdef DEBUG_UNUSED
 	std::vector<std::string> classNames;
 	REGISTER_MEMBER_ATTR_STR(sources, "classNames", classNames, false);
 	REGISTER_TYPE_STR(sources, "classNames", classNames);
-//#endif
-
 	cv::Mat resultImage;
 	REGISTER_MEMBER_ATTR_STR(dests, "resultImage", resultImage, false);
 	REGISTER_TYPE_STR(dests, "resultImage", resultImage);
@@ -63,17 +59,7 @@ void DrawBoxHandle::xOperate()
 		XLOG_INFO("DrawBoxHandle::xOperate Í¼Ïñ¿í¶È: " + std::to_string(imageWidth), CURRENT_THREAD_ID);
 		XLOG_INFO("DrawBoxHandle::xOperate Í¼Ïñ¸ß¶È: " + std::to_string(imageHeight), CURRENT_THREAD_ID);
 		std::vector<DetectResult> detections = GET_MEMBER_WITH_TYPE_STR(sources, std::vector<DetectResult>, "detections");
-
-//#ifdef DEBUG_UNUSED
 		std::vector<std::string> classNames = GET_MEMBER_WITH_TYPE_STR(sources, std::vector<std::string>, "classNames");
-//#endif 
-
-#ifdef DEBUG_UNUSED
-		std::vector<std::string> classNames;
-		std::string classNamesPath = "C:\\NDev\\code\\logs\\mAP_Shiyan3_11\\exported_model\\classnames.txt";
-		readClassNames(classNamesPath, classNames);
-#endif 
-
 		drawBoxes(image, detections, classNames);
 		REGISTER_MEMBER_STR(dests, "resultImage", image);
 	}

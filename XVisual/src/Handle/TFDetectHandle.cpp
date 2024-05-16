@@ -77,11 +77,9 @@ void TFDetectHandle::initParams()
 	REGISTER_MEMBER_ATTR_STR(dests, "detectResults", detectResults, false);
 	REGISTER_TYPE_STR(dests, "detectResults", detectResults);
 
-//#ifdef DEBUG_UNUSED
 	std::vector<std::string>  classNames;
 	REGISTER_MEMBER_ATTR_STR(dests, "classNames", classNames, false);
 	REGISTER_TYPE_STR(dests, "classNames", classNames);
-//#endif 
 
 }
 void TFDetectHandle::xOperate()
@@ -91,14 +89,12 @@ void TFDetectHandle::xOperate()
 	std::string saved_model_dir = GET_MEMBER_WITH_TYPE_STR(sources, std::string, "savedModelPath");
 	XLOG_INFO("TFDetectHandle::xOperate, saved_model_dir = " + saved_model_dir, CURRENT_THREAD_ID);
 
-//#ifdef DEBUG_UNUSED
 	const std::string classNameTxtStr = "classnames.txt";
 	std::filesystem::path classNamesPath = saved_model_dir;
 	classNamesPath /= classNameTxtStr; // 使用 /= 运算符进行路径拼接
 	std::vector<std::string> classNames;
 	readClassNames(classNamesPath.string(), classNames);
 	REGISTER_MEMBER_STR(dests, "classNames", classNames);
-//#endif 
 
 	if (model == nullptr)
 	{
@@ -115,8 +111,9 @@ void TFDetectHandle::xOperate()
 
 	if (image.empty())
 	{
-		XLOG_INFO("TFDetectHandle::xOperate, \"input_image\" is EMPTY ...", CURRENT_THREAD_ID);
 		//TODO XLOG input_image is empty and raise exception
+		XLOG_INFO("TFDetectHandle::xOperate, \"input_image\" is EMPTY ...", CURRENT_THREAD_ID);
+
 
 	}
 	else

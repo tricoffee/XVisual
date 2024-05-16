@@ -74,6 +74,7 @@
     <Import Project="..\..\..\CPP_Props\gflags_releasex64.props" />
     <Import Project="..\..\..\CPP_Props\glog_releasex64.props" />
     <Import Project="..\..\..\CPP_Props\opencv4.4.0_release.props" />
+    <Import Project="..\..\..\CPP_Props\tf2.9.3_release.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -84,12 +85,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <SourcePath>$(VC_SourcePath);C:/NDev/ThirdParty/cJsonLib/src;C:\NDev\CPPDev\XVisual\XVisual\src;</SourcePath>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:/NDev/ThirdParty/cJsonLib/include;C:\NDev\CPPDev\XVisual\XVisual\include;$(IncludePath)</IncludePath>
+    <SourcePath>$(VC_SourcePath);C:\NDev\CPPDev\XVisual\XVisual\src;</SourcePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\NDev\CPPDev\XVisual\XVisual\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <SourcePath>$(VC_SourcePath);C:\NDev\ThirdParty\cJsonLib\src;</SourcePath>
+    <SourcePath>$(VC_SourcePath);</SourcePath>
+    <IncludePath>C:\AIDev\tf293_py391_Bazel541_OK\include;C:\AIDev\tf293_py391_Bazel541_OK\include\src;C:\NDev\CPPDev\XVisual\XVisual\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -145,9 +147,10 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX20_IS_POD_DEPRECATION_WARNING;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:/NDev/ThirdParty/cJsonLib/include;</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -157,7 +160,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\ThirdParty\cJsonLib\src\cJSON.c" />
+    <ClCompile Include="..\XVisual\src\CJSON\cJSON.c" />
+    <ClCompile Include="..\XVisual\src\Common\BoxUtils.cpp" />
+    <ClCompile Include="..\XVisual\src\Common\FileUtils.cpp" />
+    <ClCompile Include="..\XVisual\src\Common\ImagePre.cpp" />
     <ClCompile Include="..\XVisual\src\Common\JsonFileUtils.cpp" />
     <ClCompile Include="..\XVisual\src\Common\LoggerInstance.cpp" />
     <ClCompile Include="..\XVisual\src\Common\StrUtils.cpp" />
@@ -173,7 +179,15 @@
     <ClCompile Include="..\XVisual\src\HandleBase\HandleFactory.cpp" />
     <ClCompile Include="..\XVisual\src\HandleBase\XBaseHandle.cpp" />
     <ClCompile Include="..\XVisual\src\Handle\CVCropHandle.cpp" />
+    <ClCompile Include="..\XVisual\src\Handle\DrawBoxHandle.cpp" />
+    <ClCompile Include="..\XVisual\src\Handle\ImagePreHandle.cpp" />
     <ClCompile Include="..\XVisual\src\Handle\LoadImageHandle.cpp" />
+    <ClCompile Include="..\XVisual\src\Handle\PreInverHandle.cpp" />
+    <ClCompile Include="..\XVisual\src\Handle\RevertBoxHandle.cpp" />
+    <ClCompile Include="..\XVisual\src\Handle\TFDetectHandle.cpp" />
+    <ClCompile Include="..\XVisual\src\TFModel\ModelUtils.cpp" />
+    <ClCompile Include="..\XVisual\src\TFModel\TensorFlowModel.cpp" />
+    <ClCompile Include="..\XVisual\src\TFModel\TFType2CPPType.cpp" />
     <ClCompile Include="..\XVisual\src\XGraph\XGraph.cpp" />
     <ClCompile Include="..\XVisual\src\XVariable\Dest.cpp" />
     <ClCompile Include="..\XVisual\src\XVariable\Param.cpp" />

@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
-#include "cJSON.h"
+#include "CJSON/cJSON.h"
 #include "HandleBase/ColleagueType.h"
 #include "XVariable/SourceFrom.h"
 #include "Common/ColleagueNULLValueMacro.h"

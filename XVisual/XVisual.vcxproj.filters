@@ -247,9 +247,6 @@
     <ClCompile Include="src\Common\UuidGenerator.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\ThirdParty\cJsonLib\src\cJSON.c">
-      <Filter>Source Files\CJSON</Filter>
-    </ClCompile>
     <ClCompile Include="src\GlobalStorage\GlobalVariable.cpp">
       <Filter>Source Files\GlobalStorage</Filter>
     </ClCompile>
@@ -339,6 +336,9 @@
     </ClCompile>
     <ClCompile Include="src\Common\FileUtils.cpp">
       <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CJSON\cJSON.c">
+      <Filter>Source Files\CJSON</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -530,9 +530,6 @@
     <ClInclude Include="include\GlobalStorage\HandleGlobalStorage.h">
       <Filter>Header Files\GlobalStorage</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\ThirdParty\cJsonLib\include\cJSON.h">
-      <Filter>Header Files\CJSON</Filter>
-    </ClInclude>
     <ClInclude Include="include\GlobalStorage\GlobalVariable.h">
       <Filter>Header Files\GlobalStorage</Filter>
     </ClInclude>
@@ -610,6 +607,9 @@
     </ClInclude>
     <ClInclude Include="include\Common\FileUtils.h">
       <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CJSON\cJSON.h">
+      <Filter>Header Files\CJSON</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -6,7 +6,7 @@
 #include <string>
 #include "OpenCVHeaders.h"
 #include "Common/PreParam.h"
-#include "cJSON.h"
+#include "CJSON/cJSON.h"
 #include "Common/ErrorCode.h"
 
 class ImagePre
