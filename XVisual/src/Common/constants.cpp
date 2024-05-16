@@ -17,3 +17,4 @@ const QString ImageSources::LinePointer = ":/XVisual/images/linepointer.png";
 const QString ImageSources::RunButton = ":/XVisual/images/runbutton.png";
 const QString ImageSources::ExportButton = ":/XVisual/images/exportbutton.png";
 const QString ImageSources::LoadButton = ":/XVisual/images/loadbutton.png";
+const QString ImageSources::XVisualLogo = ":/XVisual/images/XVisual.png";

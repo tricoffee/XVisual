@@ -23,6 +23,7 @@ class ImageSources
 		   static const QString RunButton;
 		   static const QString ExportButton;
 		   static const QString LoadButton;
+		   static const QString XVisualLogo;
 };
 
 enum DiagramState { Insert, Move, Release };

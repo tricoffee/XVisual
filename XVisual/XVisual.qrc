@@ -18,5 +18,6 @@
 		<file>images/runbutton.png</file>
 	    <file>images/loadbutton.png</file>
 		<file>images/exportbutton.png</file>
+		<file>images/XVisual.png</file>
     </qresource>
 </RCC>

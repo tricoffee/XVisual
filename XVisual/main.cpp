@@ -3,6 +3,7 @@
 
 #include <QApplication>
 #include "MainWindow/mainwindow.h"
+#include "Common/constants.h"
 
 int main(int argv, char* args[])
 {
@@ -13,6 +14,7 @@ int main(int argv, char* args[])
 	//mainWindow.setGeometry(100, 100, 800, 500);
 	// 设置窗口初始状态为最大化
 	mainWindow.setWindowState(mainWindow.windowState() | Qt::WindowMaximized);
+	mainWindow.setWindowIcon(QIcon(ImageSources::XVisualLogo));
 	mainWindow.show();
 
 	return app.exec();
