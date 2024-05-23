@@ -1,6 +1,6 @@
 ## LOGO
 
-[XVisual](images/XVisual_raw.png)
+[XVisual](images/XVisual_about.png)
 
 ## SLOGAN
 Simplify Code, Enhance AI
