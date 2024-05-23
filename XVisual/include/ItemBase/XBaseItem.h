@@ -1,5 +1,3 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
 #ifndef XBaseItem_H
 #define XBaseItem_H
 
@@ -31,13 +29,9 @@ class XBaseItem : public QObject, public QGraphicsPolygonItem, public Colleague
 	public:
 		virtual ~XBaseItem() 
 		{
-			/*		if (xHandle)
-					{
-						delete xHandle;
-					}*/
+
 		}
 		enum { Type = UserType + 1 };
-		//XBaseItem(QMenu* contextMenu, QGraphicsItem* parent = nullptr);
 		XBaseItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent = nullptr);
 		XBaseHandle* getXHandle()
 		{
@@ -51,9 +45,9 @@ class XBaseItem : public QObject, public QGraphicsPolygonItem, public Colleague
 		void removeArrows();
 		QPolygonF polygon() const { return myPolygon; }
 		void addArrow(XArrow* arrow);
-		virtual QPixmap image();
+		QPixmap image();
 		int type() const override { return Type; }
-		virtual void debug();
+		void debug();
 		void setEditText(QString text);
 		void setEditFont(const QFont& font);
 		void setEditColor(const QColor& color);
@@ -74,12 +68,14 @@ class XBaseItem : public QObject, public QGraphicsPolygonItem, public Colleague
 		XBaseHandle* xHandle;
 		void setColleagueType() override;
 		void contextMenuEvent(QGraphicsSceneContextMenuEvent* event) override;
-		QPolygonF myPolygon;
+		void set_polygon();
+		QPolygonF myPolygon; // this maintains the shape of XBaseItem or it's subclass
 		DiagramProxyWidget* proxyWidget;
 		ItemWidget* xitemWidget;
 		void createUniqueName(const std::string& classNameStr) override;
 		void createUuid() override;
 		void setClassName(const std::string& classNameStr) override;
+		void configItem(const std::string& classNameStr);
     private:
 		QMenu* myContextMenu;
 		QList<XArrow*> arrows;

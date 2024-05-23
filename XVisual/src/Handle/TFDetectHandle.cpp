@@ -6,6 +6,7 @@
 #include "Common/DetectResult.h"
 #include "Common/FileUtils.h"
 #include <filesystem>
+#include "GlobalStorage/GlobalVariable.h"
 
 TFDetectHandle::TFDetectHandle() : XBaseHandle()
 {
@@ -92,8 +93,12 @@ void TFDetectHandle::xOperate()
 	const std::string classNameTxtStr = "classnames.txt";
 	std::filesystem::path classNamesPath = saved_model_dir;
 	classNamesPath /= classNameTxtStr; // 使用 /= 运算符进行路径拼接
+	std::string classNamesPathStr = classNamesPath.string();
+
+	std::string absoluteClassNamesPath = globalWorkSpaceDir + "/" + classNamesPathStr;
+
 	std::vector<std::string> classNames;
-	readClassNames(classNamesPath.string(), classNames);
+	readClassNames(absoluteClassNamesPath, classNames);
 	REGISTER_MEMBER_STR(dests, "classNames", classNames);
 
 	if (model == nullptr)
@@ -104,7 +109,9 @@ void TFDetectHandle::xOperate()
 	{
 		XLOG_INFO("TFDetectHandle::xOperate, model is not nullptr ", CURRENT_THREAD_ID);
 	}
-	model->loadSavedModel(saved_model_dir);
+
+	std::string absolute_saved_model_dir =  globalWorkSpaceDir + "/" + saved_model_dir;
+	model->loadSavedModel(absolute_saved_model_dir);
 
 
 	cv::Mat image = GET_MEMBER_WITH_TYPE_STR(sources, cv::Mat, "input_image");

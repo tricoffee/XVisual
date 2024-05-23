@@ -31,29 +31,6 @@ GraphicsWidget::GraphicsWidget(QMenu* myItemMenu, QWidget* parent, Qt::WindowFla
 	setLayout(layout);
 }
 
-void GraphicsWidget::setBackgroundChange(const int& id)
-{
-
-	if (BackGroundType::BlueGrid == id)
-	{
-		scene->setBackgroundBrush(QPixmap(ImageSources::Background1));
-	}
-	else if (BackGroundType::WhiteGrid == id)
-	{
-		scene->setBackgroundBrush(QPixmap(ImageSources::Background2));
-	}
-	else if (BackGroundType::GrayGrid == id)
-	{
-		scene->setBackgroundBrush(QPixmap(ImageSources::Background3));
-	}
-	else
-	{
-		scene->setBackgroundBrush(QPixmap(ImageSources::Background4));
-	}
-	scene->update();
-	view->update();
-}
-
 void GraphicsWidget::setBackgroundBrushChange(const QBrush& brush)
 {
 	scene->setBackgroundBrush(brush);

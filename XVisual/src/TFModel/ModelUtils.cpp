@@ -117,8 +117,4 @@ void acquireModelInfo(std::string saved_model_txt_fnm,
 	XLOG_INFO(" outputShape1Str = " + outputShape1Str, CURRENT_THREAD_ID);
 	XLOG_INFO(" outputName1Str = " + outputName1Str, CURRENT_THREAD_ID);
 
-#ifdef DEBUG_TF
-
-#endif 
-
 }

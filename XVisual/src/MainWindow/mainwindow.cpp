@@ -1,5 +1,3 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
 #include "Common/LoggerInstance.h"
 #include "Common/XThreadMacro.h"
 #include "GlobalStorage/GlobalStorage.h"
@@ -13,8 +11,8 @@
 #include "ItemBase/XArrow.h"
 #include "ItemBase/XBaseItem.h"
 #include "HandleBase/XBaseHandle.h"
-#include "MainWindow/diagramscene.h"
-#include "MainWindow/mainwindow.h"
+#include "MainWindow/Diagramscene.h"
+#include "MainWindow/Mainwindow.h"
 #include "Common/constants.h"
 #include "MainWindow/GraphicsWidget.h"
 #include "MainWindow/SideWidget.h"
@@ -27,11 +25,112 @@
 #include "Common/JsonFIleUtils.h"
 #include "Common/XParser.h"
 #include "Common/TypeClassifier.h"
+#include "GlobalStorage/GlobalVariable.h"
+#include "WorkSpaceDialog/WorkSpaceDialog.h"
+
+#include "Common/ErrorCode.h"
+#include <QFile>
+#include "Common/FileUtils.h"
+#include "Common/JsonFileUtils.h"
 
 #define CHECK_NULLPTR(ptr) ((ptr) == nullptr)
 
-MainWindow::MainWindow()
+void MainWindow::checkAndCreateDirectory(const QString& path)
 {
+	QDir dir(path);
+
+	// 检查文件夹是否存在
+	if (dir.exists())
+	{
+		XLOG_INFO("MainWindow::checkAndCreateDirectory, " + path.toStdString() + "Existed. ", CURRENT_THREAD_ID);
+	}
+	else
+	{
+		XLOG_INFO("MainWindow::checkAndCreateDirectory, No Found, " + path.toStdString() + ", Creating ... ", CURRENT_THREAD_ID);
+
+		// 创建文件夹
+		if (dir.mkpath("."))
+		{
+			XLOG_INFO("MainWindow::checkAndCreateDirectory, Created " + path.toStdString() + " Successfully ! ", CURRENT_THREAD_ID);
+		}
+		else
+		{
+			XLOG_INFO("MainWindow::checkAndCreateDirectory, Created " + path.toStdString() + " Failed ! ", CURRENT_THREAD_ID);
+		}
+	}
+}
+
+void MainWindow::makeDefaultSettings()
+{
+	/* 如果默认 settingsFilePath 不存在, 则创建一个 settings.json */
+	// create JSON object
+	QJsonObject workspaceObject;
+	workspaceObject["DefaultWorkSpace"] = QDir::toNativeSeparators(workspaceData.defaultWorkSpace);
+	workspaceObject["CustomWorkSpace"] = workspaceData.customWorkSpace;
+	workspaceObject["EnableCustom"] = workspaceData.enableCustom;
+
+	QJsonObject rootObject;
+	rootObject["WorkSpace"] = workspaceObject;
+
+	// create JSON document
+	QJsonDocument jsonDoc(rootObject);
+
+	// 将 JSON 文档转换为字符串
+	QString jsonString = jsonDoc.toJson(QJsonDocument::Indented);
+
+	// 输出 JSON 字符串到控制台
+	XLOG_INFO("MainWindow::makeDefaultSettings, jsonString = " + jsonString.toStdString(), CURRENT_THREAD_ID);
+	XLOG_INFO("MainWindow::makeDefaultSettings, settingsFilePath_ = " + settingsFilePath.toStdString(), CURRENT_THREAD_ID);
+
+	// 将 JSON 字符串写入文件
+	QFile file(settingsFilePath);
+	if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		//qWarning("MainWindow::makeDefaultSettings, Cannot open \"settings.json\" ");
+		XLOG_INFO("MainWindow::makeDefaultSettings, Cannot open " + settingsFilePath.toStdString(), CURRENT_THREAD_ID);
+		// Done, emit error
+		m_lastError = XVisual::ErrorCode::OpenJsonFileError;
+		// 发射错误信号，通知错误发生
+		emit errorOccurred(m_lastError);
+		return;
+	}
+
+	file.write(jsonString.toUtf8());
+	file.close();
+}
+
+MainWindow::MainWindow(const QString& mProjectRootDir, QWidget* parent) : QMainWindow(parent)
+{
+	// default settingsFilePath
+	settingsFilePath = mProjectRootDir + "/settings.json";
+
+	workspaceData.customWorkSpace = ""; // QString 
+	workspaceData.defaultWorkSpace = mProjectRootDir + "/WorkSpace"; // QString 
+	workspaceData.enableCustom = 0; // int 
+
+	// if settingsFilePath_ exists, then read WorkSpaceData from this json file, and update \"data\"
+	if (isJsonFile(settingsFilePath.toStdString()))
+	{
+		SettingsReader& reader = SettingsReader::getInstance();
+		reader.getData(settingsFilePath, workspaceData);
+		if (workspaceData.enableCustom) // data.enableCustom == 1
+		{
+			// update globalWorkSpaceDir
+			globalWorkSpaceDir = workspaceData.customWorkSpace.toStdString();
+		}
+		else // data.enableCustom == 0
+		{
+			// update globalWorkSpaceDir
+			globalWorkSpaceDir = workspaceData.defaultWorkSpace.toStdString();
+		}
+	}
+	else
+	{
+		// update globalWorkSpaceDir
+		globalWorkSpaceDir = workspaceData.defaultWorkSpace.toStdString();
+		checkAndCreateDirectory(workspaceData.defaultWorkSpace);
+		makeDefaultSettings();
+	}
 	createActions();
 	createMenus();
     graphicsWidget = new GraphicsWidget(itemMenu);
@@ -67,18 +166,11 @@ MainWindow::MainWindow()
 	widget->setLayout(layout);
 
 	setCentralWidget(widget);
-	setWindowTitle(tr("Diagramscene"));
+	setWindowTitle(tr("XVisual"));
 	setUnifiedTitleAndToolBarOnMac(true);
 
 	connect(graphicsWidget, &GraphicsWidget::showImageInTabSignal, 
 		sideWidget,&SideWidget::showImageInTabSlot);
-}
-
-void MainWindow::backgroundButtonGroupClicked(QAbstractButton* button)
-{
-	button->setChecked(false);
-	const int id = backgroundButtonGroup->id(button);
-	graphicsWidget->setBackgroundChange(id);
 }
 
 void MainWindow::buttonGroupClicked(QAbstractButton* button)
@@ -134,10 +226,7 @@ void MainWindow::runButtonClicked(bool checked)
 
 void MainWindow::exportButtonClicked(bool checked)
 {
-	XLOG_INFO("void MainWindow::exportButtonClicked to do save XGraph", CURRENT_THREAD_ID);
-
-	//Deprecated, item_parents维系每个item节点的父节点
-	//std::unordered_map<std::string, std::set<std::string>> item_parents;
+	XLOG_INFO("MainWindow::exportButtonClicked, to do export XGraph", CURRENT_THREAD_ID);
 
 	// handle_parents维系每个handle节点的父节点
 	std::unordered_map<std::string, std::set<std::string>> handle_parents;
@@ -219,12 +308,6 @@ void MainWindow::exportButtonClicked(bool checked)
 			cJSON_AddStringToObject(cjson_arr_element, "ColleagueId", handle_colleagueId.c_str());
 			cJSON_AddStringToObject(cjson_arr_element, "UniqueName", handle_uniqueName.c_str());
 
-			// Deprecated
-			//std::set<std::string> mParentIdSet = handle_parents[handle_colleagueId];
-			//for (const auto& mParentId : mParentIdSet)
-			//{
-			//}
-
 			// 获取sources里面每个source变量xName对应的sourceFrom, 并将其写入到JSON
 			cJSON* cjson_sourceFrom = cJSON_CreateObject();
 			Source& sources = handle->getSources();
@@ -233,11 +316,6 @@ void MainWindow::exportButtonClicked(bool checked)
 			{
 				SourceFrom sourceFrom;
 				handle->loadSourceFrom(xName, sourceFrom);
-
-				// Deprecated, 因为sourceFrom的默认值就是: sourceFrom.itemId = NULL_ITEMID , sourceFrom.variableName = NULL_VariableName
-				//if (sourceFrom.itemId != NULL_ITEMID && sourceFrom.variableName != NULL_VariableName)
-				//{
-				//}
 
 				cJSON* cjson_variableSource = cJSON_CreateObject();
 				cJSON_AddStringToObject(cjson_variableSource, "yId", sourceFrom.itemId.c_str());
@@ -291,12 +369,18 @@ void MainWindow::exportButtonClicked(bool checked)
 	str = cJSON_Print(cjson_root);
 	// printf("%s\n", str);
 
+	const std::string file_name = "solutions.json";
+	// 创建 std::filesystem::path 对象表示文件路径
+	std::filesystem::path file_path = globalWorkSpaceDir;
+	file_path /= file_name; // 使用 /= 运算符进行路径拼接
+	std::string solutionJsonFilePath = file_path.string();
+
 	// 将 JSON 数据保存到 .json 文件中
-	std::ofstream outFile("C:\\NDev\\CPPDev\\XVisual\\XVisual\\logs\\output.json");
+	std::ofstream outFile(solutionJsonFilePath);
 	outFile << str;
 	outFile.close();
 
-	XLOG_INFO("Exporting XGraph is executed.", CURRENT_THREAD_ID);
+	XLOG_INFO("MainWindow::exportButtonClicked, XGraph export completed", CURRENT_THREAD_ID);
 }
 
 void MainWindow::loadButtonClicked(bool checked)
@@ -312,6 +396,21 @@ void MainWindow::loadButtonClicked(bool checked)
 		
 		XParser& jsonParser = XParser::getInstance();
 		jsonParser.initParser(latestJsonPath.toStdString());
+
+		//Done, 将solution.json的父目录作为当前的globalWorkSpace,同时更新settings.json的CustomWorkSpace以及将EnableCustom设置为1
+		std::string parentPathStr;
+		getParentPathStr(jsonPath.toStdString(), parentPathStr);
+
+		if (parentPathStr != workspaceData.defaultWorkSpace.toStdString())
+		{
+			SettingsReader& reader = SettingsReader::getInstance();
+			workspaceData.customWorkSpace = QString::fromStdString(parentPathStr);
+			workspaceData.enableCustom = 1;
+		    reader.updateData(settingsFilePath, workspaceData);
+			// update globalWorkSpaceDir
+			globalWorkSpaceDir = workspaceData.customWorkSpace.toStdString();
+		}
+
 		cJSON* classInfoArr;
 		jsonParser.getClassInfoArr(classInfoArr);
 		if (!classInfoArr || !cJSON_IsArray(classInfoArr))
@@ -583,6 +682,8 @@ void MainWindow::loadButtonClicked(bool checked)
 	else
 	{
 		XLOG_INFO("MainWindow::loadButtonClicked, jsonPath is empty ...", CURRENT_THREAD_ID);
+		QString errorInfo = "Your selected jsonPath " + jsonPath + "is empty ...";
+		QMessageBox::warning(this, "Error", errorInfo);
 	}
 
 
@@ -591,12 +692,12 @@ void MainWindow::loadButtonClicked(bool checked)
 
 void MainWindow::currentFontChanged(const QFont&)
 {
-	handleFontChange();
+	handleFontChanged();
 }
 
 void MainWindow::fontSizeChanged(const QString&)
 {
-	handleFontChange();
+	handleFontChanged();
 }
 
 void MainWindow::sceneScaleChanged(const QString& scale)
@@ -655,7 +756,7 @@ void MainWindow::lineColorChanged()
 	graphicsWidget->setSceneLineColor(color);
 }
 
-void MainWindow::handleFontChange()
+void MainWindow::handleFontChanged()
 {
 	QFont font = fontCombo->currentFont();
 	font.setPointSize(fontSizeCombo->currentText().toInt());
@@ -665,11 +766,62 @@ void MainWindow::handleFontChange()
 	graphicsWidget->setFont(font);
 }
 
+
+void MainWindow::handleWorkspaceChanged()
+{
+	WorkSpaceDialog dialog(workspaceData, this);
+	if (dialog.exec() == QDialog::Accepted)
+	{
+		QString workspacePath = dialog.getWorkSpacePath();
+		bool isCustom = dialog.isCustomWorkSpace();
+
+		QDir workspaceQDir(workspacePath);
+		// Check if the folder really exists
+		if (!workspaceQDir.exists())
+		{
+			QString errorInfo = "Your selected WorkSpace " + workspacePath + " does not exist";
+			QMessageBox::warning(this, "Error", errorInfo);
+			return;
+		}
+		else
+		{
+
+			if (isCustom)
+			{
+				workspaceData.customWorkSpace = workspacePath;
+				workspaceData.enableCustom = 1;
+			}
+			else
+			{
+				workspaceData.enableCustom = 0;
+			}
+			// Synchronize updates to settings.json
+			SettingsReader& reader = SettingsReader::getInstance();
+			m_lastError = reader.updateData(settingsFilePath, workspaceData);
+
+			if (m_lastError != XVisual::ErrorCode::Success)
+			{
+				// 发射错误信号，通知错误发生
+				emit errorOccurred(m_lastError);
+				return;
+			}
+
+	        // update globalWorkSpaceDir 
+			globalWorkSpaceDir = workspacePath.toStdString();
+			// xLog info 
+			XLOG_INFO(" MainWindow::handleWorkspaceChanged, WorkSpace has been set as : " + workspacePath.toStdString(), CURRENT_THREAD_ID);
+			// Display confirmation message
+			QMessageBox::information(this, "Set WorkSapce", "WorkSpace has been set as : " + workspacePath);
+
+		}
+
+	}
+}
+
 void MainWindow::about()
 {
-	QMessageBox::about(this, tr("About Diagram Scene"),
-		tr("The <b>Diagram Scene</b> example shows "
-			"use of the graphics framework."));
+	QMessageBox::about(this, tr("About XVisual"),
+		tr("<b>XVisual</b> is a platform for visually building computer vision tasks, written in Qt-C++"));
 }
 
 void MainWindow::createToolBox()
@@ -679,56 +831,32 @@ void MainWindow::createToolBox()
 	connect(buttonGroup, QOverload<QAbstractButton*>::of(&QButtonGroup::buttonClicked),
 		this, &MainWindow::buttonGroupClicked);
 
-	QGridLayout* layout = new QGridLayout;
+	// itemWidget1
+	QGridLayout* layout1 = new QGridLayout;
+	layout1->addWidget(createCellWidget(tr("LoadImage")), 0, 0);
+	layout1->addWidget(createCellWidget(tr("CVCrop")), 0, 1);
+	layout1->addWidget(createCellWidget(tr("ImagePre")), 1, 0);
+	layout1->addWidget(createCellWidget(tr("PreInver")), 1, 1);
+	layout1->addWidget(createCellWidget(tr("RevertBox")), 2, 0);
+	layout1->addWidget(createCellWidget(tr("DrawBox")), 2, 1);
+	layout1->setRowStretch(10, 10);
+	layout1->setColumnStretch(2, 10);
+	QWidget* itemWidget1 = new QWidget;
+	itemWidget1->setLayout(layout1);
 
-	//layout->addWidget(createCellWidget(tr("Condition")), 0, 0);
-	//layout->addWidget(createCellWidget(tr("Step")), 0, 1);
-	//layout->addWidget(createCellWidget(tr("Input")), 1, 0);
-	//layout->addWidget(createCellWidget(tr("Output")), 1, 1);
-	//layout->addWidget(createCellWidget(tr("LoadImage")), 2, 0);
-	//layout->addWidget(createCellWidget(tr("CVCrop")), 2, 1);
-
-	layout->addWidget(createCellWidget(tr("LoadImage")), 0, 0);
-	layout->addWidget(createCellWidget(tr("CVCrop")), 0, 1);
-	layout->addWidget(createCellWidget(tr("ImagePre")), 1, 0);
-	layout->addWidget(createCellWidget(tr("PreInver")), 1, 1);
-	layout->addWidget(createCellWidget(tr("TFDetect")), 2, 0);
-	layout->addWidget(createCellWidget(tr("RevertBox")), 2, 1);
-	layout->addWidget(createCellWidget(tr("DrawBox")), 3, 0);
-
-	layout->setRowStretch(10, 10);
-	layout->setColumnStretch(2, 10);
-
-	QWidget* itemWidget = new QWidget;
-	itemWidget->setLayout(layout);
-
-	backgroundButtonGroup = new QButtonGroup(this);
-	connect(backgroundButtonGroup, QOverload<QAbstractButton*>::of(&QButtonGroup::buttonClicked),
-		this, &MainWindow::backgroundButtonGroupClicked);
-
-	QGridLayout* backgroundLayout = new QGridLayout;
-
-	backgroundLayout->addWidget(createBackgroundCellWidget(tr("Blue Grid"), BackGroundType::BlueGrid,
-		ImageSources::Background1), 0, 0);
-	backgroundLayout->addWidget(createBackgroundCellWidget(tr("White Grid"), BackGroundType::WhiteGrid,
-		ImageSources::Background2), 0, 1);
-	backgroundLayout->addWidget(createBackgroundCellWidget(tr("Gray Grid"), BackGroundType::GrayGrid,
-		ImageSources::Background3), 1, 0);
-	backgroundLayout->addWidget(createBackgroundCellWidget(tr("No Grid"), BackGroundType::NoGrid,
-		ImageSources::Background4), 1, 1);
-
-
-	backgroundLayout->setRowStretch(2, 10);
-	backgroundLayout->setColumnStretch(2, 10);
-
-	QWidget* backgroundWidget = new QWidget;
-	backgroundWidget->setLayout(backgroundLayout);
+	// itemWidget2
+	QGridLayout* layout2 = new QGridLayout;
+	layout2->addWidget(createCellWidget(tr("TFDetect")), 0, 0);
+	layout2->setRowStretch(10, 10);
+	layout2->setColumnStretch(2, 10);
+	QWidget* itemWidget2 = new QWidget;
+	itemWidget2->setLayout(layout2);
 
 	toolBox = new QToolBox;
 	toolBox->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Ignored));
-	toolBox->setMinimumWidth(itemWidget->sizeHint().width());
-	toolBox->addItem(itemWidget, tr("Basic Flowchart Shapes"));
-	toolBox->addItem(backgroundWidget, tr("Backgrounds"));
+	toolBox->setMinimumWidth(itemWidget1->sizeHint().width());
+	toolBox->addItem(itemWidget1, tr("Image Processing"));
+	toolBox->addItem(itemWidget2, tr("AI Model"));
 
 }
 
@@ -738,9 +866,10 @@ void MainWindow::inintActionConnection()
 	connect(sendBackAction, &QAction::triggered, graphicsWidget, &GraphicsWidget::sendToBack);
 	connect(deleteAction, &QAction::triggered, graphicsWidget, &GraphicsWidget::deleteItem);
 	connect(exitAction, &QAction::triggered, this, &QWidget::close);
-	connect(boldAction, &QAction::triggered, this, &MainWindow::handleFontChange);
-	connect(italicAction, &QAction::triggered, this, &MainWindow::handleFontChange);
-	connect(underlineAction, &QAction::triggered, this, &MainWindow::handleFontChange);
+	connect(boldAction, &QAction::triggered, this, &MainWindow::handleFontChanged);
+	connect(italicAction, &QAction::triggered, this, &MainWindow::handleFontChanged);
+	connect(underlineAction, &QAction::triggered, this, &MainWindow::handleFontChanged);
+	connect(workspaceAction, &QAction::triggered, this, &MainWindow::handleWorkspaceChanged);
 	connect(aboutAction, &QAction::triggered, this, &MainWindow::about);
 }
 
@@ -774,6 +903,8 @@ void MainWindow::createActions()
 	underlineAction = new QAction(QIcon(ImageSources::Underline), tr("Underline"), this);
 	underlineAction->setCheckable(true);
 	underlineAction->setShortcut(tr("Ctrl+U"));
+
+	workspaceAction = new QAction(tr("WorkSpace"));
 	
 	aboutAction = new QAction(tr("A&bout"), this);
 	aboutAction->setShortcut(tr("F1"));
@@ -789,6 +920,9 @@ void MainWindow::createMenus()
 	itemMenu->addSeparator();
 	itemMenu->addAction(toFrontAction);
 	itemMenu->addAction(sendBackAction);
+
+	settingsMenu = menuBar()->addMenu(tr("&Settings"));
+	settingsMenu->addAction(workspaceAction);
 
 	aboutMenu = menuBar()->addMenu(tr("&Help"));
 	aboutMenu->addAction(aboutAction);
@@ -894,27 +1028,6 @@ void MainWindow::createToolbars()
 	loadButtonToolBar->addWidget(loadButton);
 }
 
-
-//BackGroundType
-QWidget* MainWindow::createBackgroundCellWidget(const QString& text,
-	int type, const QString& image)
-{
-	QToolButton* button = new QToolButton;
-	button->setIcon(QIcon(image));
-	button->setIconSize(QSize(50, 50));
-	button->setCheckable(true);
-	backgroundButtonGroup->addButton(button, type);
-
-	QGridLayout* layout = new QGridLayout;
-	layout->addWidget(button, 0, 0, Qt::AlignHCenter);
-	layout->addWidget(new QLabel(text), 1, 0, Qt::AlignCenter);
-
-	QWidget* widget = new QWidget;
-	widget->setLayout(layout);
-
-	return widget;
-}
-
 QWidget* MainWindow::createCellWidget(const QString& text)
 {
 	idnames[itemtype] = text;
@@ -1017,17 +1130,6 @@ void MainWindow::listenForError()
 		// 显示警告对话框
 		QMessageBox::critical(nullptr, "Error", warningQStr);
 
-		//// 采用 QMessageBox::information
-		//// 提示用户终止程序
-		//QMessageBox::StandardButton button = QMessageBox::information(nullptr, "Error", "Terminate program?",
-		//QMessageBox::Yes, QMessageBox::NoButton);
-		//// 如果用户选择终止程序，则退出应用
-		//if (button == QMessageBox::Yes) 
-		//{
-		//	qApp->quit();
-		//}
-
-
 		// 采用 QMessageBox::question
 		// QMessageBox::Yes 和 QMessageBox::No 两个按钮同时显示
 		// 提示用户终止程序
@@ -1038,17 +1140,6 @@ void MainWindow::listenForError()
 		{
 			qApp->quit();
 		}
-
-
-		//// 采用 QMessageBox::warning
-		//// 提示用户终止程序
-		// QMessageBox::StandardButton button = QMessageBox::warning(nullptr, "Error", "Terminate program?");
-		//// 如果用户选择终止程序，则退出应用
-		//if (button == QMessageBox::Ok) 
-		//{
-		//	qApp->quit();
-		//}
-
 
 	});
 }

@@ -16,51 +16,8 @@
 CVCropItem::CVCropItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent)
 	: XBaseItem(gWidget,contextMenu, parent)
 {
-	std::string classNameStr = "CVCrop";
-	setClassName(classNameStr);
-	createUniqueName(classNameStr);
-	setObjectName(QString::fromStdString(uniqueName));
-	QRect rect(-100, -100, 200, 200);
-	QPainterPath path;
-	int radius = 25;
-	int cornersize = 2 * radius;
-	path.moveTo(rect.left() + radius, rect.top());
-	path.arcTo(rect.left(), rect.top(), cornersize, cornersize, 90, 90);
-	path.lineTo(rect.left(), rect.bottom() - radius);
-	path.arcTo(rect.left(), rect.bottom() - cornersize,
-		cornersize, cornersize, 180, 90);
-	path.lineTo(rect.right() - radius, rect.bottom());
-	path.arcTo(rect.right() - cornersize, rect.bottom() - cornersize,
-		cornersize, cornersize, 270, 90);
-	path.lineTo(rect.right(), rect.top() + radius);
-	path.arcTo(rect.right() - cornersize, rect.top(),
-		cornersize, cornersize, 0, 90);
-	myPolygon = path.toFillPolygon();
-	setPolygon(myPolygon);
-	// 设置显示在Item上的文本
-	setEditText(QString::fromStdString(uniqueName));
+	configItem("CVCrop");
 	XLOG_INFO("CVCropItem::CVCropItem, uuid = " + uuid, CURRENT_THREAD_ID);
-	// 创建handle
-	xHandle = HandleRegistry::createObject(classNameStr);
-	xHandle->setUuidConsistentWithItem(uuid);
-	initParams();
-}
-QPixmap CVCropItem::image()
-{
-	XBaseItem::myPolygon = myPolygon;
-	return XBaseItem::image();
-}
-void CVCropItem::debug()
-{
-	qDebug() << "CVCropItem::debug() ... ";
-	qDebug() << "CVCropItem::boundingRect() " << boundingRect();
-	qDebug() << "CVCropItem::boundingRect().width() " << boundingRect().width();
-	qDebug() << "CVCropItem::boundingRect().height() " << boundingRect().height();
-	qDebug() << "CVCropItem::uuid " << QString::fromStdString(uuid);
-}
-void CVCropItem::initParams()
-{
-
 }
 void CVCropItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 {
@@ -96,6 +53,14 @@ void CVCropItem::xOperate()
 	// std::string imageFilename = uniqueName.toStdString() + "_croppedImage.png";
 	// Done,Add code for sending show image signals to display images on SideWidgets
 	std::string filename = uniqueName;
+	if (croppedImage.empty())
+	{
+		XLOG_INFO("CVCropItem::xOperate, croppedImage is EMPTY ... ", CURRENT_THREAD_ID);
+	}
+	else
+	{
+		XLOG_INFO("CVCropItem::xOperate, croppedImage is NOT empty ... ", CURRENT_THREAD_ID);
+	}
 	emit showImageSignal(filename, croppedImage, this);
 }
 

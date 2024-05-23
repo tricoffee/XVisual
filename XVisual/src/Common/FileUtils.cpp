@@ -1,4 +1,6 @@
 #include "Common/FileUtils.h"
+#include <fstream>
+#include <filesystem>
 
 int readClassNames(const std::string& classNamesPath, std::vector<std::string>& classNames)
 {
@@ -24,4 +26,12 @@ int readClassNames(const std::string& classNamesPath, std::vector<std::string>& 
 	file.close();
 
 	return 0;
+}
+
+void getParentPathStr(const std::string& str1, std::string& parentPathStr)
+{
+	std::filesystem::path filePath(str1);
+	// 获取父目录路径
+	std::filesystem::path parentPath = filePath.parent_path();
+	parentPathStr = parentPath.string();
 }

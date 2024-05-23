@@ -1,4 +1,5 @@
 #include "Common/JsonFileUtils.h"
+#include <filesystem>
 
 // 读取文件内容到字符串
 char* readJsonFile(const char* filename)
@@ -24,4 +25,20 @@ char* readJsonFile(const char* filename)
 	fclose(file);
 	buffer[length] = '\0';
 	return buffer;
+}
+
+// 判断 Json 文件是否存在
+bool isJsonFile(const std::string& path)
+{
+
+	if (std::filesystem::exists(path) && std::filesystem::is_regular_file(path) && std::filesystem::path(path).extension() != ".json")
+	{
+		//std::cout << path << " does not exists, or is not json file. " << path << std::endl;
+		return true;
+	}
+	else
+	{
+		//std::cout << path << " is Json File." << std::endl;
+		return false;
+	}
 }

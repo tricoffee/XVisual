@@ -13,55 +13,34 @@
 #include "Handle/TFDetectHandle.h"
 #include "Common/StrUtils.h"
 #include "Common/DetectResult.h"
+#include "Common/FileUtils.h"
+#include "GlobalStorage/GlobalVariable.h"
+#include "Common/QFileUtils.h"
+#include "Common/DeletePtrMacro.h"
+#include <QTimer>
 
 TFDetectItem::TFDetectItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent)
-	: XBaseItem(gWidget, contextMenu, parent)
+	: XBaseFItem(gWidget, contextMenu, parent)
 {
-	std::string classNameStr = "TFDetect";
-	setClassName(classNameStr);
-	createUniqueName(classNameStr);
-	setObjectName(QString::fromStdString(uniqueName));
-	QRect rect(-100, -100, 200, 200);
-	QPainterPath path;
-	int radius = 25;
-	int cornersize = 2 * radius;
-	path.moveTo(rect.left() + radius, rect.top());
-	path.arcTo(rect.left(), rect.top(), cornersize, cornersize, 90, 90);
-	path.lineTo(rect.left(), rect.bottom() - radius);
-	path.arcTo(rect.left(), rect.bottom() - cornersize,
-		cornersize, cornersize, 180, 90);
-	path.lineTo(rect.right() - radius, rect.bottom());
-	path.arcTo(rect.right() - cornersize, rect.bottom() - cornersize,
-		cornersize, cornersize, 270, 90);
-	path.lineTo(rect.right(), rect.top() + radius);
-	path.arcTo(rect.right() - cornersize, rect.top(),
-		cornersize, cornersize, 0, 90);
-	myPolygon = path.toFillPolygon();
-	setPolygon(myPolygon);
-	// 设置显示在Item上的文本
-	setEditText(QString::fromStdString(uniqueName));
+	configItem("TFDetect");
 	XLOG_INFO("TFDetectItem::TFDetectItem, uuid = " + uuid, CURRENT_THREAD_ID);
-	// 创建handle
-	xHandle = HandleRegistry::createObject(classNameStr);
-	xHandle->setUuidConsistentWithItem(uuid);
-	initParams();
 }
-QPixmap TFDetectItem::image()
-{
-	XBaseItem::myPolygon = myPolygon;
-	return XBaseItem::image();
-}
-void TFDetectItem::debug()
-{
-	qDebug() << "TFDetectItem::debug() ... ";
-	qDebug() << "TFDetectItem::boundingRect() " << boundingRect();
-	qDebug() << "TFDetectItem::boundingRect().width() " << boundingRect().width();
-	qDebug() << "TFDetectItem::boundingRect().height() " << boundingRect().height();
-	qDebug() << "TFDetectItem::uuid " << QString::fromStdString(uuid);
-}
-void TFDetectItem::initParams()
+TFDetectItem::~TFDetectItem()
 {
 
+}
+void TFDetectItem::fileCopyReadyUpdateFunc(FileCopyData data)
+{
+	if (data.fileReady)
+	{
+		fileCopyData.fileReady = true;
+		XLOG_INFO("TFDetectItem::fileCopyReadyUpdateSlot, fileCopyData.fileReady is true ", CURRENT_THREAD_ID);
+		XLOG_INFO("TFDetectItem::fileCopyReadyUpdateSlot, dstFilePath = " + fileCopyData.dstFilePath.toStdString(), CURRENT_THREAD_ID);
+		QString baseFilePath;
+		qGetBaseFileName(fileCopyData.dstFilePath, baseFilePath);
+		Source& s = xHandle->getSources();
+		REGISTER_MEMBER_STR(s, "savedModelPath", baseFilePath.toStdString());
+	}
 }
 void TFDetectItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 {
@@ -76,10 +55,20 @@ void TFDetectItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 
 	if (!savedModelDir.isEmpty())
 	{
-		// Save the currently selected file path
-		XLOG_INFO("TFDetectItem::mouseDoubleClickEvent, savedModelDir is not empty ...", CURRENT_THREAD_ID);
-		XLOG_INFO("TFDetectItem::mouseDoubleClickEvent, savedModelDir = " + savedModelDir.toStdString(), CURRENT_THREAD_ID);
-		REGISTER_MEMBER_STR(s, "savedModelPath", savedModelDir.toStdString());
+		std::string currentParentDir;
+		getParentPathStr(savedModelDir.toStdString(), currentParentDir);
+		if (currentParentDir == globalWorkSpaceDir)
+		{
+			// Save the currently selected file path
+			XLOG_INFO("TFDetectItem::mouseDoubleClickEvent, savedModelDir is not empty ...", CURRENT_THREAD_ID);
+			XLOG_INFO("TFDetectItem::mouseDoubleClickEvent, savedModelDir = " + savedModelDir.toStdString(), CURRENT_THREAD_ID);
+			REGISTER_MEMBER_STR(s, "savedModelPath", savedModelDir.toStdString());
+		}
+		else
+		{
+			XLOG_INFO("TFDetectItem::mouseDoubleClickEvent, currentParentDir != globalWorkSpaceDir", CURRENT_THREAD_ID);
+			constructDataAndDeliver(savedModelDir);
+		}
 	}
 	else
 	{

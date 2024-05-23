@@ -1,15 +1,11 @@
 #ifndef Constants_H
 #define Constants_H
 
-#include<QString>
+#include <QString>
 
 class ImageSources
 {
     public:
-	       static const QString Background1;
-		   static const QString Background2;
-		   static const QString Background3;
-		   static const QString Background4;
 		   static const QString TextPointer;
 		   static const QString FloodFill;
 		   static const QString LineColor;
@@ -24,10 +20,10 @@ class ImageSources
 		   static const QString ExportButton;
 		   static const QString LoadButton;
 		   static const QString XVisualLogo;
+		   static const QString XVisualAbout;
 };
 
 enum DiagramState { Insert, Move, Release };
 enum DiagramType { Item, Line, Text, None };
-enum BackGroundType { BlueGrid, WhiteGrid, GrayGrid, NoGrid };
 
 #endif //Constants_H

@@ -1,12 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
-
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
 #include "TableWidget/TableData.h"
 #include "Common/ErrorCode.h"
+#include "Common/SettingsReader.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -28,7 +26,7 @@ class MainWindow : public QMainWindow
 	Q_OBJECT
 
 public:
-	MainWindow();
+	MainWindow(const QString& mProjectRootDir, QWidget* parent = nullptr);
 	std::map<int, QString> idnames;
 	void inintActionConnection();
 	XVisual::ErrorCode lastError() const
@@ -40,7 +38,6 @@ signals:
 public slots:
 	void listenForError();
 private slots:
-	void backgroundButtonGroupClicked(QAbstractButton* button);
 	void buttonGroupClicked(QAbstractButton* button);
 	void linePointerButtonClicked(bool checked);
 	void runButtonClicked(bool checked);
@@ -52,9 +49,12 @@ private slots:
 	void textColorChanged();
 	void itemColorChanged();
 	void lineColorChanged();
-	void handleFontChange();
+	void handleFontChanged();
+	void handleWorkspaceChanged();
 	void about();
 private:
+	void checkAndCreateDirectory(const QString& path);
+	void makeDefaultSettings();
 	void initSceneBackground();
 	void createToolBox();
 	void createActions();
@@ -73,10 +73,12 @@ private:
 
 	QAction* toFrontAction;
 	QAction* sendBackAction;
+	QAction* workspaceAction;
 	QAction* aboutAction;
 
 	QMenu* fileMenu;
 	QMenu* itemMenu;
+	QMenu* settingsMenu;
 	QMenu* aboutMenu;
 
 	QToolBar* textToolBar;
@@ -100,7 +102,7 @@ private:
 	QToolButton* runButton;
 	QToolButton* exportButton;
 	QToolButton* loadButton;
-	QButtonGroup* backgroundButtonGroup;
+
 	QToolButton* fontColorToolButton;
 	QToolButton* fillColorToolButton;
 	QToolButton* lineColorToolButton;
@@ -116,7 +118,11 @@ private:
 
 	XVisual::ErrorCode m_lastError = XVisual::ErrorCode::Success;
 
+	// LatestJsonPath maintains the path of the solution JSON file you loaded
 	QString latestJsonPath;
+
+	QString settingsFilePath;
+	WorkSpaceData workspaceData;
 };
 
 #endif // MAINWINDOW_H

@@ -1,21 +1,23 @@
 #ifndef TFDetectItem_H
 #define TFDetectItem_H
 
-#include "ItemBase/XBaseItem.h"
+#include "ItemBase/XBaseFItem.h"
 
-class TFDetectItem : public XBaseItem
+class QThread;
+class QTimer;
+
+class TFDetectItem : public XBaseFItem
 {
 	Q_OBJECT
 	public:
 		TFDetectItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent = nullptr);
-		QPixmap image() override;
-		void debug();
-		void initParams() override;
+		~TFDetectItem();
 		void xOperate() override;
 	protected:
-		void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event);
+		void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event) override;
+		void fileCopyReadyUpdateFunc(FileCopyData data) override;
 	private:
-
+		
 };
 
 #endif //TFDetectItem_H

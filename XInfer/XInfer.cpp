@@ -2,6 +2,8 @@
 #include "Common/StrUtils.h"
 #include "XGraph/XGraph.h"
 #include "GlobalStorage/HandleGlobalStorage.h"
+#include "GlobalStorage/GlobalVariable.h"
+#include "Common/FileUtils.h"
 
 #define CHECK_NULLPTR(ptr) ((ptr) == nullptr)
 
@@ -25,11 +27,14 @@ XVisual::ErrorCode XInfer::init(const std::string& filePath)
 	bool jsonInitFlag = parser.initParser(filePath);
 	if (jsonInitFlag)
 	{
-		return XVisual::ErrorCode::JsonParseFailed;
+		// update globalWorkSpaceDir
+		getParentPathStr(filePath, globalWorkSpaceDir);
+		return XVisual::ErrorCode::Success;
 	}
 	else
 	{
-		return XVisual::ErrorCode::Success;
+		XLOG_INFO("XInfer::init, jsonInitFlag Failed ", CURRENT_THREAD_ID);
+		return XVisual::ErrorCode::JsonParseFailed;
 	}
 }
 XParser& XInfer::getParser()

@@ -6,62 +6,37 @@
 #include "GlobalStorage/ItemManager.h"
 #include "MainWindow/SideWidget.h"
 #include <QFileDialog>
-#include <QDebug>
-#include <optional>
 #include "MainWindow/GraphicsWidget.h"
 #include "Handle/LoadImageHandle.h"
 #include "Common/StrUtils.h"
+#include "Common/FileUtils.h"
+#include "GlobalStorage/GlobalVariable.h"
+#include "Common/QFileUtils.h"
+#include "Common/DeletePtrMacro.h"
+#include <QTimer>
 
 LoadImageItem::LoadImageItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent)
-	: XBaseItem(gWidget, contextMenu, parent)
+	: XBaseFItem(gWidget, contextMenu, parent)
 {
-
-	std::string classNameStr = "LoadImage";
-	setClassName(classNameStr);
-	createUniqueName(classNameStr);
-	setObjectName(QString::fromStdString(uniqueName));
-
-	QRect rect(-100, -100, 200, 200);
-	QPainterPath path;
-	int radius = 25;
-	int cornersize = 2 * radius;
-	path.moveTo(rect.left() + radius, rect.top());
-	path.arcTo(rect.left(), rect.top(), cornersize, cornersize, 90, 90);
-	path.lineTo(rect.left(), rect.bottom() - radius);
-	path.arcTo(rect.left(), rect.bottom() - cornersize,
-		cornersize, cornersize, 180, 90);
-	path.lineTo(rect.right() - radius, rect.bottom());
-	path.arcTo(rect.right() - cornersize, rect.bottom() - cornersize,
-		cornersize, cornersize, 270, 90);
-	path.lineTo(rect.right(), rect.top() + radius);
-	path.arcTo(rect.right() - cornersize, rect.top(),
-		cornersize, cornersize, 0, 90);
-	myPolygon = path.toFillPolygon();
-	setPolygon(myPolygon);
-	// 设置显示在Item上的文本
-	setEditText(QString::fromStdString(uniqueName));
+	configItem("LoadImage");
 	XLOG_INFO("LoadImageItem::LoadImageItem, uuid = " + uuid, CURRENT_THREAD_ID);
-	// 创建xHandle
-	xHandle = HandleRegistry::createObject(classNameStr);
-	xHandle->setUuidConsistentWithItem(uuid);
-	initParams();
 }
-QPixmap LoadImageItem::image()
-{
-	XBaseItem::myPolygon = myPolygon;
-	return XBaseItem::image();
-}
-void LoadImageItem::debug()
-{
-	qDebug() << "LoadImageItem::debug() ... ";
-	qDebug() << "LoadImageItem::boundingRect() " << boundingRect();
-	qDebug() << "LoadImageItem::boundingRect().width() " << boundingRect().width();
-	qDebug() << "LoadImageItem::boundingRect().height() " << boundingRect().height();
-	qDebug() << "LoadImageItem::uuid " << QString::fromStdString(uuid);
-}
-void LoadImageItem::initParams()
+LoadImageItem::~LoadImageItem()
 {
 
+}
+void LoadImageItem::fileCopyReadyUpdateFunc(FileCopyData data)
+{
+	if (data.fileReady)
+	{
+		fileCopyData.fileReady = true;
+		XLOG_INFO("LoadImageItem::fileCopyReadyUpdateSlot, fileCopyData.fileReady is true ", CURRENT_THREAD_ID);
+		XLOG_INFO("LoadImageItem::checkFileReady, dstFilePath = " + fileCopyData.dstFilePath.toStdString(), CURRENT_THREAD_ID);
+		QString baseFilePath;
+		qGetBaseFileName(fileCopyData.dstFilePath, baseFilePath);
+		Source& s = xHandle->getSources();
+		REGISTER_MEMBER_STR(s, "imagePath", baseFilePath.toStdString());
+	}
 }
 void LoadImageItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 {
@@ -72,13 +47,23 @@ void LoadImageItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 	QString imagePath = QFileDialog::getOpenFileName(nullptr, "Select Image", defaultPath, "Images (*.png *.jpg *.jpeg *.bmp *.gif)");
 	if (!imagePath.isEmpty())
 	{
-		// 保存当前选中的文件路径
-		XLOG_INFO("LoadImageItem::mouseDoubleClickEvent, imagePath is not empty ...", CURRENT_THREAD_ID);
-		REGISTER_MEMBER_STR(s, "imagePath", imagePath.toStdString());
+		std::string currentParentDir;
+		getParentPathStr(imagePath.toStdString(), currentParentDir);
+		if (currentParentDir == globalWorkSpaceDir)
+		{
+			// 保存当前选中的文件路径
+			XLOG_INFO("LoadImageItem::mouseDoubleClickEvent, imagePath is NOT empty ...", CURRENT_THREAD_ID);
+			REGISTER_MEMBER_STR(s, "imagePath", imagePath.toStdString());
+		}
+		else
+		{
+			XLOG_INFO("LoadImageItem::mouseDoubleClickEvent, currentParentDir != globalWorkSpaceDir", CURRENT_THREAD_ID);
+			constructDataAndDeliver(imagePath);
+		}
 	}
 	else
 	{
-		XLOG_INFO("LoadImageItem::mouseDoubleClickEvent, imagePath is empty ...", CURRENT_THREAD_ID);
+		XLOG_INFO("LoadImageItem::mouseDoubleClickEvent, imagePath is EMPTY ...", CURRENT_THREAD_ID);
 	}
 	// Call the base class event handler
 	QGraphicsPolygonItem::mouseDoubleClickEvent(event);

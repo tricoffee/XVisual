@@ -66,9 +66,9 @@
     <SourcePath>$(VC_SourcePath);</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <IncludePath>C:\NDev\CPPDev\XVisual\XVisual\include;$(IncludePath);</IncludePath>
+    <IncludePath>C:\NDev\CPPDev\XVisual\XVisual\include;C:\Qt\6.4.2\msvc2019_64\include;$(IncludePath)</IncludePath>
     <SourcePath>$(VC_SourcePath);</SourcePath>
-    <LibraryPath>C:\AIDev\tf293_py391_Bazel541_OK;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\AIDev\tf293_py391_Bazel541_OK;C:\Qt\6.4.2\msvc2019_64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -80,13 +80,17 @@
     <ClCompile>
       <PreprocessorDefinitions>
       </PreprocessorDefinitions>
-      <LanguageStandard>$(Qt_STDCPP_)</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>Default</LanguageStandard_C>
       <RuntimeLibrary>$(Qt_RUNTIME_)</RuntimeLibrary>
     </ClCompile>
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
     <ClCompile>
@@ -114,12 +118,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\CJSON\cJSON.c" />
+    <ClCompile Include="src\Common\AsynchronousFileEmitter.cpp">
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
+    </ClCompile>
+    <ClCompile Include="src\Common\AsynchronousFileProcessor.cpp" />
     <ClCompile Include="src\Common\BoxUtils.cpp" />
     <ClCompile Include="src\Common\constants.cpp" />
     <ClCompile Include="src\Common\FileUtils.cpp" />
     <ClCompile Include="src\Common\ImagePre.cpp" />
     <ClCompile Include="src\Common\JsonFileUtils.cpp" />
     <ClCompile Include="src\Common\LoggerInstance.cpp" />
+    <ClCompile Include="src\Common\QFileUtils.cpp" />
+    <ClCompile Include="src\Common\SettingsReader.cpp" />
     <ClCompile Include="src\Common\StrUtils.cpp" />
     <ClCompile Include="src\Common\UuidGenerator.cpp" />
     <ClCompile Include="src\Common\XParser.cpp" />
@@ -151,6 +164,7 @@
     <ClCompile Include="src\Handle\TFDetectHandle.cpp" />
     <ClCompile Include="src\ItemBase\ItemFactory.cpp" />
     <ClCompile Include="src\ItemBase\XArrow.cpp" />
+    <ClCompile Include="src\ItemBase\XBaseFItem.cpp" />
     <ClCompile Include="src\ItemBase\XBaseItem.cpp" />
     <ClCompile Include="src\ItemWidget\DiagramProxyWidget.cpp" />
     <ClCompile Include="src\ItemWidget\ItemWidget.cpp" />
@@ -162,10 +176,10 @@
     <ClCompile Include="src\Item\PreInverItem.cpp" />
     <ClCompile Include="src\Item\RevertBoxItem.cpp" />
     <ClCompile Include="src\Item\TFDetectItem.cpp" />
-    <ClCompile Include="src\MainWindow\diagramscene.cpp" />
+    <ClCompile Include="src\MainWindow\Diagramscene.cpp" />
     <ClCompile Include="src\MainWindow\GraphicsWidget.cpp" />
     <ClCompile Include="src\MainWindow\ImagePageWidget.cpp" />
-    <ClCompile Include="src\MainWindow\mainwindow.cpp" />
+    <ClCompile Include="src\MainWindow\Mainwindow.cpp" />
     <ClCompile Include="src\MainWindow\NamesWidget.cpp" />
     <ClCompile Include="src\MainWindow\RowWidget.cpp" />
     <ClCompile Include="src\MainWindow\SideWidget.cpp" />
@@ -183,18 +197,20 @@
     <ClCompile Include="src\TFModel\ModelUtils.cpp" />
     <ClCompile Include="src\TFModel\TensorFlowModel.cpp" />
     <ClCompile Include="src\TFModel\TFType2CPPType.cpp" />
+    <ClCompile Include="src\WorkSpaceDialog\WorkSpaceDialog.cpp" />
     <ClCompile Include="src\XGraph\XGraph.cpp" />
     <ClCompile Include="src\XVariable\Dest.cpp" />
     <ClCompile Include="src\XVariable\Param.cpp" />
     <ClCompile Include="src\XVariable\Source.cpp" />
     <QtRcc Include="XVisual.qrc" />
-    <QtUic Include="XVisual.ui" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="include\ItemBase\XArrow.h" />
     <QtMoc Include="include\ItemBase\XBaseItem.h" />
     <ClInclude Include="include\CJSON\cJSON.h" />
+    <QtMoc Include="include\Common\AsynchronousFileProcessor.h" />
+    <QtMoc Include="include\Common\AsynchronousFileEmitter.h" />
     <ClInclude Include="include\Common\Aux.h" />
     <ClInclude Include="include\Common\BoxUtils.h" />
     <ClInclude Include="include\Common\ColleagueNULLValueMacro.h" />
@@ -205,6 +221,7 @@
     <ClInclude Include="include\Common\DetectResult.h" />
     <ClInclude Include="include\Common\ErrorCode.h" />
     <ClInclude Include="include\Common\ColleagueData.h" />
+    <ClInclude Include="include\Common\FileCopyData.h" />
     <ClInclude Include="include\Common\FileUtils.h" />
     <ClInclude Include="include\Common\ImagePre.h" />
     <ClInclude Include="include\Common\JsonFileUtils.h" />
@@ -213,6 +230,8 @@
     <QtMoc Include="include\CustomDialog\CropDialog.h" />
     <ClInclude Include="include\Common\OpenCVHeaders.h" />
     <ClInclude Include="include\Common\PreParam.h" />
+    <ClInclude Include="include\Common\QFileUtils.h" />
+    <ClInclude Include="include\Common\SettingsReader.h" />
     <ClInclude Include="include\Common\StrUtils.h" />
     <ClInclude Include="include\Common\TypeClassifier.h" />
     <ClInclude Include="include\Common\UuidGenerator.h" />
@@ -242,12 +261,12 @@
     <ClInclude Include="include\Handle\RevertBoxHandle.h" />
     <ClInclude Include="include\Handle\TFDetectHandle.h" />
     <ClInclude Include="include\ItemBase\ItemFactory.h" />
+    <QtMoc Include="include\ItemBase\XBaseFItem.h" />
     <ClInclude Include="include\ItemWidget\DiagramProxyWidget.h" />
     <ClInclude Include="include\ItemWidget\ItemWidget.h" />
     <QtMoc Include="include\ItemWidget\XTextEdit.h" />
-    <QtMoc Include="include\MainWindow\diagramscene.h" />
-    <QtMoc Include="include\MainWindow\mainwindow.h" />
-    <QtMoc Include="include\Item\LoadImageItem.h" />
+    <QtMoc Include="include\MainWindow\Diagramscene.h" />
+    <QtMoc Include="include\MainWindow\MainWindow.h" />
     <QtMoc Include="include\Item\CVCropItem.h" />
     <QtMoc Include="include\MainWindow\GraphicsWidget.h" />
     <QtMoc Include="include\MainWindow\SideWidget.h" />
@@ -255,7 +274,6 @@
     <QtMoc Include="include\MainWindow\VariableWidget.h" />
     <QtMoc Include="include\MainWindow\ImagePageWidget.h" />
     <QtMoc Include="include\MainWindow\RowWidget.h" />
-    <QtMoc Include="include\Item\TFDetectItem.h" />
     <QtMoc Include="include\ParamWidget\PreParamWidget.h" />
     <QtMoc Include="include\ParamWidget\Normalize01ParamWidget.h" />
     <QtMoc Include="include\ParamWidgetDialog\ComboWindow.h" />
@@ -264,6 +282,8 @@
     <QtMoc Include="include\Item\PreInverItem.h" />
     <QtMoc Include="include\Item\RevertBoxItem.h" />
     <QtMoc Include="include\Item\DrawBoxItem.h" />
+    <QtMoc Include="include\Item\LoadImageItem.h" />
+    <QtMoc Include="include\Item\TFDetectItem.h" />
     <ClInclude Include="include\ParamWidget\ParamWidgetFactory.h" />
     <QtMoc Include="include\ParamWidget\ResizeParamWidget.h" />
     <QtMoc Include="include\ParamWidget\ResizePasteParamWidget.h" />
@@ -274,6 +294,7 @@
     <ClInclude Include="include\TFModel\ModelUtils.h" />
     <ClInclude Include="include\TFModel\TensorFlowModel.h" />
     <ClInclude Include="include\TFModel\TFType2CPPType.h" />
+    <QtMoc Include="include\WorkSpaceDialog\WorkSpaceDialog.h" />
     <ClInclude Include="include\XGraph\GraphNode.h" />
     <ClInclude Include="include\XGraph\XGraph.h" />
     <ClInclude Include="include\XVariable\Dest.h" />

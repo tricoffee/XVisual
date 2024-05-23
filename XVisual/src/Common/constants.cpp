@@ -1,9 +1,5 @@
 #include "Common/constants.h"
 
-const QString ImageSources::Background1 = ":/XVisual/images/background1.png";
-const QString ImageSources::Background2 = ":/XVisual/images/background2.png";
-const QString ImageSources::Background3 = ":/XVisual/images/background3.png";
-const QString ImageSources::Background4 = ":/XVisual/images/background4.png";
 const QString ImageSources::TextPointer = ":/XVisual/images/textpointer.png";
 const QString ImageSources::FloodFill = ":/XVisual/images/floodfill.png";
 const QString ImageSources::LineColor = ":/XVisual/images/linecolor.png";
@@ -18,3 +14,4 @@ const QString ImageSources::RunButton = ":/XVisual/images/runbutton.png";
 const QString ImageSources::ExportButton = ":/XVisual/images/exportbutton.png";
 const QString ImageSources::LoadButton = ":/XVisual/images/loadbutton.png";
 const QString ImageSources::XVisualLogo = ":/XVisual/images/XVisual.png";
+const QString ImageSources::XVisualAbout = ":/XVisual/images/XVisual_about.png";

@@ -120,14 +120,17 @@
     <Filter Include="Source Files\ParamWidgetDialog">
       <UniqueIdentifier>{f5a1357f-7538-4763-9097-eca47104baeb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\WorkSpaceDialog">
+      <UniqueIdentifier>{4be7cc32-a0d0-4871-be53-88b78c808269}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\WorkSpaceDialog">
+      <UniqueIdentifier>{4789b91a-c747-4c08-9070-e843e73e7b83}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="XVisual.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
-    <QtUic Include="XVisual.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -163,14 +166,11 @@
     <ClCompile Include="src\Common\constants.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="src\MainWindow\diagramscene.cpp">
+    <ClCompile Include="src\MainWindow\Diagramscene.cpp">
       <Filter>Source Files\MainWindow</Filter>
     </ClCompile>
-    <ClCompile Include="src\MainWindow\mainwindow.cpp">
+    <ClCompile Include="src\MainWindow\Mainwindow.cpp">
       <Filter>Source Files\MainWindow</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Item\LoadImageItem.cpp">
-      <Filter>Source Files\Item</Filter>
     </ClCompile>
     <ClCompile Include="src\Item\CVCropItem.cpp">
       <Filter>Source Files\Item</Filter>
@@ -280,9 +280,6 @@
     <ClCompile Include="src\Handle\TFDetectHandle.cpp">
       <Filter>Source Files\Handle</Filter>
     </ClCompile>
-    <ClCompile Include="src\Item\TFDetectItem.cpp">
-      <Filter>Source Files\Item</Filter>
-    </ClCompile>
     <ClCompile Include="src\Handle\ImagePreHandle.cpp">
       <Filter>Source Files\Handle</Filter>
     </ClCompile>
@@ -340,6 +337,30 @@
     <ClCompile Include="src\CJSON\cJSON.c">
       <Filter>Source Files\CJSON</Filter>
     </ClCompile>
+    <ClCompile Include="src\WorkSpaceDialog\WorkSpaceDialog.cpp">
+      <Filter>Source Files\WorkSpaceDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\SettingsReader.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\AsynchronousFileEmitter.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\AsynchronousFileProcessor.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common\QFileUtils.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ItemBase\XBaseFItem.cpp">
+      <Filter>Source Files\ItemBase</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Item\LoadImageItem.cpp">
+      <Filter>Source Files\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Item\TFDetectItem.cpp">
+      <Filter>Source Files\Item</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="include\ItemBase\XArrow.h">
@@ -351,14 +372,11 @@
     <QtMoc Include="include\ItemWidget\XTextEdit.h">
       <Filter>Header Files\ItemWidget</Filter>
     </QtMoc>
-    <QtMoc Include="include\MainWindow\diagramscene.h">
+    <QtMoc Include="include\MainWindow\Diagramscene.h">
       <Filter>Header Files\MainWindow</Filter>
     </QtMoc>
-    <QtMoc Include="include\MainWindow\mainwindow.h">
+    <QtMoc Include="include\MainWindow\MainWindow.h">
       <Filter>Header Files\MainWindow</Filter>
-    </QtMoc>
-    <QtMoc Include="include\Item\LoadImageItem.h">
-      <Filter>Header Files\Item</Filter>
     </QtMoc>
     <QtMoc Include="include\Item\CVCropItem.h">
       <Filter>Header Files\Item</Filter>
@@ -390,9 +408,6 @@
     <QtMoc Include="include\MainWindow\RowWidget.h">
       <Filter>Header Files\MainWindow</Filter>
     </QtMoc>
-    <QtMoc Include="include\Item\TFDetectItem.h">
-      <Filter>Header Files\Item</Filter>
-    </QtMoc>
     <QtMoc Include="include\ParamWidget\PreParamWidget.h">
       <Filter>Header Files\ParamWidget</Filter>
     </QtMoc>
@@ -421,6 +436,24 @@
       <Filter>Header Files\Item</Filter>
     </QtMoc>
     <QtMoc Include="include\Item\DrawBoxItem.h">
+      <Filter>Header Files\Item</Filter>
+    </QtMoc>
+    <QtMoc Include="include\WorkSpaceDialog\WorkSpaceDialog.h">
+      <Filter>Header Files\WorkSpaceDialog</Filter>
+    </QtMoc>
+    <QtMoc Include="include\Common\AsynchronousFileProcessor.h">
+      <Filter>Header Files\Common</Filter>
+    </QtMoc>
+    <QtMoc Include="include\Common\AsynchronousFileEmitter.h">
+      <Filter>Header Files\Common</Filter>
+    </QtMoc>
+    <QtMoc Include="include\ItemBase\XBaseFItem.h">
+      <Filter>Header Files\ItemBase</Filter>
+    </QtMoc>
+    <QtMoc Include="include\Item\LoadImageItem.h">
+      <Filter>Header Files\Item</Filter>
+    </QtMoc>
+    <QtMoc Include="include\Item\TFDetectItem.h">
       <Filter>Header Files\Item</Filter>
     </QtMoc>
   </ItemGroup>
@@ -610,6 +643,15 @@
     </ClInclude>
     <ClInclude Include="include\CJSON\cJSON.h">
       <Filter>Header Files\CJSON</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\SettingsReader.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\FileCopyData.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\QFileUtils.h">
+      <Filter>Header Files\Common</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

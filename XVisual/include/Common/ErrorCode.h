@@ -10,6 +10,8 @@ namespace XVisual
 		FileNotFound = 1,
 		UmapKeyNoFound = 2,
 		UnImplementedError = 3,
+		InvalidJsonFileError = 4,
+		OpenJsonFileError = 5,
 		JsonParseFailed = 301,
 		ParseClassInfoArrFromJsonFailed = 302,
 		ParseClassNameFromJsonFailed = 303,
@@ -21,8 +23,16 @@ namespace XVisual
 		ParseOuterParamFromJsonFailed = 309,
 		ParseJsonUnknownObjectItemError = 310,
 		ParseJsonUnknownError = 311,
+
+		SettingsReaderInitError = 401,
+		SettingsDocReadFailedError = 402,
+		SettingsObjReadFailedError = 403,
+		WorkSpaceObjReadFailedError = 404,
+		UpdateSettingsJsonFailedError = 405,
+
 		UnknownXVariableNameError = 501,
 		UnknownPreParamPreTagError = 601,
+
 	};
 
 	/*
@@ -39,6 +49,50 @@ namespace XVisual
 				return "FileNotFoundError";
 			case ErrorCode::UmapKeyNoFound:
 				return "UmapKeyNoFoundError";
+			case ErrorCode::UnImplementedError:
+				return "UnImplementedError";
+			case ErrorCode::InvalidJsonFileError:
+				return "InvalidJsonFileError";
+			case ErrorCode::OpenJsonFileError:
+				return "OpenJsonFileError";
+			case ErrorCode::JsonParseFailed:
+				return "JsonParseFailed";
+			case ErrorCode::ParseClassInfoArrFromJsonFailed:
+				return "ParseClassInfoArrFromJsonFailed";
+			case ErrorCode::ParseClassNameFromJsonFailed:
+				return "ParseClassNameFromJsonFailed";
+			case ErrorCode::ParseColleagueTypeFromJsonFailed:
+				return "ParseColleagueTypeFromJsonFailed";
+			case ErrorCode::ParseColleagueIdFromJsonFailed:
+				return "ParseColleagueIdFromJsonFailed";
+			case ErrorCode::ParseSourceFromJsonFailed:
+				return "ParseSourceFromJsonFailed";
+			case ErrorCode::ParseInnerParamFromJsonFailed:
+				return "ParseInnerParamFromJsonFailed";
+			case ErrorCode::ParseInnerParamElementFailed:
+				return "ParseInnerParamElementFailed";
+			case ErrorCode::ParseOuterParamFromJsonFailed:
+				return "ParseOuterParamFromJsonFailed";
+			case ErrorCode::ParseJsonUnknownObjectItemError:
+				return "ParseJsonUnknownObjectItemError";
+			case ErrorCode::ParseJsonUnknownError:
+				return "ParseJsonUnknownError";
+
+			case ErrorCode::SettingsReaderInitError:
+				return "SettingsReaderInitError";
+			case ErrorCode::SettingsDocReadFailedError:
+				return "SettingsDocReadFailedError";
+			case ErrorCode::SettingsObjReadFailedError:
+				return "SettingsObjReadFailedError";
+			case ErrorCode::WorkSpaceObjReadFailedError:
+				return "WorkSpaceObjReadFailedError";
+			case ErrorCode::UpdateSettingsJsonFailedError:
+				return "UpdateSettingsJsonFailedError";
+
+			case ErrorCode::UnknownXVariableNameError:
+				return "UnknownXVariableNameError";
+			case ErrorCode::UnknownPreParamPreTagError:
+				return "UnknownPreParamPreTagError";
 			default:
 				return "UnknownError";
 		}

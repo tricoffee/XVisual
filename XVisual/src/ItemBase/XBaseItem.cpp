@@ -1,12 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
-
 #include "Common/LoggerInstance.h"
 #include <QGraphicsScene>
 #include <QGraphicsSceneContextMenuEvent>
 #include <QMenu>
 #include <QPainter>
 #include <mutex>
+#include <QDebug>
 #include "Common/XThreadMacro.h"
 #include "ItemBase/XBaseItem.h"
 #include "ItemBase/XArrow.h"
@@ -23,14 +21,9 @@
 #include "Common/UuidGenerator.h"
 
 // 现版本, 新增一个父类(基类)Colleague, sources和dests的实例化转由在其父类(基类)Colleague实现
-XBaseItem::XBaseItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent)
-	: QGraphicsPolygonItem(parent), myContextMenu(contextMenu)
+XBaseItem::XBaseItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent):QGraphicsPolygonItem(parent), myContextMenu(contextMenu)
 {
 	setColleagueType();
-	std::string classNameStr = "XBase";
-	setClassName(classNameStr);
-	createUniqueName(classNameStr);
-	setObjectName(QString::fromStdString(uniqueName));
 	setFlag(QGraphicsItem::ItemIsMovable, true);
 	setFlag(QGraphicsItem::ItemIsSelectable, true);
 	setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
@@ -40,11 +33,50 @@ XBaseItem::XBaseItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem*
 	initProxy();
 	// 给代理设置一个widget，并且setPos
 	setWidget();
+	// set polygon shape for Item
+	set_polygon();
 	// Item接收其代理维护的QWidget对象xitemWidget里面的一个QTextEdit发过来的信号
 	connect(xitemWidget->getEdit(), &XTextEdit::TextEditFocusOutSignal,
 		this, &XBaseItem::TextEditFocusOutSlot);
 	// 连接发送showImage信号到槽函数
 	connect(this, &XBaseItem::showImageSignal, gWidget, &GraphicsWidget::showImageSlot);
+	// 不需要在XBaseItem调用configItem("XBase"); 因为XBaseItem是基类不负责实际业务
+}
+void XBaseItem::configItem(const std::string& classNameStr)
+{
+	setClassName(classNameStr);
+	createUniqueName(classNameStr);
+	setObjectName(QString::fromStdString(uniqueName));
+	// "XBase" 以及 "XBaseF" 只是一个基类不负责具体逻辑, 所以排除 "XBase" 以及 "XBaseF"
+	if ("XBase" != classNameStr || "XBaseF" != classNameStr)
+	{
+		// 设置显示在Item上的文本
+		setEditText(QString::fromStdString(uniqueName));
+		// 创建xHandle
+		xHandle = HandleRegistry::createObject(classNameStr);
+		xHandle->setUuidConsistentWithItem(uuid);
+		initParams();
+	}
+}
+void XBaseItem::set_polygon()
+{
+	QRect rect(-50, -50, 100, 100);
+	QPainterPath path;
+	int radius = 13;
+	int cornersize = 2 * radius;
+	path.moveTo(rect.left() + radius, rect.top());
+	path.arcTo(rect.left(), rect.top(), cornersize, cornersize, 90, 90);
+	path.lineTo(rect.left(), rect.bottom() - radius);
+	path.arcTo(rect.left(), rect.bottom() - cornersize,
+		cornersize, cornersize, 180, 90);
+	path.lineTo(rect.right() - radius, rect.bottom());
+	path.arcTo(rect.right() - cornersize, rect.bottom() - cornersize,
+		cornersize, cornersize, 270, 90);
+	path.lineTo(rect.right(), rect.top() + radius);
+	path.arcTo(rect.right() - cornersize, rect.top(),
+		cornersize, cornersize, 0, 90);
+	myPolygon = path.toFillPolygon();
+	setPolygon(myPolygon);
 }
 void XBaseItem::removeArrow(XArrow* arrow)
 {
@@ -69,11 +101,11 @@ void XBaseItem::addArrow(XArrow* arrow)
 }
 QPixmap XBaseItem::image()
 {
-	QPixmap pixmap(250, 250);
+	QPixmap pixmap(105, 105);
 	pixmap.fill(Qt::transparent);
 	QPainter painter(&pixmap);
-	painter.setPen(QPen(Qt::black, 8));
-	painter.translate(125, 125);
+	painter.setPen(QPen(Qt::black, 5));
+	painter.translate(55, 55);
 	painter.drawPolyline(myPolygon);
 	return pixmap;
 }
@@ -90,6 +122,8 @@ void XBaseItem::debug()
 {
 	qDebug() << "XBaseItem::debug() ... ";
 	qDebug() << "XBaseItem::boundingRect() " << boundingRect();
+	qDebug() << "XBaseItem::boundingRect().width() " << boundingRect().width();
+	qDebug() << "XBaseItem::boundingRect().height() " << boundingRect().height();
 	qDebug() << "XBaseItem::uuid " << QString::fromStdString(uuid);
 }
 void XBaseItem::setEditText(QString mText)
@@ -137,9 +171,6 @@ void XBaseItem::createUniqueName(const std::string& classNameStr)
 }
 void XBaseItem::createUuid()
 {
-	//QUuid id = QUuid::createUuid();
-	//uuid = "Item_" + id.toString().toStdString();
-
 	uuid = "Item_" + generateUUID();
 }
 void XBaseItem::setColleagueType()

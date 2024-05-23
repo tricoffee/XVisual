@@ -2,6 +2,7 @@
 #include "Common/XThreadMacro.h"
 #include "Handle/LoadImageHandle.h"
 #include "Common/OpenCVHeaders.h"
+#include "GlobalStorage/GlobalVariable.h"
 
 LoadImageHandle::LoadImageHandle() : XBaseHandle()
 {
@@ -74,6 +75,7 @@ void LoadImageHandle::xOperate()
 
 	XLOG_INFO("LoadImageHandle::xOperate ...", CURRENT_THREAD_ID);
 	std::string imagePath = GET_MEMBER_WITH_TYPE_STR(sources, std::string, "imagePath");
+	imagePath = globalWorkSpaceDir + "/" + imagePath;
 	XLOG_INFO("LoadImageHandle::xOperate, imagePath = " + imagePath, CURRENT_THREAD_ID);
 	cv::Mat image;
 	if (!imagePath.empty())

@@ -17,51 +17,8 @@
 ImagePreItem::ImagePreItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent)
 	: XBaseItem(gWidget, contextMenu, parent)
 {
-	std::string classNameStr = "ImagePre";
-	setClassName(classNameStr);
-	createUniqueName(classNameStr);
-	setObjectName(QString::fromStdString(uniqueName));
-	QRect rect(-100, -100, 200, 200);
-	QPainterPath path;
-	int radius = 25;
-	int cornersize = 2 * radius;
-	path.moveTo(rect.left() + radius, rect.top());
-	path.arcTo(rect.left(), rect.top(), cornersize, cornersize, 90, 90);
-	path.lineTo(rect.left(), rect.bottom() - radius);
-	path.arcTo(rect.left(), rect.bottom() - cornersize,
-		cornersize, cornersize, 180, 90);
-	path.lineTo(rect.right() - radius, rect.bottom());
-	path.arcTo(rect.right() - cornersize, rect.bottom() - cornersize,
-		cornersize, cornersize, 270, 90);
-	path.lineTo(rect.right(), rect.top() + radius);
-	path.arcTo(rect.right() - cornersize, rect.top(),
-		cornersize, cornersize, 0, 90);
-	myPolygon = path.toFillPolygon();
-	setPolygon(myPolygon);
-	// 设置显示在Item上的文本
-	setEditText(QString::fromStdString(uniqueName));
+	configItem("ImagePre");
 	XLOG_INFO("ImagePreItem::ImagePreItem, uuid = " + uuid, CURRENT_THREAD_ID);
-	// 创建handle
-	xHandle = HandleRegistry::createObject(classNameStr);
-	xHandle->setUuidConsistentWithItem(uuid);
-	initParams();
-}
-QPixmap ImagePreItem::image()
-{
-	XBaseItem::myPolygon = myPolygon;
-	return XBaseItem::image();
-}
-void ImagePreItem::debug()
-{
-	qDebug() << "ImagePreItem::debug() ... ";
-	qDebug() << "ImagePreItem::boundingRect() " << boundingRect();
-	qDebug() << "ImagePreItem::boundingRect().width() " << boundingRect().width();
-	qDebug() << "ImagePreItem::boundingRect().height() " << boundingRect().height();
-	qDebug() << "ImagePreItem::uuid " << QString::fromStdString(uuid);
-}
-void ImagePreItem::initParams()
-{
-	//do nothing
 }
 void ImagePreItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 {
