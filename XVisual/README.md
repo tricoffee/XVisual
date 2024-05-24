@@ -1,6 +1,6 @@
 ## LOGO
 
-![XVisual](images/XVisual_about.png)
+![XVisual](ReadMeSamples/XVisual_about.png)
 
 ## SLOGAN
 Simplify Code, Enhance AI
@@ -154,7 +154,7 @@ The compiled tensorflow 2.9.3 c++ library for Windows provided by the author of 
 ## Quick start     
 可以从链接地址下载 (xxx) 获得快递体验
 当前可直接体验的功能点有:
-1. 导入已完成的解决方案 solutions.json，加载显示，执行计算逻辑，显示相关结果
+1. ![导入已完成的解决方案 solutions.json，加载显示，执行计算逻辑，显示相关结果](ReadMeSamples/LoadSolutions.gif)
 
 
 
