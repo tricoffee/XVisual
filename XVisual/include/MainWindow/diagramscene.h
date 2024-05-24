@@ -9,6 +9,8 @@
 #include "MainWindow/mainwindow.h"
 #include "Common/ColleagueData.h"
 
+#include "XGraph/GraphNode.h"
+
 QT_BEGIN_NAMESPACE
 class QGraphicsSceneMouseEvent;
 class QMenu;
@@ -45,6 +47,9 @@ protected:
 	void mouseMoveEvent(QGraphicsSceneMouseEvent* mouseEvent) override;
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent* mouseEvent) override;
 private:
+#ifdef DEBUG_DiagramScene
+	void findItemIndex(const std::vector<std::shared_ptr<GraphNode>>& graph, QGraphicsItem* iiItem, int iiIndex);
+#endif 
 	bool isThisType(int type) const;
 	DiagramType diagramType;
 	DiagramState diagramState;

@@ -27,17 +27,23 @@ XBaseItem::XBaseItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem*
 	setFlag(QGraphicsItem::ItemIsMovable, true);
 	setFlag(QGraphicsItem::ItemIsSelectable, true);
 	setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
+
 	// 创建Item的Uuid
 	createUuid();
+
+
 	// 给Item初始化一个代理
 	initProxy();
 	// 给代理设置一个widget，并且setPos
 	setWidget();
+
+
 	// set polygon shape for Item
 	set_polygon();
+
 	// Item接收其代理维护的QWidget对象xitemWidget里面的一个QTextEdit发过来的信号
-	connect(xitemWidget->getEdit(), &XTextEdit::TextEditFocusOutSignal,
-		this, &XBaseItem::TextEditFocusOutSlot);
+	connect(xitemWidget->getEdit(), &XTextEdit::TextEditFocusOutSignal, this, &XBaseItem::TextEditFocusOutSlot);
+
 	// 连接发送showImage信号到槽函数
 	connect(this, &XBaseItem::showImageSignal, gWidget, &GraphicsWidget::showImageSlot);
 	// 不需要在XBaseItem调用configItem("XBase"); 因为XBaseItem是基类不负责实际业务
@@ -50,8 +56,12 @@ void XBaseItem::configItem(const std::string& classNameStr)
 	// "XBase" 以及 "XBaseF" 只是一个基类不负责具体逻辑, 所以排除 "XBase" 以及 "XBaseF"
 	if ("XBase" != classNameStr || "XBaseF" != classNameStr)
 	{
+
+
 		// 设置显示在Item上的文本
 		setEditText(QString::fromStdString(uniqueName));
+
+
 		// 创建xHandle
 		xHandle = HandleRegistry::createObject(classNameStr);
 		xHandle->setUuidConsistentWithItem(uuid);
@@ -101,11 +111,11 @@ void XBaseItem::addArrow(XArrow* arrow)
 }
 QPixmap XBaseItem::image()
 {
-	QPixmap pixmap(105, 105);
+	QPixmap pixmap(100, 100);
 	pixmap.fill(Qt::transparent);
 	QPainter painter(&pixmap);
 	painter.setPen(QPen(Qt::black, 5));
-	painter.translate(55, 55);
+	painter.translate(50, 50);
 	painter.drawPolyline(myPolygon);
 	return pixmap;
 }
@@ -129,17 +139,17 @@ void XBaseItem::debug()
 void XBaseItem::setEditText(QString mText)
 {
 	xitemWidget->getEdit()->setText(mText);
-	qDebug() << "void XBaseItem::setEditText(QString mText)" << mText;
+	//qDebug() << "void XBaseItem::setEditText(QString mText)" << mText;
 }
 void XBaseItem::setEditFont(const QFont& font)
 {
 	xitemWidget->getEdit()->setFont(font);
-	qDebug() << "void XBaseItem::setEditFont(const QFont& font)" << font;
+	//qDebug() << "void XBaseItem::setEditFont(const QFont& font)" << font;
 }
 void XBaseItem::setEditColor(const QColor& color)
 {
 	xitemWidget->getEdit()->setTextColor(color);
-	qDebug() << "void XBaseItem::setEditColor(const QFont& color)" << color;
+	//qDebug() << "void XBaseItem::setEditColor(const QFont& color)" << color;
 }
 void XBaseItem::paint(QPainter* painter, 
 	const QStyleOptionGraphicsItem* option, QWidget* widget)

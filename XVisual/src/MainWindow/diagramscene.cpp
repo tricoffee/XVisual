@@ -12,6 +12,7 @@
 #include "MainWindow/GraphicsWidget.h"
 #include "ItemBase/XBaseItem.h"
 #include "Common/StrUtils.h"
+#include "ItemWidget/DiagramProxyWidget.h"
 
 DiagramScene::DiagramScene(QMenu* itemMenu, QObject* parent): QGraphicsScene(parent)
 {
@@ -105,7 +106,11 @@ void DiagramScene::addItemByJson(ColleagueData data)
 	//Unused, item->setColleagueType(data.itemColleagueType);
 	item->setUuid(data.itemColleagueId);
 	item->setUniqueName(data.itemUniqueName);
+
+
 	item->setEditText(QString::fromStdString(data.itemUniqueName));
+
+
 	item->setBrush(myItemColor);
 	std::string itemId = item->getUuid();
 	addItem(item);
@@ -331,6 +336,7 @@ void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
 
 		lineItem = new QGraphicsLineItem(QLineF(mouseEvent->scenePos(), mouseEvent->scenePos()));
 		lineItem->setPen(QPen(myLineColor, 2));
+		//lineItem->setZValue(9999.99);
 		addItem(lineItem);
 		diagramState = DiagramState::Move;
 		diagramType = DiagramType::Line;
@@ -349,6 +355,7 @@ void DiagramScene::mouseMoveEvent(QGraphicsSceneMouseEvent* mouseEvent)
 	{
 		QLineF newLine(lineItem->line().p1(), mouseEvent->scenePos());
 		lineItem->setLine(newLine);
+		//lineItem->setZValue(9999.99);
 		diagramState = DiagramState::Move;
 		diagramType = DiagramType::Line;
 		//这里采用	mouseEvent->ignore();而不是QGraphicsScene::mouseMoveEvent(mouseEvent);其目的是
@@ -368,6 +375,21 @@ void DiagramScene::mouseMoveEvent(QGraphicsSceneMouseEvent* mouseEvent)
 
 }
 
+#ifdef DEBUG_DiagramScene
+void DiagramScene::findItemIndex(const std::vector<std::shared_ptr<GraphNode>>& graph, QGraphicsItem* iiItem, int iiIndex)
+{
+	for (const auto& node : graph)
+	{
+		if (globalItemMap[node->nodeId] == iiItem)
+		{
+			XBaseItem* xiiItem = dynamic_cast<XBaseItem*>(iiItem);
+			XLOG_INFO("DiagramScene::findItemIndex, iiIndex = " + std::to_string(iiIndex) + "xiiItem->getUniqueName() = " + xiiItem->getUniqueName(), CURRENT_THREAD_ID);
+			break;
+		}
+	}
+}
+#endif 
+
 void DiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* mouseEvent)
 {
 	if (Qt::RightButton == mouseEvent->button())
@@ -379,13 +401,71 @@ void DiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* mouseEvent)
 			if (lineItem != nullptr)
 			{
 				QPointF pa = lineItem->line().p1();
-				QList<QGraphicsItem*> startItems = items(lineItem->line().p1());
+				QList<QGraphicsItem*> startItems_beforeFilter = items(lineItem->line().p1());
+				//XLOG_INFO("DiagramScene::mouseReleaseEvent, startItems_beforeFilter.count() = " + std::to_string(startItems_beforeFilter.count()), CURRENT_THREAD_ID);
+				QList<QGraphicsItem*> startItems;
+				for (QGraphicsItem* kkItem : startItems_beforeFilter)
+				{
+					if (!qgraphicsitem_cast<DiagramProxyWidget*>(kkItem))
+					{
+						startItems.append(kkItem);
+					}
+				}
+
+#ifdef DEBUG_DiagramScene
+				int iiIndex = 0;
+				for (const auto& iiItem: startItems)
+				{
+					std::string type_str = std::to_string(iiItem->Type);
+					XLOG_INFO("DiagramScene::mouseReleaseEvent, type_str = " + type_str, CURRENT_THREAD_ID);
+					if (iiItem == nullptr)
+					{
+						XLOG_INFO("DiagramScene::mouseReleaseEvent, iiItem == nullptr ", CURRENT_THREAD_ID);
+					}
+					else
+					{
+						XLOG_INFO("DiagramScene::mouseReleaseEvent, iiItem != nullptr ", CURRENT_THREAD_ID);
+						iiIndex += 1;
+						XLOG_INFO("DiagramScene::mouseReleaseEvent, iiIndex = " + std::to_string(iiIndex), CURRENT_THREAD_ID);
+						if (iiItem == lineItem)
+						{
+							XLOG_INFO("DiagramScene::mouseReleaseEvent, iiIndex = " + std::to_string(iiIndex) + " iiItem == lineItem ", CURRENT_THREAD_ID);
+						}
+						findItemIndex(xGraph, iiItem, iiIndex);
+
+						//try
+						//{
+						//	XBaseItem* xxItem = dynamic_cast<XBaseItem*>(iiItem);
+						//	XLOG_INFO("DiagramScene::mouseReleaseEvent, xxItem->getClassName() = " + xxItem->getClassName(), CURRENT_THREAD_ID);
+						//}
+						//catch (std::bad_cast& e)
+						//{
+						//	//std::cerr << "Caught bad_cast exception: " << e.what() << std::endl;
+						//	XLOG_INFO("DiagramScene::mouseReleaseEvent, std::bad_cast ", CURRENT_THREAD_ID);
+						//}
+
+						XLOG_INFO("DiagramScene::mouseReleaseEvent, typeid(iiItem).name() = " + std::string(typeid(iiItem).name()), CURRENT_THREAD_ID);
+
+					}
+					
+				}
+#endif 
+
 				if (startItems.count() && startItems.first() == lineItem)
 				{
 					startItems.removeFirst();
 				}
 				QPointF pb = lineItem->line().p2();
-				QList<QGraphicsItem*> endItems = items(lineItem->line().p2());
+				QList<QGraphicsItem*> endItems_beforeFilter = items(lineItem->line().p2());
+				//XLOG_INFO("DiagramScene::mouseReleaseEvent, endItems_beforeFilter.count() = " + std::to_string(endItems_beforeFilter.count()), CURRENT_THREAD_ID);
+				QList<QGraphicsItem*> endItems;
+				for (QGraphicsItem* kkItem : endItems_beforeFilter)
+				{
+					if (!qgraphicsitem_cast<DiagramProxyWidget*>(kkItem))
+					{
+						endItems.append(kkItem);
+					}
+				}
 				if (endItems.count() && endItems.first() == lineItem)
 				{
 					endItems.removeFirst();
