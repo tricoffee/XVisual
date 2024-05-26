@@ -316,7 +316,7 @@ If my `%Path_to_protobuf_library%` corresponds to `C:\NDev\ThirdParty\protobuf_b
 </details>     
               
 ## Quick start     
-可以从如下链接地址下载 `XVisual_Release_Express_Experience` 获得快递体验           
+The `XVisual_Release_Express_Experience` can be downloaded from the following link for an express experience      
 [XVisual_Release_Express_Experience for Windows on GoogleDrive](https://drive.google.com/file/d/1tOhYaEC4DyUFWYEBY_DwjnOpOUxskUCW/view?usp=drive_link)             
 [XVisual_Release_Express_Experience for Windows on BaiduYunDrive](https://pan.baidu.com/s/1xBKuozoNEvrO4QXT7ZL1Ng?pwd=3moo), extraction code: 3moo                    
 大小: 844217894 字节 (805 MiB)             

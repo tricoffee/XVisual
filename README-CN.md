@@ -318,7 +318,7 @@ tensorflow 库放置在 `%Path_to_tf2.9.3_cpp_library%`
 </details>
               
 ## Quick start                
-The `XVisual_Release_Express_Experience` can be downloaded from the following link for an express experience          
+可以从如下链接地址下载 `XVisual_Release_Express_Experience` 获得快递体验            
 [XVisual_Release_Express_Experience for Windows on GoogleDrive](https://drive.google.com/file/d/1tOhYaEC4DyUFWYEBY_DwjnOpOUxskUCW/view?usp=drive_link)             
 [XVisual_Release_Express_Experience for Windows on BaiduYunDrive](https://pan.baidu.com/s/1xBKuozoNEvrO4QXT7ZL1Ng?pwd=3moo), 提取码: 3moo                    
 大小: 844217894 字节 (805 MiB)             
