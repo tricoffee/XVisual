@@ -393,7 +393,7 @@ How to add custom handles and items
 - 微信          
 ![WeChat](ReadMeSamples/WeChatPay.jpg)         
 - 支付宝          
-![Alipay](ReadMeSamples/Alipay.jpg)             
+![Alipay](ReadMeSamples/AliPay.jpg)             
          
 ## 技术支持与商业合作          
 如果您在使用本项目的过程中遇到任何问题，或者有商业合作的意向，请随时通过以下方式取得联系：        

@@ -392,7 +392,7 @@ You can make a bounty in the following ways:
 - WeChat          
 ![WeChat](ReadMeSamples/WeChatPay.jpg)         
 - Alipay                  
-![Alipay](ReadMeSamples/Alipay.jpg)             
+![Alipay](ReadMeSamples/AliPay.jpg)             
          
 ## 技术支持与商业合作          
 If you encounter any problems in the process of using this program, or have the intention of business cooperation, please feel free to get in touch via the following methods:        
