@@ -394,7 +394,7 @@ You can make a bounty in the following ways:
 - Alipay                  
 ![Alipay](ReadMeSamples/AliPay.jpg)             
          
-## 技术支持与商业合作          
+## Technical Support and Business Cooperation                                  
 If you encounter any problems in the process of using this program, or have the intention of business cooperation, please feel free to get in touch via the following methods:        
 - **EMail**: [lihenghe93@gmail.com](mailto:lihenghe93@gmail.com)            
 Very much looking forward to cooperating with you !           
