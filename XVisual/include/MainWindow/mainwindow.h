@@ -7,6 +7,7 @@
 #include "Common/SettingsReader.h"
 
 QT_BEGIN_NAMESPACE
+namespace Ui { class MainWindow; }
 class QAction;
 class QToolBox;
 class QSpinBox;
@@ -26,7 +27,8 @@ class MainWindow : public QMainWindow
 	Q_OBJECT
 
 public:
-	MainWindow(const QString& mProjectRootDir, QWidget* parent = nullptr);
+	explicit MainWindow(const QString& mProjectRootDir, QWidget* parent = nullptr);
+	~MainWindow();
 	std::map<int, QString> idnames;
 	void inintActionConnection();
 	XVisual::ErrorCode lastError() const
@@ -67,28 +69,9 @@ private:
 	QIcon createColorToolButtonIcon(const QString& image, QColor color);
 	QIcon createColorIcon(QColor color);
 
-	QAction* exitAction;
-	QAction* addAction;
-	QAction* deleteAction;
-
-	QAction* toFrontAction;
-	QAction* sendBackAction;
-	QAction* workspaceAction;
-	QAction* aboutAction;
-
-	QMenu* fileMenu;
-	QMenu* itemMenu;
-	QMenu* settingsMenu;
-	QMenu* aboutMenu;
-
-	QToolBar* textToolBar;
-	QToolBar* editToolBar;
-	QToolBar* colorToolBar;
-	QToolBar* pointerToolBar;
-	QToolBar* sceneScaleBar;
-	QToolBar* runButtonToolBar;
-	QToolBar* exportButtonToolBar;
-	QToolBar* loadButtonToolBar;
+	QAction* textAction;
+	QAction* fillAction;
+	QAction* lineAction;
 
 	QComboBox* sceneScaleCombo;
 	QComboBox* itemColorCombo;
@@ -96,7 +79,6 @@ private:
 	QComboBox* fontSizeCombo;
 	QFontComboBox* fontCombo;
 
-	QToolBox* toolBox;
 	QToolButton* linePointerButton;
 	QButtonGroup* buttonGroup;
 	QToolButton* runButton;
@@ -106,15 +88,6 @@ private:
 	QToolButton* fontColorToolButton;
 	QToolButton* fillColorToolButton;
 	QToolButton* lineColorToolButton;
-	QAction* boldAction;
-	QAction* underlineAction;
-	QAction* italicAction;
-	QAction* textAction;
-	QAction* fillAction;
-	QAction* lineAction;
-
-	GraphicsWidget* graphicsWidget;
-	SideWidget* sideWidget;
 
 	XVisual::ErrorCode m_lastError = XVisual::ErrorCode::Success;
 
@@ -123,6 +96,41 @@ private:
 
 	QString settingsFilePath;
 	WorkSpaceData workspaceData;
+
+    // Pointer to UI class
+    Ui::MainWindow *ui;
+
+    // Pointers to UI widgets for easier access (or refactor cpp to use ui->)
+    QToolBox* toolBox;
+    GraphicsWidget* graphicsWidget;
+    SideWidget* sideWidget;
+
+    // Actions (populated from UI)
+    QAction* toFrontAction;
+    QAction* sendBackAction;
+    QAction* deleteAction;
+    QAction* exitAction;
+    QAction* boldAction;
+    QAction* italicAction;
+    QAction* underlineAction;
+    QAction* workspaceAction;
+    QAction* aboutAction;
+
+    // Menus (populated from UI)
+    QMenu* fileMenu;
+    QMenu* itemMenu;
+    QMenu* settingsMenu;
+    QMenu* aboutMenu;
+
+    // Toolbars (populated from UI)
+    QToolBar* editToolBar;
+    QToolBar* textToolBar;
+    QToolBar* colorToolBar;
+    QToolBar* sceneScaleBar;
+    QToolBar* pointerToolBar;
+    QToolBar* runButtonToolBar;
+    QToolBar* exportButtonToolBar;
+    QToolBar* loadButtonToolBar;
 };
 
 #endif // MAINWINDOW_H

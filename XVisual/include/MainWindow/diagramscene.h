@@ -27,6 +27,7 @@ class DiagramScene : public QGraphicsScene
 
 public:
 	explicit DiagramScene(QMenu* itemMenu, QObject* parent = nullptr);
+    void setItemMenu(QMenu* itemMenu) { myItemMenu = itemMenu; }
 	QFont font() const { return myFont; }
 	QColor textColor() const { return myTextColor; }
 	QColor itemColor() const { return myItemColor; }

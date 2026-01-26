@@ -11,6 +11,27 @@
 #include <QGraphicsScene>
 #include <QHeaderView>
 
+GraphicsWidget::GraphicsWidget(QWidget* parent, Qt::WindowFlags)
+	:QWidget(parent), itemMenu(nullptr)
+{
+	//setStyleSheet("background:transparent;border:none");
+
+	scene_width = 5000;
+	scene_height = 5000;
+	// Scene initialized with nullptr menu, menu must be set later
+	scene = new DiagramScene(itemMenu, this);
+	scene->setSceneRect(QRectF(0, 0, scene_width, scene_height));
+
+	view = new QGraphicsView(scene);
+	view->setMouseTracking(true);
+	scene->setView(view);
+
+	// set layout for this GraphicsWidget and QGraphicsView
+	QGridLayout* layout = new QGridLayout();
+	layout->addWidget(view);
+	setLayout(layout);
+}
+
 GraphicsWidget::GraphicsWidget(QMenu* myItemMenu, QWidget* parent, Qt::WindowFlags)
 	:QWidget(parent), itemMenu(myItemMenu)
 {
@@ -29,6 +50,14 @@ GraphicsWidget::GraphicsWidget(QMenu* myItemMenu, QWidget* parent, Qt::WindowFla
 	QGridLayout* layout = new QGridLayout();
 	layout->addWidget(view);
 	setLayout(layout);
+}
+
+void GraphicsWidget::setItemMenu(QMenu* myItemMenu)
+{
+	itemMenu = myItemMenu;
+	if(scene) {
+		scene->setItemMenu(itemMenu);
+	}
 }
 
 void GraphicsWidget::setBackgroundBrushChange(const QBrush& brush)
@@ -146,14 +175,14 @@ void GraphicsWidget::showTableViewSlot(const QString& xName, const QString& yNam
 {
 	QStandardItemModel* lastModel = xLineArrow->getLatestTableViewModel();
 
-	// ±ØĞëÈ·±£ defaultValues µÄ³¤¶ÈµÈÓÚ variablesX µÄ³¤¶È
+	// å¿…é¡»ç¡®ä¿ defaultValues çš„é•¿åº¦ç­‰äº variablesX çš„é•¿åº¦
 	// must ensure the length of defaultValues is equal to the length of variablesX
 	std::unordered_map<std::string, TableData>& defaultValues = xLineArrow->getDefaultYforVariablesX();
 
 	XLOG_INFO("GraphicsWidget::showTableViewSlot, defaultValues.size() = " + std::to_string(defaultValues.size()), CURRENT_THREAD_ID);
 
 	tableView = new CustomTableView(xLineArrow);
-	// ÉèÖÃ¶ÔÏóÃû³ÆÎª "tableView"
+	// è®¾ç½®å¯¹è±¡åç§°ä¸º "tableView"
 	tableView->setObjectName("tableView");
 
 	// Create a QStandardItemModel
@@ -191,7 +220,7 @@ void GraphicsWidget::showTableViewSlot(const QString& xName, const QString& yNam
 		std::string xName = xVar.name;
 		if (!defaultValues.empty())
 		{
-			// ¼ì²é×Ö·û´® xName ÊÇ·ñÊÇÒ»¸ö¼ü
+			// æ£€æŸ¥å­—ç¬¦ä¸² xName æ˜¯å¦æ˜¯ä¸€ä¸ªé”®
 			auto it = defaultValues.find(xName);
 			if (it != defaultValues.end())
 			{
@@ -208,24 +237,24 @@ void GraphicsWidget::showTableViewSlot(const QString& xName, const QString& yNam
 		defaultValues.clear();
 	}
 
-	// »Ö¸´ÉÏ´ÎÊ¹ÓÃµÄÊı¾İÄ£ĞÍ×´Ì¬
-	if (lastModel) // ÒòÎªµÚÒ»´Î¼ÓÔØÊ± lastModel Îª nullptr, ËùÒÔÕâ¸öÆ¬¶ÎµÄ´úÂë²»»á±»Ö´ĞĞ
+	// æ¢å¤ä¸Šæ¬¡ä½¿ç”¨çš„æ•°æ®æ¨¡å‹çŠ¶æ€
+	if (lastModel) // å› ä¸ºç¬¬ä¸€æ¬¡åŠ è½½æ—¶ lastModel ä¸º nullptr, æ‰€ä»¥è¿™ä¸ªç‰‡æ®µçš„ä»£ç ä¸ä¼šè¢«æ‰§è¡Œ
 	{
-		// ¸´ÖÆÉÏ´ÎÄ£ĞÍµÄÊı¾İµ½µ±Ç°Ä£ĞÍ
+		// å¤åˆ¶ä¸Šæ¬¡æ¨¡å‹çš„æ•°æ®åˆ°å½“å‰æ¨¡å‹
 		for (int row = 0; row < lastModel->rowCount(); ++row)
 		{
-			QModelIndex lastModelIndex = lastModel->index(row, 1); // µÚ¶şÁĞµÄË÷Òı
+			QModelIndex lastModelIndex = lastModel->index(row, 1); // ç¬¬äºŒåˆ—çš„ç´¢å¼•
 			if (lastModelIndex.isValid())
 			{
 				QString selectedText = lastModelIndex.data().toString();
-				QModelIndex currentIndex = model->index(row, 1); // µ±Ç°Ä£ĞÍ¶ÔÓ¦µÄË÷Òı
-				model->setData(currentIndex, selectedText); // ÉèÖÃµ±Ç°Ä£ĞÍµÄ ComboBox Ñ¡ÖĞÏî
+				QModelIndex currentIndex = model->index(row, 1); // å½“å‰æ¨¡å‹å¯¹åº”çš„ç´¢å¼•
+				model->setData(currentIndex, selectedText); // è®¾ç½®å½“å‰æ¨¡å‹çš„ ComboBox é€‰ä¸­é¡¹
 			}
 		}
 	}
 
-	// ±£´æµ±Ç°Êı¾İÄ£ĞÍµ½ lastModel, ÉèÖÃ xLineArrow µÄ latestTableViewModel ¾ÍÊÇÉèÖÃÕâÀïµÄ¾Ö²¿±äÁ¿ lastModel
-	xLineArrow->setLatestTableViewModel(model); // µÈÍ¬ÓÚ¸üĞÂ¾Ö²¿±äÁ¿ lastModel
+	// ä¿å­˜å½“å‰æ•°æ®æ¨¡å‹åˆ° lastModel, è®¾ç½® xLineArrow çš„ latestTableViewModel å°±æ˜¯è®¾ç½®è¿™é‡Œçš„å±€éƒ¨å˜é‡ lastModel
+	xLineArrow->setLatestTableViewModel(model); // ç­‰åŒäºæ›´æ–°å±€éƒ¨å˜é‡ lastModel
 
 	tableView->show();
 }

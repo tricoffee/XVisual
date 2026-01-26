@@ -16,8 +16,10 @@ class GraphicsWidget : public QWidget
 {
 	Q_OBJECT
 	public:
+		GraphicsWidget(QWidget* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
 		GraphicsWidget(QMenu* itemMenu, QWidget* parent = nullptr, 
 			Qt::WindowFlags f = Qt::WindowFlags());
+		void setItemMenu(QMenu* itemMenu);
 		void setBackgroundBrushChange(const QBrush& brush);
 		void setSceneScaleChange(const QString& scale);
 		void setItemTextColor(const QColor& color);

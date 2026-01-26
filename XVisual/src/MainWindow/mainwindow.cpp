@@ -3,6 +3,8 @@
 #include "GlobalStorage/GlobalStorage.h"
 #include "XGraph/XGraph.h"
 
+#include "ui_mainwindow.h"
+
 #include <QtWidgets>
 #include <QString>
 #include <string>
@@ -18,11 +20,11 @@
 #include "MainWindow/SideWidget.h"
 #include "MainWindow/ImagePageWidget.h"
 #include "Exception/UmapKeyNoFoundException.h"
-#include "CJSON/cJson.h"
+#include "CJSON/cJSON.h"
 #include <fstream>
 #include <set>
 #include <any>
-#include "Common/JsonFIleUtils.h"
+// NOTE: keep only the correct-cased header to avoid include issues on case-sensitive FS
 #include "Common/XParser.h"
 #include "Common/TypeClassifier.h"
 #include "GlobalStorage/GlobalVariable.h"
@@ -99,78 +101,84 @@ void MainWindow::makeDefaultSettings()
 	file.close();
 }
 
-MainWindow::MainWindow(const QString& mProjectRootDir, QWidget* parent) : QMainWindow(parent)
+MainWindow::MainWindow(const QString& mProjectRootDir, QWidget* parent)
+	: QMainWindow(parent)
+	, ui(new Ui::MainWindow)
 {
+	ui->setupUi(this);
+
+	// bind ui toolBox, graphicsWidget, sideWidget
+	toolBox = ui->toolBox;
+	graphicsWidget = ui->graphicsWidget;
+	sideWidget = ui->sideWidget;
+
+	// bind ui actions
+	exitAction = ui->actionExit;
+	deleteAction = ui->actionDelete;
+	toFrontAction = ui->actionToFront;
+	sendBackAction = ui->actionSendBack;
+	workspaceAction = ui->actionWorkspace;
+	aboutAction = ui->actionAbout;
+	boldAction = ui->actionBold;
+	italicAction = ui->actionItalic;
+	underlineAction = ui->actionUnderline;
+
+	// bind ui menus
+	fileMenu = ui->menuFile;
+	itemMenu = ui->menuItem;
+	settingsMenu = ui->menuSettings;
+	aboutMenu = ui->menuHelp;
+
+	// bind ui toolbars
+	editToolBar = ui->editToolBar;
+	textToolBar = ui->fontToolBar;
+	colorToolBar = ui->colorToolBar;
+	sceneScaleBar = ui->scaleToolBar;
+	pointerToolBar = ui->pointerToolBar;
+	runButtonToolBar = ui->runButtonToolBar;
+	exportButtonToolBar = ui->exportButtonToolBar;
+	loadButtonToolBar = ui->loadButtonToolBar;
+
+	// 
+	graphicsWidget->setItemMenu(itemMenu);
+
 	// default settingsFilePath
 	settingsFilePath = mProjectRootDir + "/settings.json";
 
-	workspaceData.customWorkSpace = ""; // QString 
-	workspaceData.defaultWorkSpace = mProjectRootDir + "/WorkSpace"; // QString 
-	workspaceData.enableCustom = 0; // int 
+	workspaceData.customWorkSpace = ""; // QString
+	workspaceData.defaultWorkSpace = mProjectRootDir + "/WorkSpace"; // QString
+	workspaceData.enableCustom = 0; // int
 
-	// if settingsFilePath_ exists, then read WorkSpaceData from this json file, and update \"data\"
+	// if settingsFilePath exists, read WorkSpaceData from json file
 	if (isJsonFile(settingsFilePath.toStdString()))
 	{
 		SettingsReader& reader = SettingsReader::getInstance();
 		reader.getData(settingsFilePath, workspaceData);
-		if (workspaceData.enableCustom) // data.enableCustom == 1
-		{
-			// update globalWorkSpaceDir
+		if (workspaceData.enableCustom)
 			globalWorkSpaceDir = workspaceData.customWorkSpace.toStdString();
-		}
-		else // data.enableCustom == 0
-		{
-			// update globalWorkSpaceDir
+		else
 			globalWorkSpaceDir = workspaceData.defaultWorkSpace.toStdString();
-		}
 	}
 	else
 	{
-		// update globalWorkSpaceDir
 		globalWorkSpaceDir = workspaceData.defaultWorkSpace.toStdString();
 		checkAndCreateDirectory(workspaceData.defaultWorkSpace);
 		makeDefaultSettings();
 	}
-	createActions();
-	createMenus();
-    graphicsWidget = new GraphicsWidget(itemMenu);
-	createToolbars();
+
 	createToolBox();
+	createToolbars();
 	inintActionConnection();
 
-	sideWidget = new SideWidget();
-
-	// 创建水平方向splitter
-	QSplitter* splitter = new QSplitter(Qt::Horizontal);
-	// 设置QSplitter分割线的样式表
-	splitter->setStyleSheet("QSplitter::handle { background: lightgray; border: 1px gray; }");
-    // 将toolBox添加到splitter
-	splitter->addWidget(toolBox);
-	// 将graphicsWidget添加到splitter
-	splitter->addWidget(graphicsWidget);
-	// 将sideWidget添加到splitter
-	splitter->addWidget(sideWidget);
-	//设置拉伸比例
-	splitter->setStretchFactor(0, 1);
-	splitter->setStretchFactor(1, 1);
-	splitter->setStretchFactor(2, 0);
-
-	QHBoxLayout* layout = new QHBoxLayout;
-	layout->addWidget(splitter);
-	// 设置layout中小控件之间的距离, 即设置内边距
-	layout->setSpacing(0);
-	// 设置layout的外边距
-	layout->setContentsMargins(0, 0, 0, 0);
-
-	QWidget* widget = new QWidget;
-	widget->setLayout(layout);
-
-	setCentralWidget(widget);
-	setWindowTitle(tr("XVisual"));
 	setUnifiedTitleAndToolBarOnMac(true);
 
-	connect(graphicsWidget, &GraphicsWidget::showImageInTabSignal, 
-		sideWidget,&SideWidget::showImageInTabSlot);
+	connect(graphicsWidget, &GraphicsWidget::showImageInTabSignal,
+		sideWidget, &SideWidget::showImageInTabSlot);
+}
+
+MainWindow::~MainWindow()
+{
+	delete ui;
 }
 
 void MainWindow::buttonGroupClicked(QAbstractButton* button)
@@ -734,7 +742,7 @@ void MainWindow::itemColorChanged()
 		ImageSources::FloodFill,
 		qvariant_cast<QColor>(fillAction->data())));
 	//去掉原来的fillButtonTriggered();直接把fillButtonTriggered里面的这一句拿过来，如下:
-	//这段代码表示设置场景scene中item的颜色
+    //这段代码表示设置场景scene中item的颜色
 	QColor color = qvariant_cast<QColor>(fillAction->data());
 	graphicsWidget->setSceneItemColor(color);
 }
@@ -763,7 +771,7 @@ void MainWindow::handleFontChanged()
 	font.setWeight(boldAction->isChecked() ? QFont::Bold : QFont::Normal);
 	font.setItalic(italicAction->isChecked());
 	font.setUnderline(underlineAction->isChecked());
-	graphicsWidget->setFont(font);
+	graphicsWidget->setSceneFont(font);
 }
 
 
@@ -852,7 +860,6 @@ void MainWindow::createToolBox()
 	QWidget* itemWidget2 = new QWidget;
 	itemWidget2->setLayout(layout2);
 
-	toolBox = new QToolBox;
 	toolBox->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Ignored));
 	toolBox->setMinimumWidth(itemWidget1->sizeHint().width());
 	toolBox->addItem(itemWidget1, tr("Image Processing"));
@@ -875,67 +882,16 @@ void MainWindow::inintActionConnection()
 
 void MainWindow::createActions()
 {
-	toFrontAction = new QAction(QIcon(ImageSources::BringFront),
-		tr("Bring to &Front"), this);
-	toFrontAction->setShortcut(tr("Ctrl+F"));
-	toFrontAction->setStatusTip(tr("Bring item to front"));
 	
-	sendBackAction = new QAction(QIcon(ImageSources::SendBack), tr("Send to &Back"), this);
-	sendBackAction->setShortcut(tr("Ctrl+T"));
-	sendBackAction->setStatusTip(tr("Send item to back"));
-	
-	deleteAction = new QAction(QIcon(ImageSources::Delete), tr("&Delete"), this);
-	deleteAction->setShortcut(tr("Delete"));
-	deleteAction->setStatusTip(tr("Delete item from diagram"));
-	
-	exitAction = new QAction(tr("E&xit"), this);
-	exitAction->setShortcuts(QKeySequence::Quit);
-	exitAction->setStatusTip(tr("Quit Scenediagram example"));
-	
-	boldAction = new QAction(QIcon(ImageSources::Bold), tr("Bold"), this);
-	boldAction->setCheckable(true);
-	boldAction->setShortcut(tr("Ctrl+B"));
-	
-	italicAction = new QAction(QIcon(ImageSources::Italic), tr("Italic"), this);
-	italicAction->setCheckable(true);
-	italicAction->setShortcut(tr("Ctrl+I"));
-	
-	underlineAction = new QAction(QIcon(ImageSources::Underline), tr("Underline"), this);
-	underlineAction->setCheckable(true);
-	underlineAction->setShortcut(tr("Ctrl+U"));
-
-	workspaceAction = new QAction(tr("WorkSpace"));
-	
-	aboutAction = new QAction(tr("A&bout"), this);
-	aboutAction->setShortcut(tr("F1"));
 }
 
 void MainWindow::createMenus()
 {
-	fileMenu = menuBar()->addMenu(tr("&File"));
-	fileMenu->addAction(exitAction);
-
-	itemMenu = menuBar()->addMenu(tr("&Item"));
-	itemMenu->addAction(deleteAction);
-	itemMenu->addSeparator();
-	itemMenu->addAction(toFrontAction);
-	itemMenu->addAction(sendBackAction);
-
-	settingsMenu = menuBar()->addMenu(tr("&Settings"));
-	settingsMenu->addAction(workspaceAction);
-
-	aboutMenu = menuBar()->addMenu(tr("&Help"));
-	aboutMenu->addAction(aboutAction);
+	
 }
 
 void MainWindow::createToolbars()
 {
-
-	editToolBar = addToolBar(tr("Edit"));
-	editToolBar->addAction(deleteAction);
-	editToolBar->addAction(toFrontAction);
-	editToolBar->addAction(sendBackAction);
-
 	fontCombo = new QFontComboBox();
 	connect(fontCombo, &QFontComboBox::currentFontChanged,
 		this, &MainWindow::currentFontChanged);
@@ -968,14 +924,9 @@ void MainWindow::createToolbars()
 	lineColorToolButton->setMenu(createColorMenu(SLOT(lineColorChanged()), Qt::black));
 	lineAction = lineColorToolButton->menu()->defaultAction();
 	lineColorToolButton->setIcon(createColorToolButtonIcon(ImageSources::LineColor, Qt::black));
-	textToolBar = addToolBar(tr("Font"));
 	textToolBar->addWidget(fontCombo);
 	textToolBar->addWidget(fontSizeCombo);
-	textToolBar->addAction(boldAction);
-	textToolBar->addAction(italicAction);
-	textToolBar->addAction(underlineAction);
 
-	colorToolBar = addToolBar(tr("Color"));
 	colorToolBar->addWidget(fontColorToolButton);
 	colorToolBar->addWidget(fillColorToolButton);
 	colorToolBar->addWidget(lineColorToolButton);
@@ -1011,20 +962,14 @@ void MainWindow::createToolbars()
 	sceneScaleCombo->setCurrentIndex(2);
 	connect(sceneScaleCombo, &QComboBox::currentTextChanged,
 		this, &MainWindow::sceneScaleChanged);
-
-	sceneScaleBar = addToolBar(tr("Scale"));
 	sceneScaleBar->addWidget(sceneScaleCombo);
 
-	pointerToolBar = addToolBar(tr("linePointer"));
 	pointerToolBar->addWidget(linePointerButton);
 
-	runButtonToolBar = addToolBar(tr("Run"));
 	runButtonToolBar->addWidget(runButton);
 
-	exportButtonToolBar = addToolBar(tr("Export"));
 	exportButtonToolBar->addWidget(exportButton);
 
-	loadButtonToolBar = addToolBar(tr("Load"));
 	loadButtonToolBar->addWidget(loadButton);
 }
 
@@ -1093,7 +1038,7 @@ QIcon MainWindow::createColorToolButtonIcon(const QString& imageFile, QColor col
 	QRect source(0, 0, 42, 43);
 	// ToolButton的图标大小42x43, 左上角(4,0), 右下角(46,43)
 	painter.drawPixmap(target, image, source);
-	//颜色块大小50x20, 左上角(0,60), 右下角(50,80)
+	// 颜色块大小50x20, 左上角(0,60), 右下角(50,80)
 	painter.fillRect(QRect(0, 60, 50, 20), color);
 	return QIcon(pixmap);
 }
