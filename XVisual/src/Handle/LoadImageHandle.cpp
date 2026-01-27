@@ -3,6 +3,7 @@
 #include "Handle/LoadImageHandle.h"
 #include "Common/OpenCVHeaders.h"
 #include "GlobalStorage/GlobalVariable.h"
+#include <filesystem>
 
 LoadImageHandle::LoadImageHandle() : XBaseHandle()
 {
@@ -74,12 +75,22 @@ void LoadImageHandle::xOperate()
 {
 
 	XLOG_INFO("LoadImageHandle::xOperate ...", CURRENT_THREAD_ID);
-	std::string imagePath = GET_MEMBER_WITH_TYPE_STR(sources, std::string, "imagePath");
-	imagePath = globalWorkSpaceDir + "/" + imagePath;
-	XLOG_INFO("LoadImageHandle::xOperate, imagePath = " + imagePath, CURRENT_THREAD_ID);
+	std::string imagePath0 = GET_MEMBER_WITH_TYPE_STR(sources, std::string, "imagePath");
+	XLOG_INFO("LoadImageHandle::xOperate, imagePath = " + imagePath0, CURRENT_THREAD_ID);
+
 	cv::Mat image;
-	if (!imagePath.empty())
+	if (!imagePath0.empty())
 	{
+		namespace fs = std::filesystem;
+		fs::path p(imagePath0);
+
+		// 仅当是相对路径时才拼接工作区
+		if (p.is_relative()) {
+			p = fs::path(globalWorkSpaceDir) / p;
+		}
+
+		std::string imagePath = p.lexically_normal().string();
+
 		image = cv::imread(imagePath);
 		REGISTER_MEMBER_STR(dests, "image", image);
 		XLOG_INFO("LoadImageHandle::xOperate " + imagePath, CURRENT_THREAD_ID);
