@@ -7,6 +7,8 @@
 #include "MainWindow/ImagePageWidget.h"
 #include "ItemBase/XBaseItem.h"
 
+namespace XVisual {
+
 ImagePageWidget::ImagePageWidget(QWidget* parent) :QWidget(parent)
 {
 	tabWidget = new QTabWidget();
@@ -40,7 +42,7 @@ void ImagePageWidget::tabSelectedSlot(const QString& itemName)
 {
 	int tabIndex = -1;
 
-	// ±éÀú±êÇ©Ò³£¬²éÕÒÓë itemName Æ¥ÅäµÄ±êÇ©Ò³
+	// éå†æ ‡ç­¾é¡µï¼ŒæŸ¥æ‰¾ä¸ itemName åŒ¹é…çš„æ ‡ç­¾é¡µ
 	for (int i = 0; i < tabWidget->count(); ++i) 
 	{
 		if (tabWidget->tabText(i) == itemName) 
@@ -52,14 +54,14 @@ void ImagePageWidget::tabSelectedSlot(const QString& itemName)
 
 	if (tabIndex != -1) 
 	{
-		// ÔÚÕâÀï¿ÉÒÔ½øÒ»²½´¦ÀíÒÑ¾­´æÔÚµÄ±êÇ©Ò³
+		// åœ¨è¿™é‡Œå¯ä»¥è¿›ä¸€æ­¥å¤„ç†å·²ç»å­˜åœ¨çš„æ ‡ç­¾é¡µ
 		tabWidget->setCurrentIndex(tabIndex);
 		//qDebug() << "Tab with name " << itemName << " exists at index " << tabIndex;
 
 	}
 	else 
 	{
-		// ÔÚÕâÀï¿ÉÒÔ´¦Àí±êÇ©Ò³²»´æÔÚµÄÇé¿ö
+		// åœ¨è¿™é‡Œå¯ä»¥å¤„ç†æ ‡ç­¾é¡µä¸å­˜åœ¨çš„æƒ…å†µ
 		tabWidget->setCurrentIndex(-1);
 		//qDebug() << "Tab with name " << itemName << " does not exist";
 	}
@@ -72,7 +74,7 @@ void ImagePageWidget::tabCurrentSlot(int index)
 	//{
 	//}
 
-	// Ê¹ÓÃË÷Òı»ñÈ¡¶ÔÓ¦±êÇ©Ò³µÄ±êÇ©
+	// ä½¿ç”¨ç´¢å¼•è·å–å¯¹åº”æ ‡ç­¾é¡µçš„æ ‡ç­¾
 	QString currentTabLabel = tabWidget->tabText(index);
 	emit tabChangedSignal(currentTabLabel);
 }
@@ -81,3 +83,5 @@ void ImagePageWidget::tabToggledSlot(const QString& itemName)
 {
 	tabSelectedSlot(itemName);
 }
+
+} // namespace XVisual

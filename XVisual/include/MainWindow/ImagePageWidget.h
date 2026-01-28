@@ -7,6 +7,9 @@
 #include "Common/OpenCVHeaders.h"
 
 class XBaseItem;
+
+namespace XVisual {
+
 class ImagePageWidget : public QWidget
 {
 	Q_OBJECT
@@ -25,6 +28,8 @@ class ImagePageWidget : public QWidget
 		QTabWidget* tabWidget;
 		QGridLayout* gridLayout;
 };
+
+} // namespace XVisual
 
 #endif // ImagePageWidget_H
 

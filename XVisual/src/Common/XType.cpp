@@ -1,36 +1,38 @@
 #include "Common/XType.h"
 
-std::pair<std::string, XType> EnumNumber2XType(int number)
-{
-	std::string typeStr = "XType::Unknown";
-	XType cType = XType::Unknown;
-	switch (number)
+namespace XVisual {
+	std::pair<std::string, XType> EnumNumber2XType(int number)
 	{
-	case static_cast<int>(XType::Str):
-		typeStr = "XType::Str";
-		std::cout << typeStr << std::endl;
-		cType = static_cast<XType>(number);
-		break;
-	case static_cast<int>(XType::Arr):
-		typeStr = "XType::Arr";
-		std::cout << typeStr << std::endl;
-		cType = static_cast<XType>(number);
-		break;
-	case static_cast<int>(XType::CVRect):
-		typeStr = "XType::CVRect";
-		std::cout << typeStr << std::endl;
-		cType = static_cast<XType>(number);
-		break;
-	default:
-		// ÌÀí”µ×Ö²»ÔÚÁĞÅeÖĞµÄÇé›r
-		// ß@Ñe¿ÉÒÔßx“ñˆóåe¡¢ÔOÖÃÄ¬ÕJÖµ»òÕßˆÌĞĞÆäËû²Ù×÷
-		typeStr = "XType::Unknown";
-		std::cout << typeStr << std::endl;
-		cType = XType::Unknown;
-		break;
-	}
-	std::pair<std::string, XType> xPair;
-	xPair.first = typeStr;
-	xPair.second = cType;
-	return xPair;
-};
+		std::string typeStr = "XType::Unknown";
+		XType cType = XType::Unknown;
+		switch (number)
+		{
+		case static_cast<int>(XType::Str):
+			typeStr = "XType::Str";
+			std::cout << typeStr << std::endl;
+			cType = static_cast<XType>(number);
+			break;
+		case static_cast<int>(XType::Arr):
+			typeStr = "XType::Arr";
+			std::cout << typeStr << std::endl;
+			cType = static_cast<XType>(number);
+			break;
+		case static_cast<int>(XType::CVRect):
+			typeStr = "XType::CVRect";
+			std::cout << typeStr << std::endl;
+			cType = static_cast<XType>(number);
+			break;
+		default:
+			// è™•ç†æ•¸å­—ä¸åœ¨åˆ—èˆ‰ä¸­çš„æƒ…æ³
+			// é€™è£¡å¯ä»¥é¸æ“‡å ±éŒ¯ã€è¨­ç½®é»˜èªå€¼æˆ–è€…åŸ·è¡Œå…¶ä»–æ“ä½œ
+			typeStr = "XType::Unknown";
+			std::cout << typeStr << std::endl;
+			cType = XType::Unknown;
+			break;
+		}
+		std::pair<std::string, XType> xPair;
+		xPair.first = typeStr;
+		xPair.second = cType;
+		return xPair;
+	};
+} //namespace XVisual

@@ -1,6 +1,8 @@
 #include "ParamWidget/ParamWidgetFactory.h"
 #include "ParamWidget/PreParamWidget.h"
 
+namespace XVisual {
+
 ParamWidgetRegistry::ParamWidgetRegistry() {}
 ParamWidgetRegistry::ParamWidgetClassRegistry& ParamWidgetRegistry::RegistryInstance()
 {
@@ -25,3 +27,5 @@ ParamWidgetClassRegisterer::ParamWidgetClassRegisterer(const std::string& type,
 {
 	ParamWidgetRegistry::putConstructor(type, creator);
 }
+
+} // namespace XVisual

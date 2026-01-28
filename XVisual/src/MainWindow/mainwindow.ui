@@ -46,8 +46,8 @@
         </sizepolicy>
        </property>
       </widget>
-      <widget class="GraphicsWidget" name="graphicsWidget" native="true"/>
-      <widget class="SideWidget" name="sideWidget" native="true"/>
+      <widget class="XVisual::GraphicsWidget" name="graphicsWidget" native="true"/>
+      <widget class="XVisual::SideWidget" name="sideWidget" native="true"/>
      </widget>
     </item>
    </layout>

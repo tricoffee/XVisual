@@ -9,6 +9,8 @@
 #include "Common/QFileUtils.h"
 #include <QMetaType>
 
+namespace XVisual {
+
 std::string AFProcessor::getQCurrentIdStr()
 {
 	Qt::HANDLE threadId = QThread::currentThreadId();
@@ -19,7 +21,7 @@ std::string AFProcessor::getQCurrentIdStr()
 
 AFProcessor::AsynchronousFileProcessor()
 {
-	// ×¢²áÀàÐÍ
+	// æ³¨å†Œç±»åž‹
 	qRegisterMetaType<FileCopyData>("FileCopyData");
 }
 
@@ -83,3 +85,5 @@ void AFProcessor::copyFileSlot(FileCopyData data)
 			+ " does not exists, QIdStr = " + QIdStr, CURRENT_THREAD_ID);
 	}
 }
+
+} // namespace XVisual

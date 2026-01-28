@@ -9,6 +9,8 @@
 #include "CJSON/cJSON.h"
 #include "Common/ErrorCode.h"
 
+namespace XVisual {
+
 class ImagePre
 {
 	public:
@@ -40,5 +42,7 @@ class ImagePre
 		void normalize_01(const cv::Mat& srcImage, cv::Mat& dstImage);
 		void decode_normalize_01(const cv::Mat& srcImage, cv::Mat& dstImage);
 };
+
+} // namespace XVisual
 
 #endif //ImagePre_H

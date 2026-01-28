@@ -5,28 +5,30 @@
 #include <string>
 #include "Common/ImagePre.h"
 
+namespace XVisual {
+
 #define CHECK_NULLPTR(ptr) ((ptr) == nullptr)
 #define CHECK_ObjectItem(object) ((object != nullptr) && ((object)->type & cJSON_Object))
 
 //Deprecated Function
 //void updateOutParams(const std::unordered_map<std::string, float>& src, std::unordered_map<std::string, float>& dst)
 //{
-//	// ±éÀú src ÖĞµÄÃ¿¸ö¼üÖµ¶Ô
+//	// éå† src ä¸­çš„æ¯ä¸ªé”®å€¼å¯¹
 //	for (const auto& pair : src)
 //	{
 //		const std::string& key = pair.first;
 //		float value = pair.second;
 //
-//		// ÔÚ dst ÖĞ²éÕÒµ±Ç°¼üÊÇ·ñÒÑ´æÔÚ
+//		// åœ¨ dst ä¸­æŸ¥æ‰¾å½“å‰é”®æ˜¯å¦å·²å­˜åœ¨
 //		auto it = dst.find(key);
 //		if (it != dst.end())
 //		{
-//			// Èç¹û¼üÒÑ´æÔÚ£¬Ôò¸üĞÂ¶ÔÓ¦µÄÖµ
+//			// å¦‚æœé”®å·²å­˜åœ¨ï¼Œåˆ™æ›´æ–°å¯¹åº”çš„å€¼
 //			it->second = value;
 //		}
 //		else
 //		{
-//			// Èç¹û¼ü²»´æÔÚ£¬ÔòÌí¼ÓĞÂµÄ¼üÖµ¶Ô
+//			// å¦‚æœé”®ä¸å­˜åœ¨ï¼Œåˆ™æ·»åŠ æ–°çš„é”®å€¼å¯¹
 //			dst[key] = value;
 //		}
 //	}
@@ -326,7 +328,7 @@ XVisual::ErrorCode ImagePre::writePreParam(cJSON* cjson_preparam)
 	}
 }
 
-// ³ÉÔ±º¯Êı£º¶ÔÍ¼Ïñ½øĞĞËõ·ÅºÍÕ³Ìù²Ù×÷
+// æˆå‘˜å‡½æ•°ï¼šå¯¹å›¾åƒè¿›è¡Œç¼©æ”¾å’Œç²˜è´´æ“ä½œ
 void ImagePre::resize_paste(const cv::Mat& inImage, cv::Mat& outImage)
 {
 	std::unordered_map<std::string, std::any> inParams = std::any_cast<std::unordered_map<std::string, std::any>>(params_.params);
@@ -382,7 +384,7 @@ void ImagePre::resize_paste(const cv::Mat& inImage, cv::Mat& outImage)
 #endif 
 }
 
-// ³ÉÔ±º¯Êı£º¶ÔÍ¼Ïñ½øĞĞËõ·Å²Ù×÷
+// æˆå‘˜å‡½æ•°ï¼šå¯¹å›¾åƒè¿›è¡Œç¼©æ”¾æ“ä½œ
 void ImagePre::resize(const cv::Mat& inImage, cv::Mat& outImage)
 {
 	std::unordered_map<std::string, std::any> inParams = std::any_cast<std::unordered_map<std::string, std::any>>(params_.params);
@@ -437,14 +439,14 @@ void ImagePre::decode_resize_paste(const cv::Mat& inImage, cv::Mat& outImage)
 	float sx = std::any_cast<float>(decodeParams["sx"]);
 	float sy = std::any_cast<float>(decodeParams["sy"]);
 
-	// ¼ÆËãÄ¿±êÍ¼ÏñµÄ³ß´ç
+	// è®¡ç®—ç›®æ ‡å›¾åƒçš„å°ºå¯¸
 	int dstWidth = static_cast<int>(scaleW / sx);
 	int dstHeight = static_cast<int>(scaleH / sy);
 
-	// ´´½¨Ä¿±ê³ß´ç´óĞ¡µÄ cv::Size ¶ÔÏó
+	// åˆ›å»ºç›®æ ‡å°ºå¯¸å¤§å°çš„ cv::Size å¯¹è±¡
 	cv::Size dstSize(dstWidth, dstHeight);
 
-	// Ê¹ÓÃ cv::resize º¯Êı½øĞĞËõ·Å, cv::resize is deepcopy function
+	// ä½¿ç”¨ cv::resize å‡½æ•°è¿›è¡Œç¼©æ”¾, cv::resize is deepcopy function
 	cv::resize(roi, outImage, dstSize, 0, 0, cv::INTER_NEAREST);
 
 #ifdef DEBUG_PRINT
@@ -465,14 +467,14 @@ void ImagePre::decode_resize(const cv::Mat& inImage, cv::Mat& outImage)
 	float sx = std::any_cast<float>(decodeParams["sx"]);
 	float sy = std::any_cast<float>(decodeParams["sy"]);
 
-	// ¼ÆËãÄ¿±êÍ¼ÏñµÄ³ß´ç
+	// è®¡ç®—ç›®æ ‡å›¾åƒçš„å°ºå¯¸
 	int dstWidth = static_cast<int>(dstW / sx);
 	int dstHeight = static_cast<int>(dstH / sy);
 
-	// ´´½¨Ä¿±ê³ß´ç´óĞ¡µÄ cv::Size ¶ÔÏó
+	// åˆ›å»ºç›®æ ‡å°ºå¯¸å¤§å°çš„ cv::Size å¯¹è±¡
 	cv::Size dstSize(dstWidth, dstHeight);
 
-	// Ê¹ÓÃ cv::resize º¯Êı½øĞĞËõ·Å, cv::resize is deepcopy function
+	// ä½¿ç”¨ cv::resize å‡½æ•°è¿›è¡Œç¼©æ”¾, cv::resize is deepcopy function
 	cv::resize(inImage, outImage, dstSize, 0, 0, cv::INTER_NEAREST);
 
 #ifdef DEBUG_PRINT
@@ -569,3 +571,5 @@ void ImagePre::decode_normalize_01(const cv::Mat& srcImage, cv::Mat& dstImage)
 {
 	srcImage.convertTo(dstImage, CV_8UC3, 255.0);
 }
+
+} // namespace XVisual

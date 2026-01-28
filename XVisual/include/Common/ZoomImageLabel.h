@@ -8,6 +8,8 @@
 #include <QWheelEvent>
 #include "Common/OpenCVHeaders.h"
 
+namespace XVisual {
+
 class ZoomImageLabel : public QLabel
 {
 	Q_OBJECT
@@ -20,5 +22,7 @@ class ZoomImageLabel : public QLabel
 		QPixmap originalPixmap;
 		double scaleFactor;
 };
+
+} // namespace XVisual
 
 #endif // ZoomImageLabel_H

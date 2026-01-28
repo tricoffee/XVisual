@@ -4,7 +4,10 @@
 #include <iostream>
 #include "HandleBase/XBaseHandle.h"
 
+namespace XVisual {
+
 class Colleague;
+
 class DrawBoxHandle : public XBaseHandle
 {
 	public:
@@ -21,6 +24,8 @@ class DrawBoxHandle : public XBaseHandle
 	private:
 
 };
+
+} // namespace XVisual
 
 #endif // DrawBoxHandle_H
 

@@ -6,8 +6,12 @@
 #include <iostream>
 #include <string>
 
-// 读取文件内容到字符串
+namespace XVisual {
+
+// 璇诲彇鏂囦欢鍐呭鍒板瓧绗︿覆
 char* readJsonFile(const char* filename);
 bool isJsonFile(const std::string& path);
+
+} // namespace XVisual
 
 #endif // JsonFileUtils_H

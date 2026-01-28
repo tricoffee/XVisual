@@ -6,6 +6,8 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
+namespace XVisual {
+
 ResizePasteParamWidget::~ResizePasteParamWidget()
 {
 	// qDebug() << " === ResizePasteParamWidget::~ResizePasteParamWidget() === ";
@@ -29,7 +31,7 @@ ResizePasteParamWidget::ResizePasteParamWidget(QWidget* parent) : PreParamWidget
 	dstWidthLineEdit->setText("512");
 	dstWidthLayout->addWidget(dstWidthLabel);
 	dstWidthLayout->addWidget(dstWidthLineEdit);
-	dstWidthLayout->setContentsMargins(0, 0, 0, 0); // 设置外边距为0
+	dstWidthLayout->setContentsMargins(0, 0, 0, 0); // 璁剧疆澶栬竟璺濅负0
 
 	dstHeightLayout = new QHBoxLayout();
 	dstHeightLabel = new QLabel(tr("dstHeight:"));
@@ -37,14 +39,14 @@ ResizePasteParamWidget::ResizePasteParamWidget(QWidget* parent) : PreParamWidget
 	dstHeightLineEdit->setText("512");
 	dstHeightLayout->addWidget(dstHeightLabel);
 	dstHeightLayout->addWidget(dstHeightLineEdit);
-	dstHeightLayout->setContentsMargins(0, 0, 0, 0); // 设置外边距为0
+	dstHeightLayout->setContentsMargins(0, 0, 0, 0); // 璁剧疆澶栬竟璺濅负0
 
 	mLayout = new QVBoxLayout();
 	mLayout->addLayout(dstWidthLayout);
 	mLayout->addLayout(dstHeightLayout);
-	// 设置布局的对齐方式为居中
+	// 璁剧疆甯冨眬鐨勫榻愭柟寮忎负灞呬腑
 	mLayout->setAlignment(Qt::AlignCenter);
-	mLayout->setContentsMargins(0, 0, 0, 0); // 设置外边距为0
+	mLayout->setContentsMargins(0, 0, 0, 0); // 璁剧疆澶栬竟璺濅负0
 	setLayout(mLayout);
 }
 
@@ -75,3 +77,5 @@ void ResizePasteParamWidget::setPreParam(const PreParam& params)
 }
 
 REGISTER_ParamWidget(ResizePaste);
+
+} // namespace XVisual

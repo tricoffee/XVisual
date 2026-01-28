@@ -5,9 +5,13 @@
 #include <vector>
 #include <string>
 
-//Ò»¸öÈ«¾ÖµÄnodeIdTopoSequenceÓÃÀ´´æ´¢nodeIdµÄÍØÆËË³Ğò
+namespace XVisual {
+
+//ä¸€ä¸ªå…¨å±€çš„nodeIdTopoSequenceç”¨æ¥å­˜å‚¨nodeIdçš„æ‹“æ‰‘é¡ºåº
 extern std::vector<std::string> nodeIdTopoSequence;
-//Ò»¸öÎ¬»¤WorkSpaceµÄÈ«¾Ö±äÁ¿
+//ä¸€ä¸ªç»´æŠ¤WorkSpaceçš„å…¨å±€å˜é‡
 extern std::string globalWorkSpaceDir;
+
+} // namespace XVisual
 
 #endif // GlobalVariable_H

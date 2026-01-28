@@ -5,7 +5,10 @@
 #include<string>
 #include<map>
 
+namespace XVisual {
+
 class XBaseHandle;
+
 class HandleRegistry
 {
 	public:
@@ -32,5 +35,7 @@ class HandleClassRegisterer
 		return (XBaseHandle*)(new T##Handle()); \
 	} \
     static HandleClassRegisterer  xhandle_##T##_register(#T, xhandle_##T##_constructor)
+
+} // namespace XVisual
 
 #endif //HandleFactory_H

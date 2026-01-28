@@ -3,6 +3,8 @@
 
 #include "GlobalStorage/ColleagueManager.h"
 
+namespace XVisual {
+
 class HandleManager: public ColleagueManager
 {
 	public:
@@ -10,4 +12,7 @@ class HandleManager: public ColleagueManager
 	protected:
 		HandleManager();
 };
+
+} // namespace XVisual
+
 #endif // HandleManager_H

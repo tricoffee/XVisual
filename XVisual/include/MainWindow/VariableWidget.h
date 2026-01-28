@@ -3,8 +3,11 @@
 
 #include <QTreeWidget>
 
+namespace XVisual {
+
 class XBaseItem;
 class XBaseHandle;
+
 class VariableWidget : public QWidget
 {
 	Q_OBJECT
@@ -24,5 +27,7 @@ class VariableWidget : public QWidget
 		QTreeWidgetItem* destsNode;
 		QTreeWidgetItem* itemNode;
 };
+
+} // namespace XVisual
 
 #endif // VariableWidget_H

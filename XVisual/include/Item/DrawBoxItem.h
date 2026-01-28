@@ -3,6 +3,8 @@
 
 #include "ItemBase/XBaseItem.h"
 
+namespace XVisual {
+
 class DrawBoxItem : public XBaseItem
 {
 	Q_OBJECT
@@ -14,5 +16,7 @@ class DrawBoxItem : public XBaseItem
 	private:
 
 };
+
+} // namespace XVisual
 
 #endif //DrawBoxItem_H

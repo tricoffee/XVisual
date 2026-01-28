@@ -13,6 +13,8 @@
 #include "Handle/DrawBoxHandle.h"
 #include "Common/StrUtils.h"
 
+namespace XVisual {
+
 DrawBoxItem::DrawBoxItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent)
 	: XBaseItem(gWidget, contextMenu, parent)
 {
@@ -35,3 +37,5 @@ void DrawBoxItem::xOperate()
 }
 
 REGISTER_ITEM(DrawBox);
+
+} // namespace XVisual

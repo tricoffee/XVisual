@@ -1,12 +1,16 @@
 #ifndef PreParamWidget_H
 #define PreParamWidget_H
 
-#include <QWidget>
+#include <iostream>
 #include <unordered_map>
 #include <any>
-#include <iostream>
+
+#include <QWidget>
+
 #include "ParamWidgetFactory.h"
 #include "Common/PreParam.h"
+
+namespace XVisual {
 
 class PreParamWidget : public QWidget
 {
@@ -17,5 +21,7 @@ class PreParamWidget : public QWidget
 		virtual void getPreParam(PreParam& params);
 		virtual void setPreParam(const PreParam& params);
 };
+
+} // namespace XVisual
 
 #endif // PreParamWidget_H

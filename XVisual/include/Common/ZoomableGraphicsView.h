@@ -11,6 +11,9 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+
+namespace XVisual {
+
 class ZoomableGraphicsView : public QGraphicsView
 {
 	public:
@@ -26,12 +29,14 @@ class ZoomableGraphicsView : public QGraphicsView
 		void centerImage();
 		QGraphicsScene* scene;
 		QGraphicsPixmapItem* pixmapItem;
-		//cv::Mat inputImage; // ÆúÓÃ¸Ã³ÉÔ±±äÁ¿
+		//cv::Mat inputImage; // å¼ƒç”¨è¯¥æˆå‘˜å˜é‡
 		int imageWidth;
 		int imageHeight;
-		QPoint lastMousePos; // ÓÃÓÚ´æ´¢ÉÏÒ»´ÎÊó±êÎ»ÖÃµÄ±äÁ¿
-		QPoint currentMousePos; // ÓÃÓÚ´æ´¢µ±Ç°Êó±êÎ»ÖÃµÄ±äÁ¿
+		QPoint lastMousePos; // ç”¨äºå­˜å‚¨ä¸Šä¸€æ¬¡é¼ æ ‡ä½ç½®çš„å˜é‡
+		QPoint currentMousePos; // ç”¨äºå­˜å‚¨å½“å‰é¼ æ ‡ä½ç½®çš„å˜é‡
 		QPointF delta;
 };
+
+} // namespace XVisual
 
 #endif //ZoomaleGraphicsView_H

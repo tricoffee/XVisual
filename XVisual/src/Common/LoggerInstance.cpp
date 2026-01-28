@@ -1,4 +1,6 @@
 #include "Common/LoggerInstance.h"
 
-// ¶¨ÒåÈ«¾Ö±äÁ¿£¬Ê¹µÃÔÚ²»Í¬ cpp ÎÄ¼şÖĞ¿ÉÒÔ¹²Ïí
-LoggerInstance& logger = LoggerInstance::GetInstance();
+namespace XVisual {
+	// å®šä¹‰å…¨å±€å˜é‡ï¼Œä½¿å¾—åœ¨ä¸åŒ cpp æ–‡ä»¶ä¸­å¯ä»¥å…±äº«
+	LoggerInstance& logger = LoggerInstance::GetInstance();
+} //namespace XVisual 

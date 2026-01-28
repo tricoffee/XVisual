@@ -11,6 +11,9 @@
 #include "SourceFrom.h"
 #include "Exception/UmapKeyNoFoundException.h"
 #include "Exception/ExceptionUtils.h"
+
+namespace XVisual {
+
 class Param
 {
 	public:
@@ -177,4 +180,7 @@ class Param
 		std::unordered_map<std::string, bool> memberFrom;
 		std::unordered_map<std::string, SourceFrom> sourceMap;
 };
+
+} // namespace XVisual
+
 #endif //PARAM_H

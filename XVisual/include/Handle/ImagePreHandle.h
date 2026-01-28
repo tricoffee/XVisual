@@ -5,7 +5,10 @@
 #include "HandleBase/XBaseHandle.h"
 #include "Common/PreParam.h"
 
+namespace XVisual {
+
 class Colleague;
+
 class ImagePreHandle : public XBaseHandle
 {
 	public:
@@ -24,6 +27,8 @@ class ImagePreHandle : public XBaseHandle
 	private:
 
 };
+
+} // namespace XVisual
 
 #endif // ImagePreHandle_H
 

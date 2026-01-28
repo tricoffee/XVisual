@@ -5,6 +5,9 @@
 #include "ItemBase/XBaseItem.h"
 #include "HandleBase/XBaseHandle.h"
 #include <QString>
+
+namespace XVisual {
+
 CustomTableView::CustomTableView(QWidget* parent) : QTableView(parent)
 {
 }
@@ -43,9 +46,9 @@ void CustomTableView::closeEvent(QCloseEvent* event)
 		XLOG_INFO("Model is not set.", CURRENT_THREAD_ID);
 		return;
 	}
-	// 第一列的索引
+	// 绗竴鍒楃殑绱㈠紩
 	int xColumn = 0;
-	// 第二列的索引
+	// 绗簩鍒楃殑绱㈠紩
 	int yColumn = 1;
 	for (int row = 0; row < model->rowCount(); ++row)
 	{
@@ -123,3 +126,5 @@ void CustomTableView::closeEvent(QCloseEvent* event)
 
 	}
 }
+
+} // namespace XVisual

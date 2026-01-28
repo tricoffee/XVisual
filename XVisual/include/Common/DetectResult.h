@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 
+namespace XVisual {
+
 struct DetectResult
 {
 	int x1 = -1; // leftTop (x1,y1)
@@ -14,5 +16,7 @@ struct DetectResult
 	int classId = -1; // ClassId represents the order of a certain classname in the classnames list
 	std::string className = "";
 };
+
+} // namespace XVisual
 
 #endif // DetectResult_H

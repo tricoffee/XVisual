@@ -19,6 +19,8 @@
 #include "Common/DeletePtrMacro.h"
 #include <QTimer>
 
+namespace XVisual {
+
 TFDetectItem::TFDetectItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent)
 	: XBaseFItem(gWidget, contextMenu, parent)
 {
@@ -86,3 +88,5 @@ void TFDetectItem::xOperate()
 }
 
 REGISTER_ITEM(TFDetect);
+
+} // namespace XVisual

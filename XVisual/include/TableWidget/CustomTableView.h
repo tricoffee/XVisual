@@ -2,8 +2,12 @@
 #define CUSTOMTABLEVIEW_H
 #include <QTableView>
 #include <QGraphicsLineItem>
+
+namespace XVisual {
+
 class XBaseItem;
 class XBaseHandle;
+
 class CustomTableView : public QTableView
 {
 	Q_OBJECT
@@ -25,4 +29,7 @@ class CustomTableView : public QTableView
 			void changeLineArrowColorSignal(const QColor& color);
 
 };
+
+} // namespace XVisual
+
 #endif //CUSTOMTABLEVIEW_H

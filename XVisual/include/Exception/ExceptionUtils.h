@@ -5,6 +5,8 @@
 #include <any>
 #include "UmapKeyNoFoundException.h"
 
+namespace XVisual {
+
 template<typename T>
 void keyExists(const std::unordered_map<std::string, T>& myMap, const std::string& key, bool& isKeyExist)
 {
@@ -15,5 +17,7 @@ void keyExists(const std::unordered_map<std::string, T>& myMap, const std::strin
 		throw UmapKeyNoFoundException(message);
 	}
 }
+
+} // namespace XVisual
 
 #endif // ExceptionUtils_H

@@ -1,114 +1,116 @@
 #include "Common/StrUtils.h"
 
-/*
-Strip off the space characters at the beginning and end
-*/
-std::string strip(const std::string& str)
-{
-	size_t start = str.find_first_not_of(" \t\n\r");
-	size_t end = str.find_last_not_of(" \t\n\r");
-	if (start == std::string::npos || end == std::string::npos)
+namespace XVisual {
+	/*
+	Strip off the space characters at the beginning and end
+	*/
+	std::string strip(const std::string& str)
 	{
-		// ×Ö·û´®È«Îª¿Õ¸ñ
-		return "";
-	}
-	else
-	{
-		return str.substr(start, end - start + 1);
-	}
-}
-
-/*
-Stripping the specified string at the beginning
-*/
-std::string stripPrefix(const std::string& str, const std::string& prefix)
-{
-	size_t pos = str.find(prefix);
-	if (pos == std::string::npos)
-	{
-		return str; // Èç¹ûÎ´ÕÒµ½Ç°×º£¬Ôò·µ»ØÔ­Ê¼×Ö·û´®
-	}
-	return str.substr(pos + prefix.length()); // ·µ»ØÈ¥³ıÇ°×ººóµÄ×Ó×Ö·û´®
-}
-
-/*
-Stripping the specified string at the end
-*/
-std::string stripSuffix(const std::string& str, const std::string& suffix)
-{
-	if (str.size() >= suffix.size() && str.substr(str.size() - suffix.size()) == suffix)
-	{
-		return str.substr(0, str.size() - suffix.size());
-	}
-	else
-	{
-		return str;
-	}
-}
-
-/*
-Extract substring before delimiter at the beginning
-*/
-std::string extractSubstrBeforeDelimiter(std::string input, std::string delimiter)
-{
-	size_t pos = input.find(delimiter);
-	if (pos != std::string::npos)
-	{
-		return input.substr(0, pos);
-	}
-	else
-	{
-		return input;  // Èç¹ûÕÒ²»µ½·Ö¸ô·û£¬·µ»ØÕû¸ö×Ö·û´®
-	}
-}
-
-/*
-Extract substring between two colons
-*/
-std::string extractSubstrBetweenColons(const std::string& str)
-{
-	size_t start = str.find(":") + 1; // ²éÕÒµÚÒ»¸öÃ°ºÅµÄÎ»ÖÃ£¬¼Ó1ÊÇÎªÁËÌø¹ıÃ°ºÅ±¾Éí
-	size_t end = str.rfind(":"); // ²éÕÒ×îºóÒ»¸öÃ°ºÅµÄÎ»ÖÃ
-	if (start == std::string::npos || end == std::string::npos || start >= end)
-	{
-		return ""; // Èç¹ûÃ»ÓĞÕÒµ½Á½¸öÃ°ºÅ»òÕßËüÃÇµÄË³Ğò²»ÕıÈ·£¬Ôò·µ»Ø¿Õ×Ö·û´®
-	}
-	return str.substr(start, end - start); // ÌáÈ¡Á½¸öÃ°ºÅÖ®¼äµÄ×Ó×Ö·û´®
-}
-
-void printShape(const std::string& str1)
-{
-	std::vector<int> shape1 = parseShape<int>(str1);
-	int size1 = shape1.size();
-	std::cout << "Parsed shape for \"" << str1 << "\": [";
-	int i = 0;
-	for (int num : shape1)
-	{
-		++i;
-		std::cout << num;
-		if (i != size1)
+		size_t start = str.find_first_not_of(" \t\n\r");
+		size_t end = str.find_last_not_of(" \t\n\r");
+		if (start == std::string::npos || end == std::string::npos)
 		{
-			std::cout << ", ";
+			// å­—ç¬¦ä¸²å…¨ä¸ºç©ºæ ¼
+			return "";
+		}
+		else
+		{
+			return str.substr(start, end - start + 1);
 		}
 	}
-	std::cout << "]" << std::endl;
-}
 
-bool startsWith(const std::string& str, const std::string& prefix)
-{
-	return str.find(prefix) == 0;
-}
+	/*
+	Stripping the specified string at the beginning
+	*/
+	std::string stripPrefix(const std::string& str, const std::string& prefix)
+	{
+		size_t pos = str.find(prefix);
+		if (pos == std::string::npos)
+		{
+			return str; // å¦‚æœæœªæ‰¾åˆ°å‰ç¼€ï¼Œåˆ™è¿”å›åŸå§‹å­—ç¬¦ä¸²
+		}
+		return str.substr(pos + prefix.length()); // è¿”å›å»é™¤å‰ç¼€åçš„å­å­—ç¬¦ä¸²
+	}
 
-std::string extractSubstrAfterDelimiter(std::string input, std::string delimiter)
-{
-	int strLen = input.size();
-	size_t pos = input.find(delimiter);
-	if (pos != std::string::npos)
+	/*
+	Stripping the specified string at the end
+	*/
+	std::string stripSuffix(const std::string& str, const std::string& suffix)
 	{
-		return input.substr(pos + 1, strLen - pos);
+		if (str.size() >= suffix.size() && str.substr(str.size() - suffix.size()) == suffix)
+		{
+			return str.substr(0, str.size() - suffix.size());
+		}
+		else
+		{
+			return str;
+		}
 	}
-	else
+
+	/*
+	Extract substring before delimiter at the beginning
+	*/
+	std::string extractSubstrBeforeDelimiter(std::string input, std::string delimiter)
 	{
-		return input;  // Èç¹ûÕÒ²»µ½·Ö¸ô·û£¬·µ»ØÕû¸ö×Ö·û´®
+		size_t pos = input.find(delimiter);
+		if (pos != std::string::npos)
+		{
+			return input.substr(0, pos);
+		}
+		else
+		{
+			return input;  // å¦‚æœæ‰¾ä¸åˆ°åˆ†éš”ç¬¦ï¼Œè¿”å›æ•´ä¸ªå­—ç¬¦ä¸²
+		}
 	}
-}
+
+	/*
+	Extract substring between two colons
+	*/
+	std::string extractSubstrBetweenColons(const std::string& str)
+	{
+		size_t start = str.find(":") + 1; // æŸ¥æ‰¾ç¬¬ä¸€ä¸ªå†’å·çš„ä½ç½®ï¼ŒåŠ 1æ˜¯ä¸ºäº†è·³è¿‡å†’å·æœ¬èº«
+		size_t end = str.rfind(":"); // æŸ¥æ‰¾æœ€åä¸€ä¸ªå†’å·çš„ä½ç½®
+		if (start == std::string::npos || end == std::string::npos || start >= end)
+		{
+			return ""; // å¦‚æœæ²¡æœ‰æ‰¾åˆ°ä¸¤ä¸ªå†’å·æˆ–è€…å®ƒä»¬çš„é¡ºåºä¸æ­£ç¡®ï¼Œåˆ™è¿”å›ç©ºå­—ç¬¦ä¸²
+		}
+		return str.substr(start, end - start); // æå–ä¸¤ä¸ªå†’å·ä¹‹é—´çš„å­å­—ç¬¦ä¸²
+	}
+
+	void printShape(const std::string& str1)
+	{
+		std::vector<int> shape1 = parseShape<int>(str1);
+		int size1 = shape1.size();
+		std::cout << "Parsed shape for \"" << str1 << "\": [";
+		int i = 0;
+		for (int num : shape1)
+		{
+			++i;
+			std::cout << num;
+			if (i != size1)
+			{
+				std::cout << ", ";
+			}
+		}
+		std::cout << "]" << std::endl;
+	}
+
+	bool startsWith(const std::string& str, const std::string& prefix)
+	{
+		return str.find(prefix) == 0;
+	}
+
+	std::string extractSubstrAfterDelimiter(std::string input, std::string delimiter)
+	{
+		int strLen = input.size();
+		size_t pos = input.find(delimiter);
+		if (pos != std::string::npos)
+		{
+			return input.substr(pos + 1, strLen - pos);
+		}
+		else
+		{
+			return input;  // å¦‚æœæ‰¾ä¸åˆ°åˆ†éš”ç¬¦ï¼Œè¿”å›æ•´ä¸ªå­—ç¬¦ä¸²
+		}
+	}
+} //namespace XVisual 

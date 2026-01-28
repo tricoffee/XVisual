@@ -9,6 +9,8 @@
 #include "XVariable/SourceFrom.h"
 #include "Common/ColleagueNULLValueMacro.h"
 
+namespace XVisual {
+
 struct ColleagueData
 {
 	std::string itemClassName = NullClassNameStr;
@@ -24,14 +26,15 @@ struct ColleagueData
 	std::string uniqueName = NullUniqueName;
 
 	std::unordered_map<std::string, SourceFrom> sourceFromUMap;
-	// ÒòÎªÃ¿¸öHandleµÄÄ³¸ösourceµÄÄ³¸övariableNameµÄouterParamÊÇ²»Í¬µÄ, ±ÈÈçÓĞµÄÊÇstd::string, ÓĞµÄÊÇcv::Mat, ÓĞµÄÊÇstd::vector, ËùÒÔÓÃcJSON*Î¬»¤±ÈÓÃstd::unordered_mapÎ¬»¤¸üºÏÊÊ, Ï¸Á£¶ÈµÄ½âÎöÂß¼­½»¸ø¾ßÌåµÄHandleÀàÀ´´¦Àí
+	// å› ä¸ºæ¯ä¸ªHandleçš„æŸä¸ªsourceçš„æŸä¸ªvariableNameçš„outerParamæ˜¯ä¸åŒçš„, æ¯”å¦‚æœ‰çš„æ˜¯std::string, æœ‰çš„æ˜¯cv::Mat, æœ‰çš„æ˜¯std::vector, æ‰€ä»¥ç”¨cJSON*ç»´æŠ¤æ¯”ç”¨std::unordered_mapç»´æŠ¤æ›´åˆé€‚, ç»†ç²’åº¦çš„è§£æé€»è¾‘äº¤ç»™å…·ä½“çš„Handleç±»æ¥å¤„ç†
 	
 	//cJSON* outerParam; // Decrapted
 	std::unordered_map<std::string, cJSON*> outerParamUMap;
 
-	// ÒòÎªÃ¿¸öHandleµÄinnerParamÊÇ²»Í¬µÄ, ±ÈÈçÓĞµÄÊÇroi, ÓĞµÄÊÇthreshold, ÓĞµÄÊÇalpha, ËùÒÔÓÃcJSON*Î¬»¤±ÈÓÃstd::unordered_mapÎ¬»¤¸üºÏÊÊ, Ï¸Á£¶ÈµÄ½âÎöÂß¼­½»¸ø¾ßÌåµÄHandleÀàÀ´´¦Àí
+	// å› ä¸ºæ¯ä¸ªHandleçš„innerParamæ˜¯ä¸åŒçš„, æ¯”å¦‚æœ‰çš„æ˜¯roi, æœ‰çš„æ˜¯threshold, æœ‰çš„æ˜¯alpha, æ‰€ä»¥ç”¨cJSON*ç»´æŠ¤æ¯”ç”¨std::unordered_mapç»´æŠ¤æ›´åˆé€‚, ç»†ç²’åº¦çš„è§£æé€»è¾‘äº¤ç»™å…·ä½“çš„Handleç±»æ¥å¤„ç†
 	cJSON* innerParam;
 };
 
+} // namespace XVisual
 
 #endif // ColleagueData_H

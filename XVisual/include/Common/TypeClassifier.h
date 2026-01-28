@@ -3,6 +3,8 @@
 
 #include "Common/XType.h"
 
+namespace XVisual {
+
 class TypeClassifier
 {
 	public:
@@ -26,8 +28,10 @@ class TypeClassifier
 			else
 			{
 				return XType::Unknown;
-			}
 		}
+	}
 };
+
+} // namespace XVisual
 
 #endif //TypeClassifier_H

@@ -1,9 +1,11 @@
 #include "GlobalStorage/HandleManager.h"
 
-HandleManager::HandleManager() {}
+namespace XVisual {
+	HandleManager::HandleManager() {}
 
-HandleManager& HandleManager::instance()
-{
-	static HandleManager manager;
-	return manager;
-}
+	HandleManager& HandleManager::instance()
+	{
+		static HandleManager manager;
+		return manager;
+	}
+} //namespace XVisual

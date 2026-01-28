@@ -1,6 +1,8 @@
 #ifndef ColleagueType_H
 #define ColleagueType_H
 
+namespace XVisual {
+
 enum class ColleagueType
 {
 	NullType = 0,
@@ -9,5 +11,7 @@ enum class ColleagueType
 };
 
 ColleagueType Number2ColleagueType(int number);
+
+} // namespace XVisual
 
 #endif // ColleagueType_H

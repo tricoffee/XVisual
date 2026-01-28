@@ -14,6 +14,8 @@
 #include "Common/StrUtils.h"
 #include "ParamWidgetDialog/ComboDialog.h"
 
+namespace XVisual {
+
 PreInverItem::PreInverItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent)
 	: XBaseItem(gWidget, contextMenu, parent)
 {
@@ -37,3 +39,5 @@ void PreInverItem::xOperate()
 
 
 REGISTER_ITEM(PreInver);
+
+} // namespace XVisual

@@ -2,6 +2,13 @@
 #define DIAGRAMSCENE_H
 
 #include <QGraphicsScene>
+#include <QGraphicsSceneMouseEvent>
+#include <QMenu>
+#include <QPointF>
+#include <QGraphicsLineItem>
+#include <QFont>
+#include <QGraphicsTextItem>
+#include <QColor>
 
 #include "ItemBase/XArrow.h"
 #include "ItemBase/XBaseItem.h"
@@ -11,15 +18,7 @@
 
 #include "XGraph/GraphNode.h"
 
-QT_BEGIN_NAMESPACE
-class QGraphicsSceneMouseEvent;
-class QMenu;
-class QPointF;
-class QGraphicsLineItem;
-class QFont;
-class QGraphicsTextItem;
-class QColor;
-QT_END_NAMESPACE
+namespace XVisual {
 
 class DiagramScene : public QGraphicsScene
 {
@@ -67,5 +66,7 @@ private:
 	QWidget* xView;
 	GraphicsWidget* graphicsWidget = nullptr;
 };
+
+} // namespace XVisual
 
 #endif //DIAGRAMSCENE_H

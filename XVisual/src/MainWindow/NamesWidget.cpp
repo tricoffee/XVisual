@@ -3,25 +3,27 @@
 #include "MainWindow/NamesWidget.h"
 #include "MainWindow/RowWidget.h"
 
+namespace XVisual {
+
 NamesWidget::NamesWidget(QWidget* parent) :QWidget(parent)
 {
 	qDebug() << "CustomListWidget::CustomListWidget Initializating ... ";
 	titleLabel = new QLabel("File Name List");
-	// ÉèÖÃtitleLabelµÄ×ÖÌåÎª´ÖÌå
+	// è®¾ç½®titleLabelçš„å­—ä½“ä¸ºç²—ä½“
 	QFont boldFont = titleLabel->font();
 	boldFont.setBold(true);
 	titleLabel->setFont(boldFont);
-	// ´´½¨QListWidget
+	// åˆ›å»ºQListWidget
 	listWidget = new QListWidget();
-	// ´´½¨Ë®Æ½²¼¾Ö
+	// åˆ›å»ºæ°´å¹³å¸ƒå±€
 	layout = new QVBoxLayout();
 	layout->addWidget(titleLabel, 0, Qt::AlignTop | Qt::AlignLeft);
 	layout->addWidget(listWidget);
-	// ÉèÖÃlayoutµÄÍâ²¿±ß¾à
+	// è®¾ç½®layoutçš„å¤–éƒ¨è¾¹è·
 	layout->setContentsMargins(0, 0, 0, 0);
-	// ÉèÖÃlayoutµÄÄÚ²¿±ß¾à
+	// è®¾ç½®layoutçš„å†…éƒ¨è¾¹è·
 	layout->setSpacing(0);
-	// ÉèÖÃ²¼¾Öµ½Ö÷´°¿Ú
+	// è®¾ç½®å¸ƒå±€åˆ°ä¸»çª—å£
 	setLayout(layout);
 }
 
@@ -30,7 +32,7 @@ void NamesWidget::addRow(const QString& text)
 	rowWidget = new RowWidget(text);
 	connect(rowWidget, &RowWidget::tabInsertSignal, this, &NamesWidget::tabInsertSlot);
 	connect(rowWidget, &RowWidget::tabDeleteSignal, this, &NamesWidget::tabDeleteSlot);
-	//ÔÚlistWidgetÖĞÌí¼ÓÒ»¸öĞÂ´´½¨µÄQListWidgetItemÏî£¬²¢½«¸ÃÏîÓërowWidget¹ØÁªÆğÀ´¡£
+	//åœ¨listWidgetä¸­æ·»åŠ ä¸€ä¸ªæ–°åˆ›å»ºçš„QListWidgetItemé¡¹ï¼Œå¹¶å°†è¯¥é¡¹ä¸rowWidgetå…³è”èµ·æ¥ã€‚
 	widgetItem = new QListWidgetItem();
 	listWidget->addItem(widgetItem);
 	listWidget->setItemWidget(widgetItem, rowWidget);
@@ -74,7 +76,7 @@ void NamesWidget::tabDeleteSlot(const QString& itemName)
 
 void NamesWidget::itemChangedSlot(const QString& itemName)
 {
-	// ±éÀúQListWidgetÖĞµÄÃ¿¸öitem
+	// éå†QListWidgetä¸­çš„æ¯ä¸ªitem
 	for (int i = 0; i < listWidget->count(); ++i)
 	{
 		QWidget* indexWidget = nullptr;
@@ -83,7 +85,7 @@ void NamesWidget::itemChangedSlot(const QString& itemName)
 		indexWidget = listWidget->itemWidget(indexItem);
 		rrWidget = qobject_cast<RowWidget*>(indexWidget);
 		QString rrItemName = rrWidget->getText();
-		// ¼ì²éµ±Ç°rrItemNameµÄÎÄ±¾ÊÇ·ñÓëÄ¿±êÎÄ±¾itemNameÆ¥Åä
+		// æ£€æŸ¥å½“å‰rrItemNameçš„æ–‡æœ¬æ˜¯å¦ä¸ç›®æ ‡æ–‡æœ¬itemNameåŒ¹é…
 		if (itemName == rrItemName)
 		{
 			listWidget->setCurrentRow(i);
@@ -96,3 +98,5 @@ void NamesWidget::itemToggledSlot(const QString& itemName)
 {
 	itemChangedSlot(itemName);
 }
+
+} // namespace XVisual

@@ -1,4 +1,6 @@
 #include "GlobalStorage/GlobalVariable.h"
 
-std::vector<std::string> nodeIdTopoSequence;
-std::string globalWorkSpaceDir;
+namespace XVisual {
+	std::vector<std::string> nodeIdTopoSequence;
+	std::string globalWorkSpaceDir;
+}

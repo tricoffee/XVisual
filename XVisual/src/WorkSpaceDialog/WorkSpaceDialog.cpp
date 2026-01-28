@@ -1,4 +1,3 @@
-#include "WorkSpaceDialog/WorkSpaceDialog.h"
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -8,13 +7,17 @@
 #include <QDir>
 #include <QFileDialog>
 
+#include "WorkSpaceDialog/WorkSpaceDialog.h"
+
+namespace XVisual {
+
 WorkSpaceDialog::WorkSpaceDialog(WorkSpaceData data, QWidget* parent) : QDialog(parent)
 {
 	setWindowTitle("WorkSpace Selection Dialog");
 
 	mainLayout = new QVBoxLayout();
 
-	// Ä¬ÈÏ¹¤×÷Çø, Default WorkSpace
+	// é»˜è®¤å·¥ä½œåŒº, Default WorkSpace
 	defaultLayout = new QHBoxLayout();
 	defaultRadioButton = new QRadioButton("Default WorkSpace");
 	defaultLineEdit = new QLineEdit(data.defaultWorkSpace);
@@ -22,7 +25,7 @@ WorkSpaceDialog::WorkSpaceDialog(WorkSpaceData data, QWidget* parent) : QDialog(
 	defaultLayout->addWidget(defaultRadioButton);
 	defaultLayout->addWidget(defaultLineEdit);
 
-	// ×Ô¶¨Òå¹¤×÷Çø, Custom WorkSpace
+	// è‡ªå®šä¹‰å·¥ä½œåŒº, Custom WorkSpace
 	customLayout = new QHBoxLayout();
 	customRadioButton = new QRadioButton("Custom WorkSpace");
 	customLineEdit = new QLineEdit(data.customWorkSpace);
@@ -31,7 +34,7 @@ WorkSpaceDialog::WorkSpaceDialog(WorkSpaceData data, QWidget* parent) : QDialog(
 	customLayout->addWidget(customLineEdit);
 	customLayout->addWidget(browserButton);
 
-	// È·ÈÏºÍÈ¡Ïû°´Å¥
+	// ç¡®è®¤å’Œå–æ¶ˆæŒ‰é’®
 	buttonLayout = new QHBoxLayout();
 	okButton = new QPushButton("OK");
 	cancelButton = new QPushButton("Cancel");
@@ -43,13 +46,13 @@ WorkSpaceDialog::WorkSpaceDialog(WorkSpaceData data, QWidget* parent) : QDialog(
 	mainLayout->addLayout(buttonLayout);
 	setLayout(mainLayout);
 
-	// Ä¬ÈÏÑ¡ÖÐÄ¬ÈÏ¹¤×÷Çø
+	// é»˜è®¤é€‰ä¸­é»˜è®¤å·¥ä½œåŒº
 	defaultRadioButton->setChecked(true);
 	customRadioButton->setChecked(false);
 	customLineEdit->setEnabled(false);
 	browserButton->setEnabled(false);
 
-	// Á¬½ÓÐÅºÅºÍ²Û
+	// è¿žæŽ¥ä¿¡å·å’Œæ§½
 	connect(defaultRadioButton, &QRadioButton::toggled, this, &WorkSpaceDialog::defaultRadioButtonResponse);
 	connect(customRadioButton, &QRadioButton::toggled, this, &WorkSpaceDialog::customRadioButtonResponse);
 	connect(browserButton, &QPushButton::clicked, this, &WorkSpaceDialog::browse);
@@ -98,3 +101,5 @@ void WorkSpaceDialog::browse()
 		customLineEdit->setText(dir);
 	}
 }
+
+} // namespace XVisual

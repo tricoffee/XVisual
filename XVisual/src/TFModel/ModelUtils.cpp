@@ -5,6 +5,8 @@
 #include "Common/LoggerInstance.h"
 #include "Common/XThreadMacro.h"
 
+namespace XVisual {
+
 void acquireModelInfo(std::string saved_model_txt_fnm,
 	std::string& inputKey1, std::string& inputType1Str, std::string& inputShape1Str, std::string& inputName1Str,
 	std::string& outputKey1, std::string& outputType1Str, std::string& outputShape1Str, std::string& outputName1Str
@@ -15,12 +17,12 @@ void acquireModelInfo(std::string saved_model_txt_fnm,
 	std::ifstream file(saved_model_txt_fnm);
 	std::string line;
 
-	//ĞĞºÅË÷Òı
-	//µ±Ç°ĞĞºÅµÄË÷Òı
+	//è¡Œå·ç´¢å¼•
+	//å½“å‰è¡Œå·çš„ç´¢å¼•
 	int currentLineIndex = 0;
-	//"inputs[\""ËùÔÚĞĞºÅµÄË÷Òı
+	//"inputs[\""æ‰€åœ¨è¡Œå·çš„ç´¢å¼•
 	int inputKey1LineIndex = -1;
-	//"outputs[\""ËùÔÚĞĞºÅµÄË÷Òı
+	//"outputs[\""æ‰€åœ¨è¡Œå·çš„ç´¢å¼•
 	int outputKey1LineIndex = -1;
 
 	int inputType1LineIndex = 0;
@@ -46,30 +48,30 @@ void acquireModelInfo(std::string saved_model_txt_fnm,
 		{
 			lines.push_back(line);
 
-			// Ñ°ÕÒ°üº¬ÊäÈëºÍÊä³öĞÅÏ¢µÄĞĞ
+			// å¯»æ‰¾åŒ…å«è¾“å…¥å’Œè¾“å‡ºä¿¡æ¯çš„è¡Œ
 			if (line.find(inputStr1) != std::string::npos)
 			{
-				// ÌáÈ¡ÊäÈëµÄ×Ö·û´®
+				// æå–è¾“å…¥çš„å­—ç¬¦ä¸²
 				inputKey1 = line.substr(line.find(inputStr1) + inputStr1Size, line.find(strEnd) - (line.find(inputStr1) + inputStr1Size));
-				// ¼ÇÂ¼inputStr1¶ÔÓ¦µÄĞĞºÅ
+				// è®°å½•inputStr1å¯¹åº”çš„è¡Œå·
 				inputKey1LineIndex = currentLineIndex;
 				//                std::cout << "====" << "inputKey1" << inputKey1 << std::endl;
 			}
 			if (line.find(outputStr1) != std::string::npos)
 			{
-				// ÌáÈ¡Êä³öµÄ×Ö·û´®
+				// æå–è¾“å‡ºçš„å­—ç¬¦ä¸²
 				outputKey1 = line.substr(line.find(outputStr1) + outputStr1Size, line.find(strEnd) - (line.find(outputStr1) + outputStr1Size));
-				// ¼ÇÂ¼outputStr1¶ÔÓ¦µÄĞĞºÅ
+				// è®°å½•outputStr1å¯¹åº”çš„è¡Œå·
 				outputKey1LineIndex = currentLineIndex;
 				//                std::cout << "====" << "outputKey1" << outputKey1 << std::endl;
 			}
-			currentLineIndex++; //µİÔöµ±Ç°ĞĞºÅ
+			currentLineIndex++; //é€’å¢å½“å‰è¡Œå·
 		}
 		file.close();
 	}
 	else
 	{
-	    //std::cout << "Ã»ÓĞ´ò¿ª" << saved_model_txt_fnm << std::endl;
+	    //std::cout << "æ²¡æœ‰æ‰“å¼€" << saved_model_txt_fnm << std::endl;
 	}
 	XLOG_INFO(" Open " + saved_model_txt_fnm + " Successfully! ", CURRENT_THREAD_ID);
 
@@ -118,3 +120,5 @@ void acquireModelInfo(std::string saved_model_txt_fnm,
 	XLOG_INFO(" outputName1Str = " + outputName1Str, CURRENT_THREAD_ID);
 
 }
+
+} // namespace XVisual

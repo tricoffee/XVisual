@@ -6,6 +6,8 @@
 #include <QPushButton>
 #include <QHBoxLayout>
 
+namespace XVisual {
+
 class RowWidget : public QWidget
 {
 	Q_OBJECT
@@ -28,6 +30,8 @@ class RowWidget : public QWidget
 		void onDeleteButtonClicked();
 
 };
+
+} // namespace XVisual
 
 #endif // RowWidget_H
 

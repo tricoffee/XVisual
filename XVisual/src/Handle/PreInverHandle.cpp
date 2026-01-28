@@ -7,6 +7,8 @@
 #define CHECK_NULLPTR(ptr) ((ptr) == nullptr)
 #define CHECK_ObjectItem(object) ((object != nullptr) && ((object)->type & cJSON_Object))
 
+namespace XVisual {
+
 PreInverHandle::PreInverHandle() : XBaseHandle()
 {
 	XLOG_INFO("class PreInverHandle: public XBaseHandle ...", CURRENT_THREAD_ID);
@@ -19,21 +21,21 @@ PreInverHandle::~PreInverHandle()
 {
 
 }
-XVisual::ErrorCode PreInverHandle::setInnerParam(cJSON* innerParamPtr)
+ErrorCode PreInverHandle::setInnerParam(cJSON* innerParamPtr)
 {
-	return XVisual::ErrorCode::Success;
+	return ErrorCode::Success;
 }
-XVisual::ErrorCode PreInverHandle::setOuterParam(std::unordered_map<std::string, cJSON*> outerParamUMap)
+ErrorCode PreInverHandle::setOuterParam(std::unordered_map<std::string, cJSON*> outerParamUMap)
 {
-	return XVisual::ErrorCode::Success;
+	return ErrorCode::Success;
 }
-XVisual::ErrorCode PreInverHandle::writeOuterParam(cJSON* cjson_variableSource, const std::string& xName)
+ErrorCode PreInverHandle::writeOuterParam(cJSON* cjson_variableSource, const std::string& xName)
 {
-	return XVisual::ErrorCode::Success;
+	return ErrorCode::Success;
 }
-XVisual::ErrorCode PreInverHandle::writeInnerParam(cJSON* cjson_innerParam)
+ErrorCode PreInverHandle::writeInnerParam(cJSON* cjson_innerParam)
 {
-	return XVisual::ErrorCode::Success;
+	return ErrorCode::Success;
 }
 void PreInverHandle::initParams()
 {
@@ -66,3 +68,5 @@ void PreInverHandle::xOperate()
 }
 
 REGISTER_HANDLE(PreInver);
+
+} // namespace XVisual

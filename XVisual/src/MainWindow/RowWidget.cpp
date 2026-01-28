@@ -1,6 +1,9 @@
 #include "Common/LoggerInstance.h"
 #include "Common/XThreadMacro.h"
 #include "MainWindow/RowWidget.h"
+
+namespace XVisual {
+
 RowWidget::RowWidget(const QString& xText, QWidget* parent) :QWidget(parent),text(xText)
 {
 	XLOG_INFO("RowWidget::RowWidget, text = " + text.toStdString(), CURRENT_THREAD_ID);
@@ -9,38 +12,38 @@ RowWidget::RowWidget(const QString& xText, QWidget* parent) :QWidget(parent),tex
 	deleteButton = new QPushButton("-");
 	rowLayout = new QHBoxLayout();
 
-	// »ñÈ¡°´Å¥labelÎÄ±¾µÄ¿í¶È
+	// èŽ·å–æŒ‰é’®labelæ–‡æœ¬çš„å®½åº¦
 	QFontMetrics labelFontMetrics(label->font());
-	// labelFontMetrics.horizontalAdvanceÊÇÒÔÏñËØÎªµ¥Î»µÄ×Ö·û¿í¶È
+	// labelFontMetrics.horizontalAdvanceæ˜¯ä»¥åƒç´ ä¸ºå•ä½çš„å­—ç¬¦å®½åº¦
 	int labelSize = labelFontMetrics.horizontalAdvance(label->text());
-	// ÉèÖÃlabelµÄ¿í¶ÈÎªlabelSize+20
+	// è®¾ç½®labelçš„å®½åº¦ä¸ºlabelSize+20
 	label->setFixedWidth(labelSize + 20);
 
-	// »ñÈ¡°´Å¥addButton1ÎÄ±¾µÄ¿í¶È
+	// èŽ·å–æŒ‰é’®addButton1æ–‡æœ¬çš„å®½åº¦
 	QFontMetrics addFontMetrics(addButton1->font());
-	// addFontMetrics.horizontalAdvanceÊÇÒÔÏñËØÎªµ¥Î»µÄ×Ö·û¿í¶È
+	// addFontMetrics.horizontalAdvanceæ˜¯ä»¥åƒç´ ä¸ºå•ä½çš„å­—ç¬¦å®½åº¦
 	int addButtonSize = addFontMetrics.horizontalAdvance(addButton1->text());
-	// ÉèÖÃaddButton1µÄ¿í¶ÈÎªaddButtonSize+20
+	// è®¾ç½®addButton1çš„å®½åº¦ä¸ºaddButtonSize+20
 	addButton1->setFixedWidth(addButtonSize + 20);
 
-	// »ñÈ¡°´Å¥deleteButtonÎÄ±¾µÄ¿í¶È
+	// èŽ·å–æŒ‰é’®deleteButtonæ–‡æœ¬çš„å®½åº¦
 	QFontMetrics deleteFontMetrics(deleteButton->font());
-	// deleteFontMetrics.horizontalAdvanceÊÇÒÔÏñËØÎªµ¥Î»µÄ×Ö·û¿í¶È
+	// deleteFontMetrics.horizontalAdvanceæ˜¯ä»¥åƒç´ ä¸ºå•ä½çš„å­—ç¬¦å®½åº¦
 	int deleteButtonSize = deleteFontMetrics.horizontalAdvance(deleteButton->text());
-	// ÉèÖÃdeleteButtonµÄ¿í¶ÈÎªdeleteButtonSize+20
+	// è®¾ç½®deleteButtonçš„å®½åº¦ä¸ºdeleteButtonSize+20
 	deleteButton->setFixedWidth(deleteButtonSize + 20);
 
-	//½«label, addButton1, deleteButtonÌí¼Óµ½rowLayout
+	//å°†label, addButton1, deleteButtonæ·»åŠ åˆ°rowLayout
 	rowLayout->addWidget(label);
 	rowLayout->addWidget(addButton1);
 	rowLayout->addWidget(deleteButton);
-	// ½«rowLayoutÉèÖÃÎªrowWidgetµÄ²¼¾Ö
+	// å°†rowLayoutè®¾ç½®ä¸ºrowWidgetçš„å¸ƒå±€
 	setLayout(rowLayout);
-	// ÉèÖÃrowLayoutµÄÍâ²¿±ß¾à
+	// è®¾ç½®rowLayoutçš„å¤–éƒ¨è¾¹è·
 	rowLayout->setContentsMargins(0, 0, 0, 0);
-	// ÉèÖÃrowLayoutµÄÄÚ²¿±ß¾à
+	// è®¾ç½®rowLayoutçš„å†…éƒ¨è¾¹è·
 	rowLayout->setSpacing(0);
-	// Á¬½ÓÐÅºÅºÍ²Û
+	// è¿žæŽ¥ä¿¡å·å’Œæ§½
 	connect(addButton1, &QPushButton::clicked, this, &RowWidget::onAddButton1Clicked);
 	connect(deleteButton, &QPushButton::clicked, this, &RowWidget::onDeleteButtonClicked);
 	getText();
@@ -69,3 +72,5 @@ QLabel* RowWidget::getLabel()
 	XLOG_INFO("RowWidget::getLabel(), label->text() = " + label->text().toStdString(), CURRENT_THREAD_ID);
 	return label;
 }
+
+} // namespace XVisual

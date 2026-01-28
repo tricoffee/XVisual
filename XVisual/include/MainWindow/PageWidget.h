@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QVBoxLayout>
 
+namespace XVisual {
+
 class PageWidget : public QWidget
 {
 	Q_OBJECT
@@ -13,6 +15,8 @@ class PageWidget : public QWidget
 	private:
 		QVBoxLayout* vLayout;
 };
+
+} // namespace XVisual
 
 #endif // PageWidget_H
 

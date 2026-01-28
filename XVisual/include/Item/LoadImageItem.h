@@ -6,6 +6,8 @@
 class QThread;
 class QTimer;
 
+namespace XVisual {
+
 class LoadImageItem : public XBaseFItem
 {
     Q_OBJECT
@@ -19,4 +21,7 @@ class LoadImageItem : public XBaseFItem
 	private:
 
 };
+
+} // namespace XVisual
+
 #endif //LoadImageItem_H

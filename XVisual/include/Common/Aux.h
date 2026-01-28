@@ -1,10 +1,15 @@
 #include "Common/OpenCVHeaders.h"
-//   将CV::Mat转换为QImage
+
+namespace XVisual {
+
+//   灏咰V::Mat杞崲涓篞Image
 QImage cvMatToQImage(const cv::Mat& mat)
 {
-	// 将CV::Mat转换为RGB格式的QImage
+	// 灏咰V::Mat杞崲涓篟GB鏍煎紡鐨凲Image
 	QImage image(mat.data, mat.cols, mat.rows, static_cast<int>(mat.step), QImage::Format_RGB888);
 
-	// 将QImage转换为格式适用于显示的格式（可能需要根据实际情况进行调整）
+	// 灏哘Image杞崲涓烘牸寮忛�傜敤浜庢樉绀虹殑鏍煎紡锛堝彲鑳介渶瑕佹牴鎹疄闄呮儏鍐佃繘琛岃皟鏁达級
 	return image.rgbSwapped();
 }
+
+} // namespace XVisual

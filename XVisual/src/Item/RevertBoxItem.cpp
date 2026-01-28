@@ -12,6 +12,8 @@
 #include "Handle/RevertBoxHandle.h"
 #include "Common/StrUtils.h"
 
+namespace XVisual {
+
 RevertBoxItem::RevertBoxItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent)
 	: XBaseItem(gWidget, contextMenu, parent)
 {
@@ -29,3 +31,5 @@ void RevertBoxItem::xOperate()
 }
 
 REGISTER_ITEM(RevertBox);
+
+} // namespace XVisual

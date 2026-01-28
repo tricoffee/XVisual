@@ -4,8 +4,11 @@
 #include <iostream>
 #include "HandleBase/XBaseHandle.h"
 
+namespace XVisual {
+
 class TensorFlowModel;
 class Colleague;
+
 class TFDetectHandle : public XBaseHandle
 {
 	public:
@@ -22,6 +25,8 @@ class TFDetectHandle : public XBaseHandle
 	private:
 		TensorFlowModel* model = nullptr;
 };
+
+} // namespace XVisual
 
 #endif // TFDetectHandle_H
 

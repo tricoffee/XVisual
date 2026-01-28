@@ -1,11 +1,12 @@
 #ifndef XBaseFItem_H
 #define XBaseFItem_H
 
+#include <QThread>
 #include "ItemBase/XBaseItem.h"
 #include "Common/AsynchronousFileProcessor.h"
 #include "Common/AsynchronousFileEmitter.h"
 
-class QThread;
+namespace XVisual {
 
 class XBaseFItem : public XBaseItem
 {
@@ -27,5 +28,7 @@ class XBaseFItem : public XBaseItem
 		AFEmitter* asynEmitter;
 		FileCopyData fileCopyData;
 };
+
+} // namespace XVisual
 
 #endif //XBaseFItem_H

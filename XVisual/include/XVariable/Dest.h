@@ -3,6 +3,8 @@
 
 #include "Param.h"
 
+namespace XVisual {
+
 class Dest :public Param
 {
 	public:
@@ -10,6 +12,8 @@ class Dest :public Param
 	protected:
 		Dest();
 };
+
+} // namespace XVisual
 
 #endif //DEST_H
 

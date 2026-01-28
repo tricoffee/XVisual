@@ -8,6 +8,8 @@
 #include <filesystem>
 #include "GlobalStorage/GlobalVariable.h"
 
+namespace XVisual {
+
 TFDetectHandle::TFDetectHandle() : XBaseHandle()
 {
 	XLOG_INFO("class TFDetectHandle: public TFDetectHandle ...", CURRENT_THREAD_ID);
@@ -20,13 +22,13 @@ TFDetectHandle::~TFDetectHandle()
 {
 
 }
-XVisual::ErrorCode TFDetectHandle::setInnerParam(cJSON* innerParamPtr)
+ErrorCode TFDetectHandle::setInnerParam(cJSON* innerParamPtr)
 {
-	return XVisual::ErrorCode::Success;
+	return ErrorCode::Success;
 }
-XVisual::ErrorCode TFDetectHandle::setOuterParam(std::unordered_map<std::string, cJSON*> outerParamUMap)
+ErrorCode TFDetectHandle::setOuterParam(std::unordered_map<std::string, cJSON*> outerParamUMap)
 {
-	// Done, ½âÎöouterParamUMap, ½«sourcesµÄÄ³¸ökeyÏà¶ÔÓ¦µÄÖµÖØÖÃÎª½âÎö³öÀ´µÄvalue
+	// Done, è§£æouterParamUMap, å°†sourcesçš„æŸä¸ªkeyç›¸å¯¹åº”çš„å€¼é‡ç½®ä¸ºè§£æå‡ºæ¥çš„value
 	if (!outerParamUMap.empty())
 	{
 		auto it = outerParamUMap.find("savedModelPath");
@@ -37,18 +39,18 @@ XVisual::ErrorCode TFDetectHandle::setOuterParam(std::unordered_map<std::string,
 		}
 		else
 		{
-			return  XVisual::ErrorCode::ParseOuterParamFromJsonFailed;
+			return  ErrorCode::ParseOuterParamFromJsonFailed;
 		}
 
 	}
 	else
 	{
-		return  XVisual::ErrorCode::ParseOuterParamFromJsonFailed;
+		return  ErrorCode::ParseOuterParamFromJsonFailed;
 	}
-	return XVisual::ErrorCode::Success;
+	return ErrorCode::Success;
 
 }
-XVisual::ErrorCode TFDetectHandle::writeOuterParam(cJSON* cjson_variableSource, const std::string& xName)
+ErrorCode TFDetectHandle::writeOuterParam(cJSON* cjson_variableSource, const std::string& xName)
 {
 	if (xName == "savedModelPath")
 	{
@@ -57,13 +59,13 @@ XVisual::ErrorCode TFDetectHandle::writeOuterParam(cJSON* cjson_variableSource, 
 	}
 	else
 	{
-		return XVisual::ErrorCode::UnknownXVariableNameError;
+		return ErrorCode::UnknownXVariableNameError;
 	}
-	return XVisual::ErrorCode::Success;
+	return ErrorCode::Success;
 }
-XVisual::ErrorCode TFDetectHandle::writeInnerParam(cJSON* cjson_innerParam)
+ErrorCode TFDetectHandle::writeInnerParam(cJSON* cjson_innerParam)
 {
-	return XVisual::ErrorCode::Success;
+	return ErrorCode::Success;
 }
 void TFDetectHandle::initParams()
 {
@@ -92,7 +94,7 @@ void TFDetectHandle::xOperate()
 
 	const std::string classNameTxtStr = "classnames.txt";
 	std::filesystem::path classNamesPath = saved_model_dir;
-	classNamesPath /= classNameTxtStr; // Ê¹ÓÃ /= ÔËËã·û½øĞĞÂ·¾¶Æ´½Ó
+	classNamesPath /= classNameTxtStr; // ä½¿ç”¨ /= è¿ç®—ç¬¦è¿›è¡Œè·¯å¾„æ‹¼æ¥
 	std::string classNamesPathStr = classNamesPath.string();
 
 	std::string absoluteClassNamesPath = globalWorkSpaceDir + "/" + classNamesPathStr;
@@ -140,3 +142,5 @@ void TFDetectHandle::xOperate()
 }
 
 REGISTER_HANDLE(TFDetect);
+
+} // namespace XVisual

@@ -3,6 +3,8 @@
 
 #include "ItemBase/XBaseItem.h"
 
+namespace XVisual {
+
 class RevertBoxItem : public XBaseItem
 {
 	Q_OBJECT
@@ -14,5 +16,7 @@ class RevertBoxItem : public XBaseItem
 	private:
 
 };
+
+} // namespace XVisual
 
 #endif //RevertBoxItem_H

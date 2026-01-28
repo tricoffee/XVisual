@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+namespace XVisual {
+
 enum class XType
 {
 	Unknown = 0,
@@ -14,5 +16,7 @@ enum class XType
 };
 
 std::pair<std::string, XType> EnumNumber2XType(int number);
+
+} // namespace XVisual
 
 #endif //XType_H

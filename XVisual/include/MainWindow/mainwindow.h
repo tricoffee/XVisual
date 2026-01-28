@@ -2,25 +2,28 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QAction>
+#include <QToolBox>
+#include <QSpinBox>
+#include <QComboBox>
+#include <QFontComboBox>
+#include <QButtonGroup>
+#include <QLineEdit>
+#include <QFont>
+#include <QToolButton>
+#include <QAbstractButton>
+
 #include "TableWidget/TableData.h"
 #include "Common/ErrorCode.h"
 #include "Common/SettingsReader.h"
+#include "GraphicsWidget.h"
+#include "SideWidget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
-class QAction;
-class QToolBox;
-class QSpinBox;
-class QComboBox;
-class QFontComboBox;
-class QButtonGroup;
-class QLineEdit;
-class QFont;
-class QToolButton;
-class QAbstractButton;
-class GraphicsWidget;
-class SideWidget;
 QT_END_NAMESPACE
+
+namespace XVisual {
 
 class MainWindow : public QMainWindow
 {
@@ -91,14 +94,14 @@ private:
 
 	XVisual::ErrorCode m_lastError = XVisual::ErrorCode::Success;
 
-	// LatestJsonPath maintains the path of the solution JSON file you loaded
+	// LatestJsonPath maintains a path of the solution JSON file you loaded
 	QString latestJsonPath;
 
 	QString settingsFilePath;
 	WorkSpaceData workspaceData;
 
     // Pointer to UI class
-    Ui::MainWindow *ui;
+    ::Ui::MainWindow *ui;
 
     // Pointers to UI widgets for easier access (or refactor cpp to use ui->)
     QToolBox* toolBox;
@@ -132,5 +135,7 @@ private:
     QToolBar* exportButtonToolBar;
     QToolBar* loadButtonToolBar;
 };
+
+} // namespace XVisual
 
 #endif // MAINWINDOW_H

@@ -1,9 +1,11 @@
 #include "GlobalStorage/ItemManager.h"
 
-ItemManager::ItemManager() {}
+namespace XVisual {
+	ItemManager::ItemManager() {}
 
-ItemManager& ItemManager::instance()
-{
-	static ItemManager manager;
-	return manager;
-}
+	ItemManager& ItemManager::instance()
+	{
+		static ItemManager manager;
+		return manager;
+	}
+} //namespace XVisual

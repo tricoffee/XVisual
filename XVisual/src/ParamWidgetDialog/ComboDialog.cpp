@@ -7,6 +7,8 @@
 #include <QPushButton>
 #include <QFormLayout>
 
+namespace XVisual {
+
 ComboDialog::~ComboDialog()
 {
 	//qDebug() << " === ComboDialog::~ComboDialog() === ";
@@ -22,11 +24,11 @@ ComboDialog::ComboDialog(QWidget* parent) : QDialog(parent)
 
 	setWindowTitle("Set Image Preprocessing Parameters");
 	/*
-	setModal(true) ÊÇÉèÖÃ¶Ô»°¿òÎªÄ£Ì¬¶Ô»°¿òµÄÒâË¼¡£
-	Ä£Ì¬¶Ô»°¿òÊÇÒ»ÖÖÓÃ»§½çÃæ×é¼ş£¬
-	µ±Ëü´ò¿ªÊ±£¬Ëü»á×èÖ¹ÓÃ»§ÓëÓ¦ÓÃ³ÌĞòµÄÆäËû²¿·Ö½øĞĞ½»»¥£¬
-	Ö±µ½ÓÃ»§¹Ø±ÕÁËÕâ¸ö¶Ô»°¿ò¡£ÕâÒâÎ¶×ÅÓÃ»§±ØĞëÊ×ÏÈ´¦ÀíÕâ¸ö¶Ô»°¿ò£¬
-	È»ºó²ÅÄÜ¼ÌĞøÓëÓ¦ÓÃ³ÌĞò½øĞĞ½»»¥
+	setModal(true) æ˜¯è®¾ç½®å¯¹è¯æ¡†ä¸ºæ¨¡æ€å¯¹è¯æ¡†çš„æ„æ€ã€‚
+	æ¨¡æ€å¯¹è¯æ¡†æ˜¯ä¸€ç§ç”¨æˆ·ç•Œé¢ç»„ä»¶ï¼Œ
+	å½“å®ƒæ‰“å¼€æ—¶ï¼Œå®ƒä¼šé˜»æ­¢ç”¨æˆ·ä¸åº”ç”¨ç¨‹åºçš„å…¶ä»–éƒ¨åˆ†è¿›è¡Œäº¤äº’ï¼Œ
+	ç›´åˆ°ç”¨æˆ·å…³é—­äº†è¿™ä¸ªå¯¹è¯æ¡†ã€‚è¿™æ„å‘³ç€ç”¨æˆ·å¿…é¡»é¦–å…ˆå¤„ç†è¿™ä¸ªå¯¹è¯æ¡†ï¼Œ
+	ç„¶åæ‰èƒ½ç»§ç»­ä¸åº”ç”¨ç¨‹åºè¿›è¡Œäº¤äº’
 	*/
 	setModal(true);
 
@@ -49,36 +51,36 @@ ComboDialog::ComboDialog(QWidget* parent) : QDialog(parent)
 	mLayout->addWidget(comboWindow);
 	mLayout->addWidget(btnWidget);
 	mLayout->setAlignment(Qt::AlignCenter);
-	mLayout->setContentsMargins(0, 0, 0, 0); // ÉèÖÃÍâ±ß¾àÎª0
+	mLayout->setContentsMargins(0, 0, 0, 0); // è®¾ç½®å¤–è¾¹è·ä¸º0
 	setLayout(mLayout);
 
-	// »ñÈ¡comboWindowµÄ´óĞ¡
+	// è·å–comboWindowçš„å¤§å°
 	//QSize comboSize = comboWindow->size();
 	//qDebug() << comboSize;
 
-	// ÉèÖÃ¶Ô»°¿òµÄ¹Ì¶¨´óĞ¡
-	setFixedSize(300, 100); // ÀıÈçÉèÖÃÎª¿í¶ÈÎª300£¬¸ß¶ÈÎª100
+	// è®¾ç½®å¯¹è¯æ¡†çš„å›ºå®šå¤§å°
+	setFixedSize(300, 100); // ä¾‹å¦‚è®¾ç½®ä¸ºå®½åº¦ä¸º300ï¼Œé«˜åº¦ä¸º100
 }
 
 void ComboDialog::closeEvent(QCloseEvent* event)
 {
 	XLOG_INFO(" == @@@ ==  ComboDialog::closeEvent == @@@ == ", CURRENT_THREAD_ID);
-	// »ñÈ¡µ±Ç°Ñ¡ÖĞÏîµÄÎÄ±¾ĞÅÏ¢
+	// è·å–å½“å‰é€‰ä¸­é¡¹çš„æ–‡æœ¬ä¿¡æ¯
 	QString selectedText = comboWindow->selectedWidgetName;
-	// ´òÓ¡Ñ¡ÖĞÏîµÄĞÅÏ¢µ½¿ØÖÆÌ¨
+	// æ‰“å°é€‰ä¸­é¡¹çš„ä¿¡æ¯åˆ°æ§åˆ¶å°
 	// qDebug() << " == ComboDialog::closeEvent ==, Selected ComboBox item: " << selectedText;
 	XLOG_INFO(" == ComboDialog::closeEvent ==, Selected ComboBox item: " + selectedText.toStdString(), CURRENT_THREAD_ID);
 
 	comboWindow->getSelectedParam(params);
 
-	// ÈÃ¸¸Àà´¦Àí¹Ø±ÕÊÂ¼ş
+	// è®©çˆ¶ç±»å¤„ç†å…³é—­äº‹ä»¶
 	QDialog::closeEvent(event);
 }
 
 void ComboDialog::setParams(const PreParam& mParams)
 {
 	params = mParams;
-	//Done, ±£Ö¤Ç¶ÈëÔÚComboDialogÀïÃæµÄComboWindowÒ²×öÏàÓ¦¸Ä±ä
+	//Done, ä¿è¯åµŒå…¥åœ¨ComboDialogé‡Œé¢çš„ComboWindowä¹Ÿåšç›¸åº”æ”¹å˜
 	comboWindow->setSelectItem(params);
 }
 void ComboDialog::getParams(PreParam& mParams)
@@ -89,9 +91,11 @@ void ComboDialog::getParams(PreParam& mParams)
 
 void ComboDialog::accept()
 {
-	// µ±Ê¹ÓÃComboDialog::exec()·½·¨Ê±£¬¶Ô»°¿òµÄ¹Ø±ÕĞĞÎªÍ¨³£ÊÇÍ¨¹ı accept() »ò reject() À´¿ØÖÆµÄ¡£
-	// ÕâĞ©·½·¨»áÉèÖÃ¶Ô»°¿òµÄ·µ»Ø×´Ì¬²¢½áÊøÄ£Ì¬Ñ­»·£¬µ«²»»áÖ±½Óµ÷ÓÃ closeEvent()¡£
-	// ĞèÒªÔÚ¹Ø±Õ¶Ô»°¿òÇ°ÏÔÊ½µ÷ÓÃ close() ·½·¨À´È·±£ closeEvent() ±»µ÷ÓÃ¡£
+	// å½“ä½¿ç”¨ComboDialog::exec()æ–¹æ³•æ—¶ï¼Œå¯¹è¯æ¡†çš„å…³é—­è¡Œä¸ºé€šå¸¸æ˜¯é€šè¿‡ accept() æˆ– reject() æ¥æ§åˆ¶çš„ã€‚
+	// è¿™äº›æ–¹æ³•ä¼šè®¾ç½®å¯¹è¯æ¡†çš„è¿”å›çŠ¶æ€å¹¶ç»“æŸæ¨¡æ€å¾ªç¯ï¼Œä½†ä¸ä¼šç›´æ¥è°ƒç”¨ closeEvent()ã€‚
+	// éœ€è¦åœ¨å…³é—­å¯¹è¯æ¡†å‰æ˜¾å¼è°ƒç”¨ close() æ–¹æ³•æ¥ç¡®ä¿ closeEvent() è¢«è°ƒç”¨ã€‚
 	close();
 	QDialog::accept();
 }
+
+} // namespace XVisual

@@ -10,7 +10,10 @@
 #include <QListWidget>
 #include <QListWidgetItem>
 
+namespace XVisual {
+
 class RowWidget;
+
 class NamesWidget : public QWidget
 {
 	Q_OBJECT 
@@ -40,5 +43,7 @@ class NamesWidget : public QWidget
 		void tabDeleteSlot(const QString& itemName);
 	    void onListWidgetItemClicked(QListWidgetItem* item);
 };
+
+} // namespace XVisual
 
 #endif // NamesWidget_H

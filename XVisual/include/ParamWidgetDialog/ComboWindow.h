@@ -1,15 +1,19 @@
 #ifndef ComboWindow_H
 #define ComboWindow_H
 
-#include <QWidget>
 #include <iostream>
 #include <vector>
 #include <any>
 #include <string>
+
+#include <QWidget>
+#include <QComboBox>
+#include <QHBoxLayout>
+
 #include "Common/PreParam.h"
 
-class QComboBox;
-class QHBoxLayout;
+namespace XVisual {
+
 class ResizeParamWidget;
 class ResizePasteParamWidget;
 class Normalize01ParamWidget;
@@ -36,6 +40,8 @@ class ComboWindow : public QWidget
 		std::vector<std::string> itemStrList = { "Resize", "ResizePaste", "Normalize01" };
 		std::vector<PreParamWidget*> widgets;
 };
+
+} // namespace XVisual
 
 #endif // ComboWindow_H
 

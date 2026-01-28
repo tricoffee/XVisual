@@ -8,11 +8,15 @@
 #define TableData_UnSelectedName  "---"
 #define TableData_UnSelectedType  "---"
 
+namespace XVisual {
+
 struct TableData
 {
 	std::string itemId;
 	std::string name;
 	std::string type;
 };
+
+} // namespace XVisual
 
 #endif // TableData_H

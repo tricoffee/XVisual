@@ -6,6 +6,8 @@
 #include "Common/ImagePre.h"
 #include "Common/BoxUtils.h"
 
+namespace XVisual {
+
 RevertBoxHandle::RevertBoxHandle() : XBaseHandle()
 {
 	XLOG_INFO("class RevertBoxHandle: public XBaseHandle ...", CURRENT_THREAD_ID);
@@ -18,21 +20,21 @@ RevertBoxHandle::~RevertBoxHandle()
 {
 
 }
-XVisual::ErrorCode RevertBoxHandle::setInnerParam(cJSON* innerParamPtr)
+ErrorCode RevertBoxHandle::setInnerParam(cJSON* innerParamPtr)
 {
-	return XVisual::ErrorCode::Success;
+	return ErrorCode::Success;
 }
-XVisual::ErrorCode RevertBoxHandle::setOuterParam(std::unordered_map<std::string, cJSON*> outerParamUMap)
+ErrorCode RevertBoxHandle::setOuterParam(std::unordered_map<std::string, cJSON*> outerParamUMap)
 {
-	return XVisual::ErrorCode::Success;
+	return ErrorCode::Success;
 }
-XVisual::ErrorCode RevertBoxHandle::writeOuterParam(cJSON* cjson_variableSource, const std::string& xName)
+ErrorCode RevertBoxHandle::writeOuterParam(cJSON* cjson_variableSource, const std::string& xName)
 {
-	return XVisual::ErrorCode::Success;
+	return ErrorCode::Success;
 }
-XVisual::ErrorCode RevertBoxHandle::writeInnerParam(cJSON* cjson_innerParam)
+ErrorCode RevertBoxHandle::writeInnerParam(cJSON* cjson_innerParam)
 {
-	return XVisual::ErrorCode::Success;
+	return ErrorCode::Success;
 }
 void RevertBoxHandle::initParams()
 {
@@ -57,3 +59,5 @@ void RevertBoxHandle::xOperate()
 
 
 REGISTER_HANDLE(RevertBox);
+
+} // namespace XVisual

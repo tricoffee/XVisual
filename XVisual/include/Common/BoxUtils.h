@@ -7,6 +7,8 @@
 #include "Common/DetectResult.h"
 #include "Common/PreParam.h"
 
+namespace XVisual {
+
 void acquireValidBoxes(float* output_data, const int output_elements_num, 
 	int imageWidth, int imageHeight, std::vector<DetectResult>& results);
 
@@ -22,5 +24,7 @@ void revertBoxes(const std::vector<DetectResult>& results, std::vector<DetectRes
 void drawBox(cv::Mat image, const DetectResult& boxInfo, const std::vector<std::string>& class_names);
 
 void drawBoxes(cv::Mat image, const std::vector<DetectResult>& boxes, const std::vector<std::string>& class_names);
+
+} // namespace XVisual
 
 #endif //BoxUtils_H

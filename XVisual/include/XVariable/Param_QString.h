@@ -9,6 +9,9 @@
 #include <QString>
 #include <QHash>
 #include "SourceFrom.h"
+
+namespace XVisual {
+
 class Param
 {
 	public:
@@ -111,4 +114,7 @@ class Param
 		QHash<QString, bool> memberFrom;
 		QHash<QString, SourceFrom> sourceMap;
 };
+
+} // namespace XVisual
+
 #endif //PARAM_H

@@ -6,16 +6,16 @@ int main(int argv, char* args[])
 {
 	Q_INIT_RESOURCE(XVisual);
 	QApplication app(argv, args);
-	// 获取可执行文件所在的目录
+	// 鑾峰彇鍙墽琛屾枃浠舵墍鍦ㄧ殑鐩綍
 	QString executableDir = QCoreApplication::applicationDirPath();
 	// qDebug() << "Executable Directory:" << executableDir;
 
-	MainWindow* mainWindow = new MainWindow(executableDir, nullptr);
-	mainWindow->listenForError(); // 启动错误监听
+	XVisual::MainWindow* mainWindow = new XVisual::MainWindow(executableDir, nullptr);
+	mainWindow->listenForError(); // 鍚姩閿欒鐩戝惉
 	//mainWindow.setGeometry(100, 100, 800, 500);
-	// 设置窗口初始状态为最大化
+	// 璁剧疆绐楀彛鍒濆鐘舵�佷负鏈�澶у寲
 	mainWindow->setWindowState(mainWindow->windowState() | Qt::WindowMaximized);
-	mainWindow->setWindowIcon(QIcon(ImageSources::XVisualLogo));
+	mainWindow->setWindowIcon(QIcon(XVisual::ImageSources::XVisualLogo));
 
 	mainWindow->show();
 

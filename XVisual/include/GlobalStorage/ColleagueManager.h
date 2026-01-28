@@ -3,6 +3,9 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
+
+namespace XVisual {
+
 class ColleagueManager
 {
 	public:
@@ -12,4 +15,7 @@ class ColleagueManager
 		ColleagueManager();
 		std::unordered_map<std::string, int> itemCounts;
 };
+
+} // namespace XVisual
+
 #endif // ColleagueManager_H

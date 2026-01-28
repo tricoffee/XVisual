@@ -1,12 +1,14 @@
 #ifndef ResizeParamWidget_H
 #define ResizeParamWidget_H
 
+#include<QLabel>
+#include<QLineEdit>
+#include<QHBoxLayout>
+#include<QVBoxLayout>
+
 #include "PreParamWidget.h"
 
-class QLabel;
-class QLineEdit;
-class QHBoxLayout;
-class QVBoxLayout;
+namespace XVisual {
 
 class ResizeParamWidget : public PreParamWidget
 {
@@ -27,6 +29,8 @@ class ResizeParamWidget : public PreParamWidget
 
 		QVBoxLayout* mLayout;
 };
+
+} // namespace XVisual
 
 #endif // ResizeParamWidget_H
 

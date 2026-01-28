@@ -1,4 +1,7 @@
-#include"ItemFactory.h"
+#include "ItemFactory_shared_ptr.h"
+
+namespace XVisual {
+
 ItemRegistry::ItemRegistry() {}
 ItemRegistry::ClassRegistry& ItemRegistry::RegistryInstance()
 {
@@ -22,3 +25,5 @@ ClasssRegisterer::ClasssRegisterer(const std::string& type, std::shared_ptr<XBas
 {
 	ItemRegistry::putConstructor(type, creator);
 }
+
+} // namespace XVisual

@@ -2,10 +2,13 @@
 #define XARROW_H
 
 #include <QGraphicsLineItem>
+#include <QStandardItemModel>
 #include "TableWidget/TableData.h"
 
-class QStandardItemModel;
+namespace XVisual {
+
 class XBaseItem;
+
 class XArrow : public QObject, public QGraphicsLineItem
 {
 	Q_OBJECT
@@ -42,5 +45,7 @@ private:
 	QStandardItemModel* latestTableViewModel = nullptr;
 	std::unordered_map<std::string, TableData> defaultValues;
 };
+
+} // namespace XVisual
 
 #endif // XARROW_H

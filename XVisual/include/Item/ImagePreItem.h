@@ -5,6 +5,8 @@
 //#include "Common/DebugConfigMacro.h"
 #include "Common/PreParam.h"
 
+namespace XVisual {
+
 class ImagePreItem : public XBaseItem
 {
 	Q_OBJECT
@@ -18,6 +20,8 @@ class ImagePreItem : public XBaseItem
 		void printPreParam(const PreParam& mParam);
 	#endif
 };
+
+} // namespace XVisual
 
 #endif //ImagePreItem_H
 

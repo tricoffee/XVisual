@@ -2,6 +2,9 @@
 #define ItemManagerQ_H
 #include <QString>
 #include <QHash>
+
+namespace XVisual {
+
 class ItemManager
 {
 public:
@@ -16,17 +19,17 @@ public:
 		int& itemCount = itemCounts[baseName];
 		//qDebug() << "itemCount = " << QString::number(itemCount);
 		/*
-		QString::numberÀïÃæµÄ²ÎÊýÊÇitemCount - 1¶ø²»ÊÇitemCount£¬ÊÇÒòÎª¸ÃÏîÄ¿²ÉÓÃºê¶¨Òå×¢²áÃ¿¸öXXXItem
-		ÔÚ±àÒëÊ±»áÖ´ÐÐÒ»±éÃ¿¸öXXXItemµÄ¹¹Ôìº¯Êý£¬´ËÊ±itemCountÊÇ0£»
-		ÕâÑùµÄ»°ÔÚµ½sceneÀïÃæÌí¼ÓXXXItemµÄÊ±ºòitemCountÔò±ä³É1
+		QString::numberé‡Œé¢çš„å‚æ•°æ˜¯itemCount - 1è€Œä¸æ˜¯itemCountï¼Œæ˜¯å› ä¸ºè¯¥é¡¹ç›®é‡‡ç”¨å®å®šä¹‰æ³¨å†Œæ¯ä¸ªXXXItem
+		åœ¨ç¼–è¯‘æ—¶ä¼šæ‰§è¡Œä¸€éæ¯ä¸ªXXXItemçš„æž„é€ å‡½æ•°ï¼Œæ­¤æ—¶itemCountæ˜¯0ï¼›
+		è¿™æ ·çš„è¯åœ¨åˆ°sceneé‡Œé¢æ·»åŠ XXXItemçš„æ—¶å€™itemCountåˆ™å˜æˆ1
 		*/
 		QString uniqueItemName = baseName + QString::number(itemCount-1);
 		if (itemCount-1 == 0)
 		{
 			/*
-			Èç¹ûitemCount - == 0³ÉÁ¢Ôò±íÊ¾Êµ¼ÊµÄuniqueItemNameÊÇXXXItem0;
-			Ï°¹ßÉÏÏÔÊ¾XXXItem±ÈXXXItem0ÒªºÃµÃ¶à;
-			ËùÒÔ½«uniqueItemNameÖØÖÃÎªbaseName + QString("")
+			å¦‚æžœitemCount - == 0æˆç«‹åˆ™è¡¨ç¤ºå®žé™…çš„uniqueItemNameæ˜¯XXXItem0;
+			ä¹ æƒ¯ä¸Šæ˜¾ç¤ºXXXItemæ¯”XXXItem0è¦å¥½å¾—å¤š;
+			æ‰€ä»¥å°†uniqueItemNameé‡ç½®ä¸ºbaseName + QString("")
 			*/
 			uniqueItemName = baseName + QString("");
 		}
@@ -38,4 +41,7 @@ private:
 	ItemManager() {}
 	QHash<QString, int> itemCounts;
 };
+
+} // namespace XVisual
+
 #endif // ItemManagerQ_H

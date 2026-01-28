@@ -2,16 +2,20 @@
 #define COMBODIALOG_H
 
 #include <QDialog>
+#include <QPushButton>
+#include <QFormLayout>
+#include <QVBoxLayout>
+
 #include <iostream>
 #include <unordered_map>
 #include <string>
 #include <any>
+
 #include "Common/PreParam.h"
 
+namespace XVisual {
+
 class ComboWindow;
-class QPushButton;
-class QFormLayout;
-class QVBoxLayout;
 
 class ComboDialog : public QDialog
 {
@@ -34,5 +38,7 @@ class ComboDialog : public QDialog
 		QVBoxLayout* mLayout;
 		PreParam params;
 };
+
+} // namespace XVisual
 
 #endif // COMBODIALOG_H

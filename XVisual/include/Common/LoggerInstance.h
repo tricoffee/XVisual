@@ -3,51 +3,53 @@
 
 #include <glog/logging.h>
 #include <filesystem>
-#include "Common/LogMacro.h" //µ¼Èë¹ØÓÚlogµÄºê¶¨Òå·½±ãµ÷ÓÃ
-#include <mutex>  // Ìí¼Ó»¥³âËø
-#include <opencv2/opencv.hpp>  // opencvÍ·ÎÄ¼ş
+#include "Common/LogMacro.h" //å¯¼å…¥å…³äºlogçš„å®å®šä¹‰æ–¹ä¾¿è°ƒç”¨
+#include <mutex>  // æ·»åŠ äº’æ–¥é”
+#include <opencv2/opencv.hpp>  // opencvå¤´æ–‡ä»¶
 #include <thread>
+
+namespace XVisual {
 
 class LoggerInstance
 {
 public:
 	static LoggerInstance& GetInstance()
 	{
-		// Ê¹ÓÃ¾²Ì¬¾Ö²¿±äÁ¿È·±£µ¥Àı
+		// ä½¿ç”¨é™æ€å±€éƒ¨å˜é‡ç¡®ä¿å•ä¾‹
 		static LoggerInstance instance;
 		return instance;
 	}
 
 	void LogInfo(const std::string& message, const std::thread::id& threadId, const char* file, int line)
 	{
-		std::lock_guard<std::mutex> lock(mutex_);  // ¼ÓËø
+		std::lock_guard<std::mutex> lock(mutex_);  // åŠ é”
 		google::LogMessage(file, line, google::GLOG_INFO).stream() << " Thread ID: " << threadId  << " " <<  message;
-	}//×÷ÓÃÓò½áÊøÊ±£¬lock_guard»á×Ô¶¯½âËø»¥³âËømutex_
+	}//ä½œç”¨åŸŸç»“æŸæ—¶ï¼Œlock_guardä¼šè‡ªåŠ¨è§£é”äº’æ–¥é”mutex_
 
 	void LogError(const std::string& message, const std::thread::id& threadId, const char* file, int line)
 	{
-		std::lock_guard<std::mutex> lock(mutex_);  // ¼ÓËø
+		std::lock_guard<std::mutex> lock(mutex_);  // åŠ é”
 		google::LogMessage(file, line, google::GLOG_ERROR).stream() << " Thread ID: " << threadId << " " << message;
-	}//×÷ÓÃÓò½áÊøÊ±£¬lock_guard»á×Ô¶¯½âËø»¥³âËømutex_
+	}//ä½œç”¨åŸŸç»“æŸæ—¶ï¼Œlock_guardä¼šè‡ªåŠ¨è§£é”äº’æ–¥é”mutex_
 
-	// ÓÃÓÚ±£´æÍ¼Æ¬µ½logsÄ¿Â¼ÏÂµÄdebugImages×ÓÄ¿Â¼
+	// ç”¨äºä¿å­˜å›¾ç‰‡åˆ°logsç›®å½•ä¸‹çš„debugImageså­ç›®å½•
 	void SaveImage(const cv::Mat& image, const std::string& filename, const std::thread::id& threadId, const char* file, int line)
 	{
-		std::lock_guard<std::mutex> lock(mutex_);  // ¼ÓËø
+		std::lock_guard<std::mutex> lock(mutex_);  // åŠ é”
 		const std::string imagePath = GetImageSavePath(filename);
 		cv::imwrite(imagePath, image);
 		google::LogMessage(file, line, google::GLOG_INFO).stream() << " Thread ID: " << threadId << " " << "Saved image: " << imagePath;
-	}//×÷ÓÃÓò½áÊøÊ±£¬lock_guard»á×Ô¶¯½âËø»¥³âËømutex_
+	}//ä½œç”¨åŸŸç»“æŸæ—¶ï¼Œlock_guardä¼šè‡ªåŠ¨è§£é”äº’æ–¥é”mutex_
 
 private:
-	// ÈÕÖ¾Ä¿Â¼
+	// æ—¥å¿—ç›®å½•
 	const std::string logDirectory = "logs/";
-	// ÓÃÓÚ¹¹½¨ÍêÕûµÄ±£´æÍ¼Æ¬Â·¾¶
+	// ç”¨äºæ„å»ºå®Œæ•´çš„ä¿å­˜å›¾ç‰‡è·¯å¾„
 	std::string GetImageSavePath(const std::string& filename)
 	{
 		const std::string imageDirectory = logDirectory + "debugImages/";
 
-		// ´´½¨Í¼Æ¬±£´æÄ¿Â¼(Èç¹ûËü²»´æÔÚ)
+		// åˆ›å»ºå›¾ç‰‡ä¿å­˜ç›®å½•(å¦‚æœå®ƒä¸å­˜åœ¨)
 		if (!std::filesystem::is_directory(imageDirectory))
 		{
 			std::filesystem::create_directory(imageDirectory);
@@ -57,40 +59,42 @@ private:
 	}
 	LoggerInstance()
 	{
-		// ÉèÖÃÈÕÖ¾Ä¿Â¼
+		// è®¾ç½®æ—¥å¿—ç›®å½•
 		google::SetLogDestination(google::INFO, logDirectory.c_str());
 
-		// ´´½¨ÈÕÖ¾Ä¿Â¼(Èç¹ûËü²»´æÔÚ)
+		// åˆ›å»ºæ—¥å¿—ç›®å½•(å¦‚æœå®ƒä¸å­˜åœ¨)
 		if (!std::filesystem::is_directory(logDirectory))
 		{
 			std::filesystem::create_directory(logDirectory);
 		}
 
-		// ÉèÖÃÈÕÖ¾ÎÄ¼şÀ©Õ¹Ãû
+		// è®¾ç½®æ—¥å¿—æ–‡ä»¶æ‰©å±•å
 		google::SetLogFilenameExtension(".logtxt");
 
-		// Í¬Ê±ÔÚ¿ØÖÆÌ¨Êä³ö INFO ºÍ ERROR ĞÅÏ¢£¬½«FLAGS_alsologtostderrÉèÖÃÎª1£¬¿ÉÒÔÔÚgoogle::SetLogDestinationÖ®ºó
+		// åŒæ—¶åœ¨æ§åˆ¶å°è¾“å‡º INFO å’Œ ERROR ä¿¡æ¯ï¼Œå°†FLAGS_alsologtostderrè®¾ç½®ä¸º1ï¼Œå¯ä»¥åœ¨google::SetLogDestinationä¹‹å
 		FLAGS_alsologtostderr = 1;
 
-		// Á¢¼´Ë¢ĞÂÈÕÖ¾
+		// ç«‹å³åˆ·æ–°æ—¥å¿—
 		FLAGS_logbufsecs = 0;
 
-		// ³õÊ¼»¯glog
+		// åˆå§‹åŒ–glog
 		google::InitGoogleLogging("XVisual");
 	}
-	// »¥³âËø
+	// äº’æ–¥é”
 	std::mutex mutex_;
 };
 
 /*
-extern¹Ø¼ü×ÖÓÃÓÚÉùÃ÷È«¾Ö±äÁ¿£¬µ«Ëü²»·ÖÅä´æ´¢¿Õ¼ä¡£
-ËüµÄÄ¿µÄÊÇÈÃ±àÒëÆ÷ÖªµÀ¸Ã±äÁ¿ÊÇÔÚÁíÒ»¸öÔ´ÎÄ¼şÖĞ¶¨ÒåµÄ¡£
-ÔÚÄã´úÂëÖĞ£¬loggerµÄ¶¨ÒåºÜ¿ÉÄÜÔÚÁíÒ»¸öÔ´ÎÄ¼şÖĞ£¬
-¶øÕâÀïÄãÖ»ÊÇÔÚÕâ¸öÍ·ÎÄ¼şÖĞÉùÃ÷ÁËËüÃÇ¡£
-Òò´Ë£¬ÕâÊÇÕıÈ·µÄÓÃ·¨£¬ÒòÎªËü¸æËß±àÒëÆ÷ÕâĞ©±äÁ¿µÄ¶¨ÒåÔÚÆäËûµØ·½£¬
-ÄãÖ»ĞèÒªÉùÃ÷ËüÃÇ¡£È¥µôextern¿ÉÄÜ»áµ¼ÖÂÖØ¸´¶¨ÒåµÄ´íÎó£¬ÒòÎª±äÁ¿¿ÉÄÜÔÚ¶à¸öÔ´ÎÄ¼şÖĞ±»¶¨Òå¡£
-ËùÒÔ£¬²»½¨ÒéÈ¥µôextern¡£
+externå…³é”®å­—ç”¨äºå£°æ˜å…¨å±€å˜é‡ï¼Œä½†å®ƒä¸åˆ†é…å­˜å‚¨ç©ºé—´ã€‚
+å®ƒçš„ç›®çš„æ˜¯è®©ç¼–è¯‘å™¨çŸ¥é“è¯¥å˜é‡æ˜¯åœ¨å¦ä¸€ä¸ªæºæ–‡ä»¶ä¸­å®šä¹‰çš„ã€‚
+åœ¨ä½ ä»£ç ä¸­ï¼Œloggerçš„å®šä¹‰å¾ˆå¯èƒ½åœ¨å¦ä¸€ä¸ªæºæ–‡ä»¶ä¸­ï¼Œ
+è€Œè¿™é‡Œä½ åªæ˜¯åœ¨è¿™ä¸ªå¤´æ–‡ä»¶ä¸­å£°æ˜äº†å®ƒä»¬ã€‚
+å› æ­¤ï¼Œè¿™æ˜¯æ­£ç¡®çš„ç”¨æ³•ï¼Œå› ä¸ºå®ƒå‘Šè¯‰ç¼–è¯‘å™¨è¿™äº›å˜é‡çš„å®šä¹‰åœ¨å…¶ä»–åœ°æ–¹ï¼Œ
+ä½ åªéœ€è¦å£°æ˜å®ƒä»¬ã€‚å»æ‰externå¯èƒ½ä¼šå¯¼è‡´é‡å¤å®šä¹‰çš„é”™è¯¯ï¼Œå› ä¸ºå˜é‡å¯èƒ½åœ¨å¤šä¸ªæºæ–‡ä»¶ä¸­è¢«å®šä¹‰ã€‚
+æ‰€ä»¥ï¼Œä¸å»ºè®®å»æ‰externã€‚
 */
 extern LoggerInstance& logger;
+
+} // namespace XVisual
 
 #endif //LoggerInstance_H

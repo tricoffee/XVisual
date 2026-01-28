@@ -1,9 +1,14 @@
 #ifndef XBaseItem_H
 #define XBaseItem_H
 
+#include <vector>
 #include <QGraphicsPixmapItem>
 #include <QList>
-#include <vector>
+#include <QGraphicsPolygonItem>
+#include <QPolygonF>
+#include <QPixmap>
+#include <QGraphicsSceneContextMenuEvent>
+
 #include "ItemFactory.h"
 #include "ItemWidget/XTextEdit.h"
 #include "XVariable/Source.h"
@@ -12,17 +17,14 @@
 #include "XVariable/SourceFrom.h"
 #include "HandleBase/Colleague.h"
 
+namespace XVisual {
+
 class DiagramProxyWidget;
 class ItemWidget;
 class GraphicsWidget;
-QT_BEGIN_NAMESPACE
-class QPixmap;
-class QGraphicsSceneContextMenuEvent;
-class QMenu;
-class QPolygonF;
-QT_END_NAMESPACE
 class XArrow;
 class XBaseHandle;
+
 class XBaseItem : public QObject, public QGraphicsPolygonItem, public Colleague
 {
 	Q_OBJECT
@@ -83,5 +85,7 @@ class XBaseItem : public QObject, public QGraphicsPolygonItem, public Colleague
 	signals:
 		void showImageSignal(const std::string& filename, const cv::Mat& image, XBaseItem* item);
 };
+
+} // namespace XVisual
 
 #endif //XBaseItem_H

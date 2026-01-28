@@ -3,6 +3,8 @@
 #include "Handle/CVCropHandle.h"
 #include "Common/OpenCVHeaders.h"
 
+namespace XVisual {
+
 CVCropHandle::CVCropHandle() : XBaseHandle()
 {
 	//std::cout << "class CVCropHandle: public XBaseHandle " << std::endl;
@@ -16,9 +18,9 @@ CVCropHandle::~CVCropHandle()
 {
 
 }
-XVisual::ErrorCode CVCropHandle::setInnerParam(cJSON* innerParamPtr)
+ErrorCode CVCropHandle::setInnerParam(cJSON* innerParamPtr)
 {
-	//	 ªÒ»° roi  ˝◊È
+	//	 Ëé∑Âèñ roi Êï∞ÁªÑ
 	cJSON* roi_array = cJSON_GetObjectItemCaseSensitive(innerParamPtr, "roi");
 	if (cJSON_IsArray(roi_array))
 	{
@@ -35,22 +37,22 @@ XVisual::ErrorCode CVCropHandle::setInnerParam(cJSON* innerParamPtr)
 		XLOG_INFO("roiX = " + std::to_string(roiX) + ", roiY = " + std::to_string(roiY) + ", roiWidth = " + std::to_string(roiWidth) + ", roiHeight = " + std::to_string(roiHeight), CURRENT_THREAD_ID);
 		cv::Rect regionOfInterest(roiX, roiY, roiWidth, roiHeight);
 		innerParam["roi"] = regionOfInterest;
-		return XVisual::ErrorCode::Success;
+		return ErrorCode::Success;
 	}
 	else
 	{
-		return XVisual::ErrorCode::ParseInnerParamElementFailed;
+		return ErrorCode::ParseInnerParamElementFailed;
 	}
 }
-XVisual::ErrorCode CVCropHandle::setOuterParam(std::unordered_map<std::string, cJSON*> outerParamUMap)
+ErrorCode CVCropHandle::setOuterParam(std::unordered_map<std::string, cJSON*> outerParamUMap)
 {
-	return XVisual::ErrorCode::Success;
+	return ErrorCode::Success;
 }
-XVisual::ErrorCode CVCropHandle::writeOuterParam(cJSON* cjson_variableSource, const std::string& xName)
+ErrorCode CVCropHandle::writeOuterParam(cJSON* cjson_variableSource, const std::string& xName)
 {
-	return XVisual::ErrorCode::Success;
+	return ErrorCode::Success;
 }
-XVisual::ErrorCode CVCropHandle::writeInnerParam(cJSON* cjson_innerParam)
+ErrorCode CVCropHandle::writeInnerParam(cJSON* cjson_innerParam)
 {
 	cJSON* cjson_roi = cJSON_CreateArray();
 	cv::Rect mRoI = std::any_cast<cv::Rect >(innerParam["roi"]);
@@ -59,7 +61,7 @@ XVisual::ErrorCode CVCropHandle::writeInnerParam(cJSON* cjson_innerParam)
 	cJSON_AddItemToArray(cjson_roi, cJSON_CreateNumber(mRoI.width));
 	cJSON_AddItemToArray(cjson_roi, cJSON_CreateNumber(mRoI.height));
 	cJSON_AddItemToObject(cjson_innerParam, "roi", cjson_roi);
-	return XVisual::ErrorCode::Success;
+	return ErrorCode::Success;
 }
 void CVCropHandle::initParams()
 {
@@ -85,8 +87,8 @@ void CVCropHandle::xOperate()
 	{
 		imageWidth = image.cols;
 		imageHeight = image.rows;
-		XLOG_INFO("CVCropHandle::xOperate ÕºœÒøÌ∂»: " + std::to_string(imageWidth), CURRENT_THREAD_ID);
-		XLOG_INFO("CVCropHandle::xOperate ÕºœÒ∏ﬂ∂»: " + std::to_string(imageHeight), CURRENT_THREAD_ID);
+		XLOG_INFO("CVCropHandle::xOperate ÂõæÂÉèÂÆΩÂ∫¶: " + std::to_string(imageWidth), CURRENT_THREAD_ID);
+		XLOG_INFO("CVCropHandle::xOperate ÂõæÂÉèÈ´òÂ∫¶: " + std::to_string(imageHeight), CURRENT_THREAD_ID);
 		cv::Mat croppedImage;
 		cv::Rect regionOfInterest = std::any_cast<cv::Rect>(innerParam["roi"]);
 		if (imageWidth != -1 && imageHeight != -1 && regionOfInterest.width != -1 &&
@@ -121,3 +123,5 @@ cv::Rect CVCropHandle::getRoI()
 }
 
 REGISTER_HANDLE(CVCrop);
+
+} // namespace XVisual

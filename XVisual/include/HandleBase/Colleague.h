@@ -5,6 +5,8 @@
 #include "ColleagueType.h"
 //#include "QUuid.h"
 
+namespace XVisual {
+
 class Colleague
 {
 	public:
@@ -29,5 +31,7 @@ class Colleague
 		std::string className1;
 		std::string uniqueName;
 };
+
+} // namespace XVisual
 
 #endif // Colleague_H

@@ -4,10 +4,15 @@
 
 #define NULL_ITEMID ""
 #define NULL_VariableName "" 
+
+namespace XVisual {
+
 struct SourceFrom
 {
 	std::string itemId = NULL_ITEMID; //ItemId
-	std::string variableName = NULL_VariableName; // Dest对象的或Source对象的某个变量的name
+	std::string variableName = NULL_VariableName; // Dest瀵硅薄鐨勬垨Source瀵硅薄鐨勬煇涓彉閲忕殑name
 };
+
+} // namespace XVisual
 
 #endif //SourceFrom_H

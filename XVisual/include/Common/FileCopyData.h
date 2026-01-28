@@ -5,6 +5,8 @@
 #include <QString>
 #include <QMetaType>
 
+namespace XVisual {
+
 struct FileCopyData
 {
 	QString srcFilePath;
@@ -12,6 +14,8 @@ struct FileCopyData
 	bool fileReady = false;
 };
 
-Q_DECLARE_METATYPE(FileCopyData)
+} // namespace XVisual
+
+Q_DECLARE_METATYPE(XVisual::FileCopyData)
 
 #endif // FileCopyData_H

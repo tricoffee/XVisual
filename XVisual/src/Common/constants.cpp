@@ -1,5 +1,7 @@
 #include "Common/constants.h"
 
+namespace XVisual {
+
 const QString ImageSources::TextPointer = ":/XVisual/images/textpointer.png";
 const QString ImageSources::FloodFill = ":/XVisual/images/floodfill.png";
 const QString ImageSources::LineColor = ":/XVisual/images/linecolor.png";
@@ -15,3 +17,5 @@ const QString ImageSources::ExportButton = ":/XVisual/images/exportbutton.png";
 const QString ImageSources::LoadButton = ":/XVisual/images/loadbutton.png";
 const QString ImageSources::XVisualLogo = ":/XVisual/images/XVisual.png";
 const QString ImageSources::XVisualAbout = ":/XVisual/images/XVisual_about.png";
+
+} // namespace XVisual

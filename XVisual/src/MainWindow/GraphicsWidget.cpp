@@ -11,6 +11,8 @@
 #include <QGraphicsScene>
 #include <QHeaderView>
 
+namespace XVisual {
+
 GraphicsWidget::GraphicsWidget(QWidget* parent, Qt::WindowFlags)
 	:QWidget(parent), itemMenu(nullptr)
 {
@@ -263,3 +265,5 @@ void GraphicsWidget::showImageSlot(const std::string& filename, const cv::Mat& i
 {
 	emit showImageInTabSignal(filename, image, item);
 }
+
+} // namespace XVisual

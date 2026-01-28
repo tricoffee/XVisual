@@ -6,6 +6,8 @@
 class QThread;
 class QTimer;
 
+namespace XVisual {
+
 class TFDetectItem : public XBaseFItem
 {
 	Q_OBJECT
@@ -19,6 +21,8 @@ class TFDetectItem : public XBaseFItem
 	private:
 		
 };
+
+} // namespace XVisual
 
 #endif //TFDetectItem_H
 

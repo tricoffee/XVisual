@@ -2,11 +2,13 @@
 #include "Common/LoggerInstance.h"
 #include "Common/XThreadMacro.h"
 
+namespace XVisual {
+
 TensorFlowModel::TensorFlowModel() : status_(nullptr), session_(nullptr), graph_(nullptr), session_opts_(nullptr), run_options_(nullptr), metagraph_(nullptr) {}
 
 TensorFlowModel::~TensorFlowModel()
 {
-	// ÊÍ·Å×ÊÔ´
+	// é‡Šæ”¾èµ„æº
 	for (int i = 0; i < NumInputs_; ++i)
 	{
 		if (InputValues_[i] != nullptr)
@@ -34,7 +36,7 @@ void TensorFlowModel::printOperations(const std::string& tfOperNameRecordDir)
 {
 	const std::string tfOperNameRecordPath = tfOperNameRecordDir + "tfOperationNameRecord.txt";
 
-	// ´ò¿ªÎÄ¼şÁ÷ÒÔĞ´Èë²Ù×÷Ãû³Æ¼ÇÂ¼
+	// æ‰“å¼€æ–‡ä»¶æµä»¥å†™å…¥æ“ä½œåç§°è®°å½•
 	std::ofstream outFile(tfOperNameRecordPath);
 	if (!outFile.is_open())
 	{
@@ -52,7 +54,7 @@ void TensorFlowModel::printOperations(const std::string& tfOperNameRecordDir)
 		std::cout << "Operation name: " << tfOperName << std::endl;
 		if (outFile.is_open())
 		{
-			// ½«²Ù×÷Ãû³ÆĞ´ÈëÎÄ¼ş
+			// å°†æ“ä½œåç§°å†™å…¥æ–‡ä»¶
 			outFile << tfOperName << std::endl;
 		}
 		oper = TF_GraphNextOperation(graph_, &pos);
@@ -62,13 +64,13 @@ void TensorFlowModel::printOperations(const std::string& tfOperNameRecordDir)
 bool TensorFlowModel::loadSavedModel(const std::string& saved_model_dir)
 {
 
-	// ¶¨ÒåÊı¾İÄ¿Â¼ºÍÎÄ¼şÃû
+	// å®šä¹‰æ•°æ®ç›®å½•å’Œæ–‡ä»¶å
 	// e.g., saved_model_dir = "C:\\NDev\\code\\logs\\mAP_Shiyan3_11\\exported_model"
 	const std::string file_name = "saved_model_info.txt";
 
-	// ´´½¨ std::filesystem::path ¶ÔÏó±íÊ¾Êı¾İÄ¿Â¼ºÍÎÄ¼şÃû
+	// åˆ›å»º std::filesystem::path å¯¹è±¡è¡¨ç¤ºæ•°æ®ç›®å½•å’Œæ–‡ä»¶å
 	std::filesystem::path file_path = saved_model_dir;
-	file_path /= file_name; // Ê¹ÓÃ /= ÔËËã·û½øĞĞÂ·¾¶Æ´½Ó
+	file_path /= file_name; // ä½¿ç”¨ /= è¿ç®—ç¬¦è¿›è¡Œè·¯å¾„æ‹¼æ¥
 
 	std::string filePath2 = file_path.string();
 
@@ -90,7 +92,7 @@ bool TensorFlowModel::loadSavedModel(const std::string& saved_model_dir)
 	run_options_ = nullptr;
 	metagraph_ = TF_NewBuffer();
 
-	//ÕâÒ»²¿·Ö×ªÒÆµ½private
+	//è¿™ä¸€éƒ¨åˆ†è½¬ç§»åˆ°private
 	//            const char* tag1 = "serve";
 	//            const char* const tags[] = { tag1 };
 	//            int num_tags = 1;
@@ -113,31 +115,31 @@ bool TensorFlowModel::loadSavedModel(const std::string& saved_model_dir)
 	metagraph_def.ParseFromArray(metagraph_->data, metagraph_->length);
 	const auto signature_def_map = metagraph_def.signature_def();
 	const auto signature_def = signature_def_map.at("serving_default");
-	//ÕâÀï¸ÄÎªµ÷ÓÃacquireModelInfoº¯Êı×Ô¶¯»ñÈ¡input_key_ºÍoutput_key_
+	//è¿™é‡Œæ”¹ä¸ºè°ƒç”¨acquireModelInfoå‡½æ•°è‡ªåŠ¨è·å–input_key_å’Œoutput_key_
 	// input_key_ = "image_input";
 	// output_key_ = "detections";
 	const std::string input_name_str = signature_def.inputs().at(input_key_).name();
 	const std::string output_name_str = signature_def.outputs().at(output_key_).name();
-	// input_name_ µÈÍ¬ÓÚ inputName1Str
+	// input_name_ ç­‰åŒäº inputName1Str
 	input_name_ = extractSubstrBeforeDelimiter(input_name_str, ":");
-	// output_name_ µÈÍ¬ÓÚ outputName1Str
+	// output_name_ ç­‰åŒäº outputName1Str
 	output_name_ = extractSubstrBeforeDelimiter(output_name_str, ":");
 	const char* input_name_cstr = input_name_.c_str();
 	const char* output_name_cstr = output_name_.c_str();
 
 	if (input_name_.compare(inputName1Str_) == 0)
 	{
-		std::cout << "input_name_ µÈÍ¬ÓÚ inputName1Str_ " << std::endl;
+		std::cout << "input_name_ ç­‰åŒäº inputName1Str_ " << std::endl;
 	}
 
 	if (output_name_.compare(outputName1Str_) == 0)
 	{
-		std::cout << "output_name_ µÈÍ¬ÓÚ outputName1Str_ " << std::endl;
+		std::cout << "output_name_ ç­‰åŒäº outputName1Str_ " << std::endl;
 	}
 
 
 	//get input tensor
-    //int NumInputs = 1; ´Ë´¦½ö¿¼ÂÇµ¥ÊäÈëµÄÇé¿ö
+    //int NumInputs = 1; æ­¤å¤„ä»…è€ƒè™‘å•è¾“å…¥çš„æƒ…å†µ
 	inputs_ = reinterpret_cast<TF_Output*>(std::malloc(sizeof(TF_Output) * NumInputs_));
 	TF_Output t1 = { TF_GraphOperationByName(graph_, input_name_cstr), 0 };
 	if (t1.oper == NULL)
@@ -147,7 +149,7 @@ bool TensorFlowModel::loadSavedModel(const std::string& saved_model_dir)
 	inputs_[0] = t1;
 
 	//get output tensor
-    //int NumOutputs = 1; ´Ë´¦½ö¿¼ÂÇµ¥Êä³öµÄÇé¿ö
+    //int NumOutputs = 1; æ­¤å¤„ä»…è€ƒè™‘å•è¾“å‡ºçš„æƒ…å†µ
 	outputs_ = reinterpret_cast<TF_Output*>(std::malloc(sizeof(TF_Output) * NumOutputs_));
 	TF_Output t2 = { TF_GraphOperationByName(graph_, output_name_cstr), 0 };
 	if (t2.oper == NULL)
@@ -163,21 +165,21 @@ bool TensorFlowModel::loadSavedModel(const std::string& saved_model_dir)
 	// Allocate data for inputs
 	for (int i = 0; i < NumInputs_; ++i)
 	{
-		// ¸ù¾İÊäÈëÕÅÁ¿µÄĞÎ×´ºÍÊı¾İÀàĞÍ´´½¨ TF_Tensor
-		// ¶ÁÈ¡saved_model_info.txtÀïÃæµÄinputsµÄÄ³¸öinputµÄshape²¢½âÎö, ²»ÓÃÊÖ¶¯ÉèÖÃ const std::vector<int64_t> input_dims = { 1, 416, 416, 3 };
+		// æ ¹æ®è¾“å…¥å¼ é‡çš„å½¢çŠ¶å’Œæ•°æ®ç±»å‹åˆ›å»º TF_Tensor
+		// è¯»å–saved_model_info.txté‡Œé¢çš„inputsçš„æŸä¸ªinputçš„shapeå¹¶è§£æ, ä¸ç”¨æ‰‹åŠ¨è®¾ç½® const std::vector<int64_t> input_dims = { 1, 416, 416, 3 };
 		std::vector<int64_t> input_dims = parseShape<int64_t>(inputShape1Str_);
 		input_dims[0] = 1;
 		const size_t input_dims_num = input_dims.size();
 		const int input_elements_num = std::accumulate(input_dims.begin(), input_dims.end(), 1, std::multiplies<int64_t>());
-		// ÊäÈëÕÅÁ¿µÄÊı¾İÀàĞÍ, const TF_DataType input_type = TF_FLOAT; ÏÖ¸ÄÎª´Ósaved_model_info.txt×Ô¶¯»ñÈ¡
+		// è¾“å…¥å¼ é‡çš„æ•°æ®ç±»å‹, const TF_DataType input_type = TF_FLOAT; ç°æ”¹ä¸ºä»saved_model_info.txtè‡ªåŠ¨è·å–
 		std::cout << "inputType1Str_ =" << inputType1Str_ << std::endl;
-		const TF_DataType input_type = parseDataTypeStr(inputType1Str_);
+		const ::TF_DataType input_type = parseDataTypeStr(inputType1Str_);
 
-		//Error Ä£°å²ÎÊı°üº¬·Ç¾²Ì¬´æ´¢³ÖĞøÊ±¼äµÄ±äÁ¿²»ÄÜÓÃ×÷·ÇÀàĞÍ²ÎÊı
+		//Error æ¨¡æ¿å‚æ•°åŒ…å«éé™æ€å­˜å‚¨æŒç»­æ—¶é—´çš„å˜é‡ä¸èƒ½ç”¨ä½œéç±»å‹å‚æ•°
         //const TF_DataType input_type2 = input_type;
-        //Ê¹ÓÃ using Óï¾ä¶¨Òå±äÁ¿µÄÀàĞÍ
+        //ä½¿ç”¨ using è¯­å¥å®šä¹‰å˜é‡çš„ç±»å‹
         //using MyFloatType2 = decltype(getCppType<input_type2>());
-        //ÉùÃ÷±äÁ¿²¢µ÷ÓÃ getCppType<TF_FLOAT>() ¸³Öµ
+        //å£°æ˜å˜é‡å¹¶è°ƒç”¨ getCppType<TF_FLOAT>() èµ‹å€¼
         //MyFloatType2 value2 = getCppType<input_type2>();
 
 		InputValues_[i] = TF_AllocateTensor(input_type, input_dims.data(), input_dims_num, input_elements_num * sizeof(float));
@@ -186,15 +188,15 @@ bool TensorFlowModel::loadSavedModel(const std::string& saved_model_dir)
 	// Allocate data for outputs
 	for (int i = 0; i < NumOutputs_; ++i)
 	{
-		// ¸ù¾İÊä³öÕÅÁ¿µÄĞÎ×´ºÍÊı¾İÀàĞÍ´´½¨ TF_Tensor
-		//¶ÁÈ¡saved_model_info.txtÀïÃæoutputsµÄÄ³¸öoutputµÄshape²¢½âÎö, ²»ÓÃÊÖ¶¯ÉèÖÃ const std::vector<int64_t> input_dims = { 1, 100, 6 };
+		// æ ¹æ®è¾“å‡ºå¼ é‡çš„å½¢çŠ¶å’Œæ•°æ®ç±»å‹åˆ›å»º TF_Tensor
+		//è¯»å–saved_model_info.txté‡Œé¢outputsçš„æŸä¸ªoutputçš„shapeå¹¶è§£æ, ä¸ç”¨æ‰‹åŠ¨è®¾ç½® const std::vector<int64_t> input_dims = { 1, 100, 6 };
 		std::vector<int64_t> output_dims = parseShape<int64_t>(outputShape1Str_);
 		output_dims[0] = 1;
 		const size_t output_dims_num = output_dims.size();
 		const int output_elements_num = std::accumulate(output_dims.begin(), output_dims.end(), 1, std::multiplies<int64_t>());
-		// Êä³öÕÅÁ¿µÄÊı¾İÀàĞÍ, ±ÈÈç, const TF_DataType output_type = TF_FLOAT; ÏÖ¸ÄÎª´Ósaved_model_info.txt×Ô¶¯»ñÈ¡
+		// è¾“å‡ºå¼ é‡çš„æ•°æ®ç±»å‹, æ¯”å¦‚, const TF_DataType output_type = TF_FLOAT; ç°æ”¹ä¸ºä»saved_model_info.txtè‡ªåŠ¨è·å–
 		std::cout << "outputType1Str_ =" << outputType1Str_ << std::endl;
-		const TF_DataType output_type = parseDataTypeStr(outputType1Str_);
+		const ::TF_DataType output_type = parseDataTypeStr(outputType1Str_);
 		OutputValues_[i] = TF_AllocateTensor(output_type, output_dims.data(), output_dims_num, output_elements_num * sizeof(float));
 	}
 
@@ -203,7 +205,7 @@ bool TensorFlowModel::loadSavedModel(const std::string& saved_model_dir)
 
 void TensorFlowModel::loadInputData(cv::Mat image)
 {
-	input_data_ = static_cast<float*>(TF_TensorData(InputValues_[0])); // »ñÈ¡ÊäÈëÕÅÁ¿µÄÊı¾İÖ¸Õë
+	input_data_ = static_cast<float*>(TF_TensorData(InputValues_[0])); // è·å–è¾“å…¥å¼ é‡çš„æ•°æ®æŒ‡é’ˆ
 	const int height = image.rows;
 	const int width = image.cols;
 
@@ -226,19 +228,21 @@ void TensorFlowModel::loadInputData(cv::Mat image)
 
 void TensorFlowModel::doRun()
 {
-	// Ö´ĞĞ TensorFlow »á»°
+	// æ‰§è¡Œ TensorFlow ä¼šè¯
 	TF_SessionRun(session_, nullptr, inputs_, InputValues_, NumInputs_, outputs_, OutputValues_, NumOutputs_, nullptr, 0, nullptr, status_);
 }
 
 // The coordinate size of the Results obtained here is relative to the model input scale, not to the original image size
 void TensorFlowModel::getResults(std::vector<DetectResult>& results)
 {
-	// »ñÈ¡Êä³öÕÅÁ¿µÄÖµ
-	float* output_data = static_cast<float*>(TF_TensorData(OutputValues_[0])); // »ñÈ¡Êä³öÕÅÁ¿µÄÊı¾İÖ¸Õë
-	// Êä³öÕÅÁ¿µÄĞÎ×´, ±ÈÈç const std::vector<int64_t> output_dims = { 1, 100, 6 }; ÏÖ¸ÄÎª´Ósaved_model_info.txtÎÄ±¾×Ô¶¯»ñÈ¡
+	// è·å–è¾“å‡ºå¼ é‡çš„å€¼
+	float* output_data = static_cast<float*>(TF_TensorData(OutputValues_[0])); // è·å–è¾“å‡ºå¼ é‡çš„æ•°æ®æŒ‡é’ˆ
+	// è¾“å‡ºå¼ é‡çš„å½¢çŠ¶, æ¯”å¦‚ const std::vector<int64_t> output_dims = { 1, 100, 6 }; ç°æ”¹ä¸ºä»saved_model_info.txtæ–‡æœ¬è‡ªåŠ¨è·å–
 	std::vector<int64_t> output_dims = parseShape<int64_t>(outputShape1Str_);
 	output_dims[0] = 1;
 	const int output_elements_num = std::accumulate(output_dims.begin(), output_dims.end(), 1, std::multiplies<int64_t>());
 	acquireValidBoxes(output_data, output_elements_num, image_width_, image_height_, results);
 }
+
+} // namespace XVisual
 

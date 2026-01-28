@@ -1,9 +1,11 @@
 #include "Common/AsynchronousFileEmitter.h"
 #include <QMetaType>
 
+namespace XVisual {
+
 AsynchronousFileEmitter::AsynchronousFileEmitter()
 {
-	// ×¢²áÀàÐÍ
+	// æ³¨å†Œç±»åž‹
 	qRegisterMetaType<FileCopyData>("FileCopyData");
 }
 
@@ -11,3 +13,5 @@ void AFEmitter::emitFileCopySignal(FileCopyData data)
 {
 	emit copyFileSignal(data);
 }
+
+} // namespace XVisual

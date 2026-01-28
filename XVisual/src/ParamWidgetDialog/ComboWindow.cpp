@@ -9,18 +9,20 @@
 #include "ParamWidget/Normalize01ParamWidget.h"
 #include "Common/DeletePtrMacro.h"
 
+namespace XVisual {
+
 ComboWindow::~ComboWindow()
 {
 	//qDebug() << " === ComboWindow::~ComboWindow() === ";
 	XLOG_INFO(" === ComboWindow::~ComboWindow() === ", CURRENT_THREAD_ID);
 	
-	// É¾³ıËùÓĞ¶¯Ì¬·ÖÅäµÄ¶ÔÏó
+	// åˆ é™¤æ‰€æœ‰åŠ¨æ€åˆ†é…çš„å¯¹è±¡
 	for (PreParamWidget* widget : widgets)
 	{
 		SAFE_DELETE(widget);
 	}
 
-	// Çå¿ÕÏòÁ¿
+	// æ¸…ç©ºå‘é‡
 	widgets.clear();
 	SAFE_DELETE(comboBox);
 	SAFE_DELETE(mLayout);
@@ -40,25 +42,25 @@ ComboWindow::ComboWindow(QWidget* parent) : QWidget(parent)
 	{
 		comboBox->addItem(QString::fromStdString(itemStr));
 		widgets.push_back(ParamWidgetRegistry::createObject(itemStr));
-		widgets[i]->setVisible(false); // ³õÊ¼×´Ì¬ÏÂÒş²ØµÚi¸öwidget
-		widgets[i]->setFixedWidth(widgetWidth); // ÉèÖÃµÚi¸öwidgetÎª¹Ì¶¨¿í¶È
+		widgets[i]->setVisible(false); // åˆå§‹çŠ¶æ€ä¸‹éšè—ç¬¬iä¸ªwidget
+		widgets[i]->setFixedWidth(widgetWidth); // è®¾ç½®ç¬¬iä¸ªwidgetä¸ºå›ºå®šå®½åº¦
 		mLayout->addWidget(widgets[i]);
 		i += 1;
 	}
-	comboBox->setCurrentIndex(0); // ½«Ä¬ÈÏÑ¡ÖĞÏîÉèÖÃÎªµÚÒ»Ïî
+	comboBox->setCurrentIndex(0); // å°†é»˜è®¤é€‰ä¸­é¡¹è®¾ç½®ä¸ºç¬¬ä¸€é¡¹
 	selectedWidgetName = comboBox->currentText(); // update selectedWidgetName
-	widgets[0]->setVisible(true); // ³õÊ¼×´Ì¬ÏÂÏÔÊ¾comboBoxµÚÒ»Ïî¶ÔÓ¦µÄwidget
+	widgets[0]->setVisible(true); // åˆå§‹çŠ¶æ€ä¸‹æ˜¾ç¤ºcomboBoxç¬¬ä¸€é¡¹å¯¹åº”çš„widget
 
-	// ÉèÖÃ²¼¾ÖµÄ¶ÔÆë·½Ê½Îª¾ÓÖĞ
+	// è®¾ç½®å¸ƒå±€çš„å¯¹é½æ–¹å¼ä¸ºå±…ä¸­
 	mLayout->setAlignment(Qt::AlignCenter);
-	mLayout->setContentsMargins(0, 0, 0, 0); // ÉèÖÃÍâ±ß¾àÎª0
+	mLayout->setContentsMargins(0, 0, 0, 0); // è®¾ç½®å¤–è¾¹è·ä¸º0
 	setLayout(mLayout);
 
-	// ÉèÖÃ´óĞ¡²ßÂÔÎª¹Ì¶¨
+	// è®¾ç½®å¤§å°ç­–ç•¥ä¸ºå›ºå®š
 	comboBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
-	// ÉèÖÃ¹Ì¶¨´óĞ¡
-	comboBox->setFixedSize(110, 30);  // ÕâÀïµÄ110ºÍ30¿ÉÒÔ¸ù¾İĞèÒªµ÷Õû
+	// è®¾ç½®å›ºå®šå¤§å°
+	comboBox->setFixedSize(110, 30);  // è¿™é‡Œçš„110å’Œ30å¯ä»¥æ ¹æ®éœ€è¦è°ƒæ•´
 
 	connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
 		this, &ComboWindow::comboBoxIndexChanged);
@@ -68,20 +70,20 @@ void ComboWindow::setSelectItem(const PreParam& params)
 {
 	std::string itemStr = params.preTag;
 
-	// ½«std::string×ª»»ÎªQString
+	// å°†std::stringè½¬æ¢ä¸ºQString
 	QString qItemStr = QString::fromStdString(itemStr);
 
-	// ²éÕÒ×Ö·û´®¶ÔÓ¦µÄË÷Òı
+	// æŸ¥æ‰¾å­—ç¬¦ä¸²å¯¹åº”çš„ç´¢å¼•
 	int index = comboBox->findText(qItemStr);
 
-	// Èç¹ûÕÒµ½ÁË¶ÔÓ¦µÄË÷Òı
+	// å¦‚æœæ‰¾åˆ°äº†å¯¹åº”çš„ç´¢å¼•
 	if (index != -1)
 	{
-		// ÉèÖÃµ±Ç°Ñ¡ÖĞµÄË÷Òı
+		// è®¾ç½®å½“å‰é€‰ä¸­çš„ç´¢å¼•
 		comboBox->setCurrentIndex(index);
 		// update ComboWindow
 		comboBoxIndexChanged(index);
-		// »ñÈ¡ comboBox µ±Ç°Ñ¡ÖĞÏîµÄÎÄ±¾ĞÅÏ¢
+		// è·å– comboBox å½“å‰é€‰ä¸­é¡¹çš„æ–‡æœ¬ä¿¡æ¯
 		selectedWidgetName = comboBox->currentText();
 		if( (selectedWidgetName == "Resize") || (selectedWidgetName == "ResizePaste") || (selectedWidgetName == "Normalize01"))
 		{
@@ -93,13 +95,13 @@ void ComboWindow::setSelectItem(const PreParam& params)
 
 void ComboWindow::comboBoxIndexChanged(int index)
 {
-	// ´òÓ¡ comboBox Ñ¡ÖĞÏî¶ÔÓ¦µÄ widget µÄË÷Òı
-	qDebug() << "Widget Index : " << index; // Ë÷Òı´Ó0¿ªÊ¼
+	// æ‰“å° comboBox é€‰ä¸­é¡¹å¯¹åº”çš„ widget çš„ç´¢å¼•
+	qDebug() << "Widget Index : " << index; // ç´¢å¼•ä»0å¼€å§‹
 
-	// »ñÈ¡ comboBox µ±Ç°Ñ¡ÖĞÏîµÄÎÄ±¾ĞÅÏ¢
+	// è·å– comboBox å½“å‰é€‰ä¸­é¡¹çš„æ–‡æœ¬ä¿¡æ¯
 	selectedWidgetName = comboBox->currentText();
 
-	// ¸ù¾İË÷ÒıÇĞ»»QWidgetµÄ¿É¼ûĞÔ
+	// æ ¹æ®ç´¢å¼•åˆ‡æ¢QWidgetçš„å¯è§æ€§
 	for (int i = 0; i < widgets.size(); ++i)
 	{
 		widgets[i]->setVisible(i == index);
@@ -167,3 +169,5 @@ void ComboWindow::printSelectedParam()
 		}
 	}
 }
+
+} // namespace XVisual

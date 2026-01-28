@@ -6,8 +6,12 @@
 #include "TableWidget/TableData.h"
 #include <QStandardItemModel>
 
-class DiagramScene;
 class QGraphicsView;
+
+namespace XVisual {
+
+// Forward declarations
+class DiagramScene;
 class XArrow;
 class CustomTableView;
 class XBaseItem;
@@ -47,5 +51,7 @@ class GraphicsWidget : public QWidget
 		QGraphicsView* view;
 		CustomTableView* tableView = nullptr;
 };
+
+} // namespace XVisual
 
 #endif //GraphicsWidget_H

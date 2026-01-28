@@ -14,6 +14,8 @@
 #include "Common/StrUtils.h"
 #include "ParamWidgetDialog/ComboDialog.h"
 
+namespace XVisual {
+
 ImagePreItem::ImagePreItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent)
 	: XBaseItem(gWidget, contextMenu, parent)
 {
@@ -22,7 +24,7 @@ ImagePreItem::ImagePreItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphic
 }
 void ImagePreItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 {
-	//Done 使用ComboDialog获取用户输入的图像预处理参数
+	//Done 浣跨敤ComboDialog鑾峰彇鐢ㄦ埛杈撳叆鐨勫浘鍍忛澶勭悊鍙傛暟
 	ImagePreHandle* imagePreHandle = dynamic_cast<ImagePreHandle*>(xHandle);
 	PreParam mParam = imagePreHandle->getImagePreParams();
 	ComboDialog dialog;
@@ -79,3 +81,5 @@ void ImagePreItem::printPreParam(const PreParam& mParam)
 #endif 
 
 REGISTER_ITEM(ImagePre);
+
+} // namespace XVisual

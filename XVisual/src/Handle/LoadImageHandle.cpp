@@ -5,6 +5,8 @@
 #include "GlobalStorage/GlobalVariable.h"
 #include <filesystem>
 
+namespace XVisual {
+
 LoadImageHandle::LoadImageHandle() : XBaseHandle()
 {
 	//std::cout << "class LoadImageHandle: public XBaseHandle " << std::endl;
@@ -18,13 +20,13 @@ LoadImageHandle::~LoadImageHandle()
 {
 
 }
-XVisual::ErrorCode LoadImageHandle::setInnerParam(cJSON* innerParamPtr)
+ErrorCode LoadImageHandle::setInnerParam(cJSON* innerParamPtr)
 {
-	return XVisual::ErrorCode::Success;
+	return ErrorCode::Success;
 }
-XVisual::ErrorCode LoadImageHandle::setOuterParam(std::unordered_map<std::string, cJSON*> outerParamUMap)
+ErrorCode LoadImageHandle::setOuterParam(std::unordered_map<std::string, cJSON*> outerParamUMap)
 {
-	// Done, 解析outerParamUMap, 将sources的某个key相对应的值重置为解析出来的value
+	// Done, 瑙ｆ瀽outerParamUMap, 灏唖ources鐨勬煇涓猭ey鐩稿搴旂殑鍊奸噸缃负瑙ｆ瀽鍑烘潵鐨剉alue
 	if (!outerParamUMap.empty())
 	{
 		auto it = outerParamUMap.find("imagePath");
@@ -35,17 +37,17 @@ XVisual::ErrorCode LoadImageHandle::setOuterParam(std::unordered_map<std::string
 		}
 		else
 		{
-			return  XVisual::ErrorCode::ParseOuterParamFromJsonFailed;
+			return  ErrorCode::ParseOuterParamFromJsonFailed;
 		}
 
 	}
 	else
 	{
-		return  XVisual::ErrorCode::ParseOuterParamFromJsonFailed;
+		return  ErrorCode::ParseOuterParamFromJsonFailed;
 	}
-	return XVisual::ErrorCode::Success;
+	return ErrorCode::Success;
 }
-XVisual::ErrorCode LoadImageHandle::writeOuterParam(cJSON* cjson_variableSource, const std::string& xName)
+ErrorCode LoadImageHandle::writeOuterParam(cJSON* cjson_variableSource, const std::string& xName)
 {
 	if (xName == "imagePath")
 	{
@@ -54,13 +56,13 @@ XVisual::ErrorCode LoadImageHandle::writeOuterParam(cJSON* cjson_variableSource,
 	}
 	else
 	{
-		return XVisual::ErrorCode::UnknownXVariableNameError;
+		return ErrorCode::UnknownXVariableNameError;
 	}
-	return XVisual::ErrorCode::Success;
+	return ErrorCode::Success;
 }
-XVisual::ErrorCode LoadImageHandle::writeInnerParam(cJSON* cjson_innerParam)
+ErrorCode LoadImageHandle::writeInnerParam(cJSON* cjson_innerParam)
 {
-	return XVisual::ErrorCode::Success;
+	return ErrorCode::Success;
 }
 void LoadImageHandle::initParams() 
 {
@@ -84,7 +86,7 @@ void LoadImageHandle::xOperate()
 		namespace fs = std::filesystem;
 		fs::path p(imagePath0);
 
-		// 仅当是相对路径时才拼接工作区
+		// 浠呭綋鏄浉瀵硅矾寰勬椂鎵嶆嫾鎺ュ伐浣滃尯
 		if (p.is_relative()) {
 			p = fs::path(globalWorkSpaceDir) / p;
 		}
@@ -110,3 +112,5 @@ void LoadImageHandle::xOperate()
 }
 
 REGISTER_HANDLE(LoadImage);
+
+} // namespace XVisual

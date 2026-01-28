@@ -14,6 +14,8 @@
 #include <queue>
 #include "GlobalStorage/GlobalVariable.h"
 
+namespace XVisual {
+
 class XGraph
 {
 	public:
@@ -52,24 +54,24 @@ class XGraph
 
 
         /*
-        ������ȱ����������������˳����ʽڵ�
-        1������ÿ���ڵ����ȣ�
-        2�������Ϊ0�Ľڵ�������q��
-        3����ʼ�������У�ִ�����²��裺
-            a��������һ���ڵ�(�����Ϊ0�Ľڵ�)��
-            b��ִ�иýڵ�ļ��㣻
-            c�����������Ե�ǰ�ڵ�Ϊ���ıߣ����ٱ�ָ��ڵ����ȣ�
-            d��������ٺ�ĳ���ڵ����ȱ�Ϊ0�����ýڵ�������q�С�
-        4���ظ�����3ֱ������qΪ�ա�
+        广度优先遍历按照拓扑排序的顺序访问节点
+        1、计算每个节点的入度；
+        2、将入度为0的节点加入队列q；
+        3、开始遍历队列，执行以下步骤：
+            a、出队列一个节点(即入度为0的节点)；
+            b、执行该节点的计算；
+            c、遍历所有以当前节点为起点的边，减少被指向节点的入度；
+            d、如果减少后某个节点的入度变为0，将该节点加入队列q中。
+        4、重复步骤3直到队列q为空。
         */
 
         template<typename T>
         static void executeXGraph(std::unordered_map<std::string, T*>& uMap, std::vector<std::shared_ptr<GraphNode>>& graph)
         {
             std::unordered_map<std::string, int> inDegrees;
-            std::queue<std::shared_ptr<GraphNode>> q; // ע������Ķ������͸�Ϊ std::shared_ptr<GraphNode>
+            std::queue<std::shared_ptr<GraphNode>> q; // 注意这里的队列类型改为 std::shared_ptr<GraphNode>
 
-            // ��ʼ�����Ϊ0������ÿ���ڵ�����
+            // 初始化入度为0并计算每个节点的入度
             for (const auto& nodePtr : graph)
             {
                 for (const auto& neighbor : nodePtr->neighbors)
@@ -85,7 +87,7 @@ class XGraph
                 }
             }
 
-            // �����Ϊ0�Ľڵ�������q
+            // 将入度为0的节点加入队列q
             for (const auto& nodePtr : graph)
             {
                 if (inDegrees[nodePtr->nodeId] == 0)
@@ -94,7 +96,7 @@ class XGraph
                 }
             }
 
-            // ִ�й�����ȱ���
+            // 执行广度优先遍历
             while (!q.empty())
             {
                 std::shared_ptr<GraphNode> node = q.front();
@@ -104,7 +106,7 @@ class XGraph
                 {
                     std::string nId = node->nodeId;
                     nodeIdTopoSequence.push_back(nId);
-                    // ִ�нڵ�nodeIdF
+                    // 执行节点nodeIdF
                     executeGraphNode(uMap, node);
                 }
                 catch (UmapKeyNoFoundException& e)
@@ -115,8 +117,8 @@ class XGraph
                 }
 
                 /*
-                 ���������Ե�ǰ�ڵ�Ϊ���ıߣ����ٱ�ָ��ڵ����ȣ�
-                 ������ٺ�ĳ���ڵ����ȱ�Ϊ0�����ýڵ�������q�С�
+                 遍历所有以当前节点为起点的边，减少被指向节点的入度；
+                 如果减少后某个节点的入度变为0，将该节点加入队列q中。
                  */
                 for (const auto& neighbor : node->neighbors)
                 {
@@ -130,5 +132,7 @@ class XGraph
             }
         }
 };
+
+} // namespace XVisual
 
 #endif // XGraph_H

@@ -4,7 +4,10 @@
 #include <iostream>
 #include "HandleBase/XBaseHandle.h"
 
+namespace XVisual {
+
 class Colleague;
+
 class RevertBoxHandle : public XBaseHandle
 {
 	public:
@@ -21,6 +24,8 @@ class RevertBoxHandle : public XBaseHandle
 	private:
 
 };
+
+} // namespace XVisual
 
 #endif // RevertBoxHandle_H
 

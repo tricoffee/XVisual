@@ -4,7 +4,9 @@
 #include <QObject>
 #include "Common/FileCopyData.h"
 
-// ¶¨ÒåÒ»¸ö¹¤×÷¶ÔÏó£¬°üº¬²Ûº¯Êı
+namespace XVisual {
+
+// å®šä¹‰ä¸€ä¸ªå·¥ä½œå¯¹è±¡ï¼ŒåŒ…å«æ§½å‡½æ•°
 class AsynchronousFileProcessor : public QObject 
 {
 	Q_OBJECT
@@ -18,6 +20,8 @@ class AsynchronousFileProcessor : public QObject
 		std::string getQCurrentIdStr();
 };
 
-using AFProcessor = AsynchronousFileProcessor;
+	using AFProcessor = AsynchronousFileProcessor;
+
+} // namespace XVisual
 
 #endif // AsynchronousFileProcessor_H

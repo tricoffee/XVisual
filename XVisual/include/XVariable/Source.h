@@ -3,6 +3,8 @@
 
 #include "Param.h"
 
+namespace XVisual {
+
 class Source :public Param
 {
 	public:
@@ -10,5 +12,7 @@ class Source :public Param
 	protected:
 		Source();
 };
+
+} // namespace XVisual
 
 #endif //SOURCE_H

@@ -4,275 +4,276 @@
 #define CHECK_NULLPTR(ptr) ((ptr) == nullptr)
 #define CHECK_ObjectItem(object) ((object != nullptr) && ((object)->type & cJSON_Object))
 
-XParser& XParser::getInstance()
-{
-	static XParser xParser;
-	return xParser;
-}
-XParser::XParser() 
-{
-	json_data = nullptr;
-	// ½âÎö JSON »ñµÃµÄ¸ù½Úµã
-	root = nullptr;
-	// »ñÈ¡ ClassInfo Êı×é
-	classinfo_array = nullptr;
-	// ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element
-
-	classinfo_element = nullptr;
-	// ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ ClassName
-	class_name = nullptr;
-	// ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ ColleagueType
-	colleague_type = nullptr;
-	// ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ ColleagueId
-
-	colleague_id = nullptr;
-	// ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ SourceFrom
-	source_from = nullptr;
-	// ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ InnerParam
-	inner_param = nullptr;
-}
-XParser::~XParser()
-{
-	cJSON_Delete(root);
-}
-bool XParser::initParser(const std::string& filePath)
-{
-	json_data = readJsonFile(filePath.c_str());
-	// ½âÎö JSON
-	root = cJSON_Parse(json_data);
-	if (CHECK_NULLPTR(root))
+namespace XVisual {
+	XParser& XParser::getInstance()
 	{
-		//printf("Error before: [%s]\n", cJSON_GetErrorPtr());
-		return false;
+		static XParser xParser;
+		return xParser;
 	}
-	else
+	XParser::XParser()
 	{
-		return true;
+		json_data = nullptr;
+		// è§£æ JSON è·å¾—çš„æ ¹èŠ‚ç‚¹
+		root = nullptr;
+		// è·å– ClassInfo æ•°ç»„
+		classinfo_array = nullptr;
+		// ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element
+
+		classinfo_element = nullptr;
+		// ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ ClassName
+		class_name = nullptr;
+		// ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ ColleagueType
+		colleague_type = nullptr;
+		// ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ ColleagueId
+
+		colleague_id = nullptr;
+		// ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ SourceFrom
+		source_from = nullptr;
+		// ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ InnerParam
+		inner_param = nullptr;
 	}
-}
-// »ñÈ¡ ClassInfo Êı×é
-bool XParser::getClassInfoArr(cJSON*& classInfoArr)
-{
-	classinfo_array = cJSON_GetObjectItemCaseSensitive(root, "ClassInfo");
-	classInfoArr = classinfo_array;
-	if (CHECK_NULLPTR(classinfo_array) || !cJSON_IsArray(classinfo_array))
+	XParser::~XParser()
 	{
-		//printf("Failed to get 'ClassInfo' array.\n");
 		cJSON_Delete(root);
-		return false;
 	}
-	else
+	bool XParser::initParser(const std::string& filePath)
 	{
-		return true;
+		json_data = readJsonFile(filePath.c_str());
+		// è§£æ JSON
+		root = cJSON_Parse(json_data);
+		if (CHECK_NULLPTR(root))
+		{
+			//printf("Error before: [%s]\n", cJSON_GetErrorPtr());
+			return false;
+		}
+		else
+		{
+			return true;
+		}
 	}
-}
-// »ñÈ¡ ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element
-bool XParser::getClassInfoItemAt(int i)
-{
-	classinfo_element = cJSON_GetArrayItem(classinfo_array, i);
-	if (CHECK_ObjectItem(classinfo_element))
+	// è·å– ClassInfo æ•°ç»„
+	bool XParser::getClassInfoArr(cJSON*& classInfoArr)
 	{
-		//printf("Is ObjectItem \n");
-		return true;
+		classinfo_array = cJSON_GetObjectItemCaseSensitive(root, "ClassInfo");
+		classInfoArr = classinfo_array;
+		if (CHECK_NULLPTR(classinfo_array) || !cJSON_IsArray(classinfo_array))
+		{
+			//printf("Failed to get 'ClassInfo' array.\n");
+			cJSON_Delete(root);
+			return false;
+		}
+		else
+		{
+			return true;
+		}
 	}
-	else
+	// è·å– ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element
+	bool XParser::getClassInfoItemAt(int i)
 	{
-		//printf("NOT ObjectItem \n");
-		return false;
+		classinfo_element = cJSON_GetArrayItem(classinfo_array, i);
+		if (CHECK_ObjectItem(classinfo_element))
+		{
+			//printf("Is ObjectItem \n");
+			return true;
+		}
+		else
+		{
+			//printf("NOT ObjectItem \n");
+			return false;
+		}
 	}
-}
-// »ñÈ¡ ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element
-bool XParser::getClassInfoItemAt(cJSON*& classInfoElement, int i)
-{
-	classinfo_element = cJSON_GetArrayItem(classinfo_array, i);
-	classInfoElement = classinfo_element;
-	if (CHECK_ObjectItem(classinfo_element))
+	// è·å– ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element
+	bool XParser::getClassInfoItemAt(cJSON*& classInfoElement, int i)
 	{
-		//printf("Is ObjectItem \n");
-		return true;
+		classinfo_element = cJSON_GetArrayItem(classinfo_array, i);
+		classInfoElement = classinfo_element;
+		if (CHECK_ObjectItem(classinfo_element))
+		{
+			//printf("Is ObjectItem \n");
+			return true;
+		}
+		else
+		{
+			//printf("NOT ObjectItem \n");
+			return false;
+		}
 	}
-	else
-	{
-		//printf("NOT ObjectItem \n");
-		return false;
-	}
-}
 
 
-// »ñÈ¡ ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ Item_ClassName for Item 
-bool XParser::getItemClassNameAt(cJSON*& itemClassName, int i)
-{
-	getClassInfoItemAt(i);
-	item_class_name = cJSON_GetObjectItemCaseSensitive(classinfo_element, "Item_ClassName");
-	itemClassName = item_class_name;
-	if (cJSON_IsString(item_class_name) && (item_class_name->valuestring != NULL))
+	// è·å– ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ Item_ClassName for Item 
+	bool XParser::getItemClassNameAt(cJSON*& itemClassName, int i)
 	{
-		//printf("ClassName: %s\n", item_class_name->valuestring);
-		return true;
+		getClassInfoItemAt(i);
+		item_class_name = cJSON_GetObjectItemCaseSensitive(classinfo_element, "Item_ClassName");
+		itemClassName = item_class_name;
+		if (cJSON_IsString(item_class_name) && (item_class_name->valuestring != NULL))
+		{
+			//printf("ClassName: %s\n", item_class_name->valuestring);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
-	else
+	// è·å– ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ Item_ColleagueType for Item
+	bool XParser::getItemColleagueTypeAt(cJSON*& itemColleagueType, int i)
 	{
-		return false;
+		getClassInfoItemAt(i);
+		item_colleague_type = cJSON_GetObjectItemCaseSensitive(classinfo_element, "Item_ColleagueType");
+		itemColleagueType = item_colleague_type;
+		if (cJSON_IsNumber(item_colleague_type))
+		{
+			//printf("ColleagueType: %d\n", item_colleague_type->valueint);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
-}
-// »ñÈ¡ ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ Item_ColleagueType for Item
-bool XParser::getItemColleagueTypeAt(cJSON*& itemColleagueType, int i)
-{
-	getClassInfoItemAt(i);
-	item_colleague_type = cJSON_GetObjectItemCaseSensitive(classinfo_element, "Item_ColleagueType");
-	itemColleagueType = item_colleague_type;
-	if (cJSON_IsNumber(item_colleague_type))
+	// è·å– ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ Item_ColleagueId for Item 
+	bool XParser::getItemColleagueIdAt(cJSON*& itemColleagueId, int i)
 	{
-		//printf("ColleagueType: %d\n", item_colleague_type->valueint);
-		return true;
+		getClassInfoItemAt(i);
+		item_colleague_id = cJSON_GetObjectItemCaseSensitive(classinfo_element, "Item_ColleagueId");
+		itemColleagueId = item_colleague_id;
+		if (cJSON_IsString(item_colleague_id) && (item_colleague_id->valuestring != NULL))
+		{
+			//printf("ColleagueId: %s\n", item_colleague_id->valuestring);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
-	else
+	// è·å– ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ Item_UniqueName for Item 
+	bool XParser::getItemUniqueNameAt(cJSON*& itemUniqueName, int i)
 	{
-		return false;
+		getClassInfoItemAt(i);
+		item_unique_name = cJSON_GetObjectItemCaseSensitive(classinfo_element, "Item_UniqueName");
+		itemUniqueName = item_unique_name;
+		if (cJSON_IsString(item_unique_name) && (item_unique_name->valuestring != NULL))
+		{
+			//printf("ColleagueId: %s\n", item_unique_name->valuestring);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
-}
-// »ñÈ¡ ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ Item_ColleagueId for Item 
-bool XParser::getItemColleagueIdAt(cJSON*& itemColleagueId, int i)
-{
-	getClassInfoItemAt(i);
-	item_colleague_id = cJSON_GetObjectItemCaseSensitive(classinfo_element, "Item_ColleagueId");
-	itemColleagueId = item_colleague_id;
-	if (cJSON_IsString(item_colleague_id) && (item_colleague_id->valuestring != NULL))
-	{
-		//printf("ColleagueId: %s\n", item_colleague_id->valuestring);
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-// »ñÈ¡ ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ Item_UniqueName for Item 
-bool XParser::getItemUniqueNameAt(cJSON*& itemUniqueName, int i)
-{
-	getClassInfoItemAt(i);
-	item_unique_name = cJSON_GetObjectItemCaseSensitive(classinfo_element, "Item_UniqueName");
-	itemUniqueName = item_unique_name;
-	if (cJSON_IsString(item_unique_name) && (item_unique_name->valuestring != NULL))
-	{
-		//printf("ColleagueId: %s\n", item_unique_name->valuestring);
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
 
 
-bool XParser::getItemPosition(cJSON*& itemPos, int i)
-{
-	itemPos = cJSON_GetObjectItemCaseSensitive(classinfo_element , "Item_Position");
-	if (cJSON_IsArray(itemPos))
+	bool XParser::getItemPosition(cJSON*& itemPos, int i)
 	{
-		return true;
+		itemPos = cJSON_GetObjectItemCaseSensitive(classinfo_element, "Item_Position");
+		if (cJSON_IsArray(itemPos))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
-	else
-	{
-		return false;
-	}
-}
 
 
-// »ñÈ¡ ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ ClassName for Handle
-bool XParser::getClassNameAt(cJSON*& className, int i)
-{
-	getClassInfoItemAt(i);
-	class_name = cJSON_GetObjectItemCaseSensitive(classinfo_element, "ClassName");
-	className = class_name;
-	if (cJSON_IsString(class_name) && (class_name->valuestring != NULL))
+	// è·å– ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ ClassName for Handle
+	bool XParser::getClassNameAt(cJSON*& className, int i)
 	{
-		//printf("ClassName: %s\n", class_name->valuestring);
-		return true;
+		getClassInfoItemAt(i);
+		class_name = cJSON_GetObjectItemCaseSensitive(classinfo_element, "ClassName");
+		className = class_name;
+		if (cJSON_IsString(class_name) && (class_name->valuestring != NULL))
+		{
+			//printf("ClassName: %s\n", class_name->valuestring);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
-	else
+	// è·å– ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ ColleagueType for Handle 
+	bool XParser::getColleagueTypeAt(cJSON*& colleagueType, int i)
 	{
-		return false;
+		getClassInfoItemAt(i);
+		colleague_type = cJSON_GetObjectItemCaseSensitive(classinfo_element, "ColleagueType");
+		colleagueType = colleague_type;
+		if (cJSON_IsNumber(colleague_type))
+		{
+			//printf("ColleagueType: %d\n", colleague_type->valueint);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
-}
-// »ñÈ¡ ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ ColleagueType for Handle 
-bool XParser::getColleagueTypeAt(cJSON*& colleagueType, int i)
-{
-	getClassInfoItemAt(i);
-	colleague_type = cJSON_GetObjectItemCaseSensitive(classinfo_element, "ColleagueType");
-	colleagueType = colleague_type;
-	if (cJSON_IsNumber(colleague_type))
+	// è·å– ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ ColleagueId for Handle 
+	bool XParser::getColleagueIdAt(cJSON*& colleagueId, int i)
 	{
-		//printf("ColleagueType: %d\n", colleague_type->valueint);
-		return true;
+		getClassInfoItemAt(i);
+		colleague_id = cJSON_GetObjectItemCaseSensitive(classinfo_element, "ColleagueId");
+		colleagueId = colleague_id;
+		if (cJSON_IsString(colleague_id) && (colleague_id->valuestring != NULL))
+		{
+			//printf("ColleagueId: %s\n", colleague_id->valuestring);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
-	else
+	// è·å– ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ UniqueName for Handle 
+	bool XParser::getUniqueNameAt(cJSON*& uniqueName, int i)
 	{
-		return false;
+		getClassInfoItemAt(i);
+		unique_name = cJSON_GetObjectItemCaseSensitive(classinfo_element, "UniqueName");
+		uniqueName = unique_name;
+		if (cJSON_IsString(unique_name) && (unique_name->valuestring != NULL))
+		{
+			//printf("ColleagueId: %s\n", unique_name->valuestring);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
-}
-// »ñÈ¡ ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ ColleagueId for Handle 
-bool XParser::getColleagueIdAt(cJSON*& colleagueId, int i)
-{
-	getClassInfoItemAt(i);
-	colleague_id = cJSON_GetObjectItemCaseSensitive(classinfo_element, "ColleagueId");
-	colleagueId = colleague_id;
-	if (cJSON_IsString(colleague_id) && (colleague_id->valuestring != NULL))
-	{
-		//printf("ColleagueId: %s\n", colleague_id->valuestring);
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-// »ñÈ¡ ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ UniqueName for Handle 
-bool XParser::getUniqueNameAt(cJSON*& uniqueName, int i)
-{
-	getClassInfoItemAt(i);
-	unique_name = cJSON_GetObjectItemCaseSensitive(classinfo_element, "UniqueName");
-	uniqueName = unique_name;
-	if (cJSON_IsString(unique_name) && (unique_name->valuestring != NULL))
-	{
-		//printf("ColleagueId: %s\n", unique_name->valuestring);
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
 
 
-// »ñÈ¡ ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ SourceFrom for Handle
-bool XParser::getSourceFromAt(cJSON*& sourceFrom, int i)
-{
-	getClassInfoItemAt(i);
-	source_from = cJSON_GetObjectItemCaseSensitive(classinfo_element, "SourceFrom");
-	sourceFrom = source_from;
-	if (CHECK_ObjectItem(source_from))
+	// è·å– ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ SourceFrom for Handle
+	bool XParser::getSourceFromAt(cJSON*& sourceFrom, int i)
 	{
-		return true;
+		getClassInfoItemAt(i);
+		source_from = cJSON_GetObjectItemCaseSensitive(classinfo_element, "SourceFrom");
+		sourceFrom = source_from;
+		if (CHECK_ObjectItem(source_from))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
-	else
+	// è·å– ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ InnerParam for Handle 
+	bool XParser::getInnerParamAt(cJSON*& innerParam, int i)
 	{
-		return false;
+		getClassInfoItemAt(i);
+		inner_param = cJSON_GetObjectItemCaseSensitive(classinfo_element, "InnerParam");
+		innerParam = inner_param;
+		if (CHECK_ObjectItem(inner_param))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
-}
-// »ñÈ¡ ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ InnerParam for Handle 
-bool XParser::getInnerParamAt(cJSON*& innerParam, int i)
-{
-	getClassInfoItemAt(i);
-	inner_param = cJSON_GetObjectItemCaseSensitive(classinfo_element, "InnerParam");
-	innerParam = inner_param;
-	if (CHECK_ObjectItem(inner_param))
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
+} //namespace XVisual

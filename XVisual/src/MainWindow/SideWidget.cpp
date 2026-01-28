@@ -13,84 +13,86 @@
 #include "Common/ZoomableGraphicsView.h"
 #include "ItemBase/XBaseItem.h"
 
+namespace XVisual {
+
 SideWidget::SideWidget(QWidget* parent) : QWidget(parent), unfold(false)
 {
     /*
-    foldButtonÊÇÒ»¸ö¿ØÖÆfoldWidgetÕÛµşºÍÕ¹¿ªµÄ°´Å¥¡£foldButton±»Ìí¼Óµ½QHBoxLayout²¢ÏÔÊ¾ÔÚbtnWidget
+    foldButtonæ˜¯ä¸€ä¸ªæ§åˆ¶foldWidgetæŠ˜å å’Œå±•å¼€çš„æŒ‰é’®ã€‚foldButtonè¢«æ·»åŠ åˆ°QHBoxLayoutå¹¶æ˜¾ç¤ºåœ¨btnWidget
     */
-    // ÑùÊ½±í¶¨ÒåÁË°´Å¥ÔÚÕı³£×´Ì¬ºÍ°´ÏÂ×´Ì¬ÏÂµÄÍâ¹Û
+    // æ ·å¼è¡¨å®šä¹‰äº†æŒ‰é’®åœ¨æ­£å¸¸çŠ¶æ€å’ŒæŒ‰ä¸‹çŠ¶æ€ä¸‹çš„å¤–è§‚
     const QString btnStyle = "QPushButton{border-radius:18px; background-position:center; background-color:rgba(245,245,245,250)}"\
         "QPushButton:pressed{background-color:rgba(255,255,255,255);border-style:inset;}";
     foldButton = new QPushButton();
     foldButton->setText("Hide<<");
-    // Ó¦ÓÃÑùÊ½±íµ÷ÕûfoldButtonµÄÍâ¹Û
+    // åº”ç”¨æ ·å¼è¡¨è°ƒæ•´foldButtonçš„å¤–è§‚
     foldButton->setStyleSheet(btnStyle);
-    // Á¬½Ó°´Å¥°´ÏÂĞÅºÅºÍËüµÄ²Ûº¯Êı
+    // è¿æ¥æŒ‰é’®æŒ‰ä¸‹ä¿¡å·å’Œå®ƒçš„æ§½å‡½æ•°
     connect(foldButton, &QPushButton::clicked, this, &SideWidget::on_foldButton_clicked);
-    // ½«foldButtonÌí¼Óµ½btnLayout²¼¾Ö
+    // å°†foldButtonæ·»åŠ åˆ°btnLayoutå¸ƒå±€
     btnLayout = new QHBoxLayout();
-    // ÍÆ¶¯foldButtonµ½ÓÒ²à
+    // æ¨åŠ¨foldButtonåˆ°å³ä¾§
     btnLayout->addStretch();
-    // Ê¹ÓÃQt::AlignRightÀ´ÓÒ¶ÔÆëfoldButton
+    // ä½¿ç”¨Qt::AlignRightæ¥å³å¯¹é½foldButton
     btnLayout->addWidget(foldButton, 0, Qt::AlignRight);
-    // ÉèÖÃbtnLayoutÖĞĞ¡¿Ø¼şÖ®¼äµÄ¾àÀë
+    // è®¾ç½®btnLayoutä¸­å°æ§ä»¶ä¹‹é—´çš„è·ç¦»
     btnLayout->setSpacing(0);
-    // ÉèÖÃbtnLayoutµÄÍâ±ß¾à
+    // è®¾ç½®btnLayoutçš„å¤–è¾¹è·
     btnLayout->setContentsMargins(0, 0, 0, 0);
     // btnWidget is a QWidget which holds a QHBoxLayout for foldButton
     btnWidget = new QWidget();
     btnWidget->setLayout(btnLayout);
     /*
-    btnWidget->setStyleSheet("padding: 0px;");ÊÇÒ»¸öÑùÊ½±í(CSS, Cascading Style Sheets)µÄÉèÖÃ£¬
-    ËüÖ¸¶¨ÁËĞ¡¿Ø¼şbtnWidgetµÄÄÚ±ß¾à¡£
-    ÄÚ±ß¾àÊÇĞ¡¿Ø¼şÄÚÈİÓëĞ¡¿Ø¼ş±ß½çÖ®¼äµÄ¿Õ¼ä¡£
-    ½«ÄÚ±ß¾àÉèÖÃÎª"0px"ÊÇÎªÁËÈ·±£°´Å¥Ğ¡¿Ø¼şµÄÄÚÈİ½ôÌùÔÚ±ß½çÉÏ¡£
+    btnWidget->setStyleSheet("padding: 0px;");æ˜¯ä¸€ä¸ªæ ·å¼è¡¨(CSS, Cascading Style Sheets)çš„è®¾ç½®ï¼Œ
+    å®ƒæŒ‡å®šäº†å°æ§ä»¶btnWidgetçš„å†…è¾¹è·ã€‚
+    å†…è¾¹è·æ˜¯å°æ§ä»¶å†…å®¹ä¸å°æ§ä»¶è¾¹ç•Œä¹‹é—´çš„ç©ºé—´ã€‚
+    å°†å†…è¾¹è·è®¾ç½®ä¸º"0px"æ˜¯ä¸ºäº†ç¡®ä¿æŒ‰é’®å°æ§ä»¶çš„å†…å®¹ç´§è´´åœ¨è¾¹ç•Œä¸Šã€‚
     */
     btnWidget->setStyleSheet("padding: 0px; margin: 0px;background-color: lightblue; ");
-    // ÉèÖÃbtnWidgetµÄ´óĞ¡²ßÂÔ
+    // è®¾ç½®btnWidgetçš„å¤§å°ç­–ç•¥
     btnWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
-    // »ñÈ¡°´Å¥ÎÄ±¾µÄ¿í¶È
+    // è·å–æŒ‰é’®æ–‡æœ¬çš„å®½åº¦
     QFontMetrics fontMetrics(foldButton->font());
-    // fontMetrics.horizontalAdvanceÊÇÒÔÏñËØÎªµ¥Î»µÄ×Ö·û¿í¶È
+    // fontMetrics.horizontalAdvanceæ˜¯ä»¥åƒç´ ä¸ºå•ä½çš„å­—ç¬¦å®½åº¦
     int textWidth = fontMetrics.horizontalAdvance(foldButton->text());
-    // ÉèÖÃfoldButtonµÄ¿í¶ÈÎªtextWidth+3
+    // è®¾ç½®foldButtonçš„å®½åº¦ä¸ºtextWidth+3
     foldButton->setFixedWidth(textWidth + 3);
-    // ÉèÖÃbtnWidgetµÄ¿í¶ÈÎªtextWidth+3
+    // è®¾ç½®btnWidgetçš„å®½åº¦ä¸ºtextWidth+3
     btnWidget->setFixedWidth(textWidth + 3);
-    // fontMetrics.height×Ö·û¸ß¶È
+    // fontMetrics.heightå­—ç¬¦é«˜åº¦
     int textHeight = fontMetrics.height();
-    // ÉèÖÃfoldButtonµÄ¸ß¶ÈÎªtextHeight+12
+    // è®¾ç½®foldButtonçš„é«˜åº¦ä¸ºtextHeight+12
     foldButton->setFixedHeight(textHeight + 12);
-    // ÉèÖÃfoldButtonµÄ´óĞ¡²ßÂÔ
+    // è®¾ç½®foldButtonçš„å¤§å°ç­–ç•¥
     foldButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
-    // ´´½¨Ò»¸öÃûÎª"imagePageWidget"µÄQWidgetÓÃÓÚÏÔÊ¾ÕÕÆ¬
+    // åˆ›å»ºä¸€ä¸ªåä¸º"imagePageWidget"çš„QWidgetç”¨äºæ˜¾ç¤ºç…§ç‰‡
     imagePageWidget = new ImagePageWidget();
-    // ´´½¨Ò»¸öÃûÎª"upLayout"µÄQHBoxLayout
+    // åˆ›å»ºä¸€ä¸ªåä¸º"upLayout"çš„QHBoxLayout
     upLayout = new QHBoxLayout();
-    // ÉèÖÃupLayoutÖĞĞ¡¿Ø¼şÖ®¼äµÄ¾àÀë
+    // è®¾ç½®upLayoutä¸­å°æ§ä»¶ä¹‹é—´çš„è·ç¦»
     upLayout->setSpacing(0);
-    // ÉèÖÃupLayoutµÄÍâ±ß¾à
+    // è®¾ç½®upLayoutçš„å¤–è¾¹è·
     upLayout->setContentsMargins(0, 0, 0, 0);
-    // ½«imagePageWidgetÌí¼Óµ½upLayout
+    // å°†imagePageWidgetæ·»åŠ åˆ°upLayout
     upLayout->addWidget(imagePageWidget);
-    // ´´½¨Ò»¸öÃûÎª"upWidget"µÄQWidget
+    // åˆ›å»ºä¸€ä¸ªåä¸º"upWidget"çš„QWidget
     upWidget = new QWidget();
-    // upWidgetµÄ³õÊ¼×´Ì¬ÎªÒş²Ø
+    // upWidgetçš„åˆå§‹çŠ¶æ€ä¸ºéšè—
     upWidget->hide();
-    // ¸øupWidgetÉèÖÃupLaypout²¼¾Ö
+    // ç»™upWidgetè®¾ç½®upLaypoutå¸ƒå±€
     upWidget->setLayout(upLayout);
 
     namesWidget = new NamesWidget();
     variableWidget = new VariableWidget();
-    //µ±µã»÷NameWidgetÖĞÄ³¸öÏîµÄ"+"°´Å¥Ê±£¬·¢ËÍĞÅºÅ¸øSideWidget::tabAddSlot
+    //å½“ç‚¹å‡»NameWidgetä¸­æŸä¸ªé¡¹çš„"+"æŒ‰é’®æ—¶ï¼Œå‘é€ä¿¡å·ç»™SideWidget::tabAddSlot
     connect(namesWidget, &NamesWidget::tabAddSignal, this, &SideWidget::tabAddSlot);
-    //µ±µã»÷NameWidgetÖĞÄ³¸öÏîµÄ"-"°´Å¥Ê±£¬·¢ËÍĞÅºÅ¸øSideWidget::tabRomoveSlot 
+    //å½“ç‚¹å‡»NameWidgetä¸­æŸä¸ªé¡¹çš„"-"æŒ‰é’®æ—¶ï¼Œå‘é€ä¿¡å·ç»™SideWidget::tabRomoveSlot 
     connect(namesWidget, &NamesWidget::tabRemoveSignal, this, &SideWidget::tabRemoveSlot);
-    //µ±ÔÚNamesWidgetÖĞÇĞ»»Ñ¡ÖĞÏîÊ±£¬ImagePageWidgetÀïÃæµÄtabWidgetµÄÑ¡ÖĞÏî
+    //å½“åœ¨NamesWidgetä¸­åˆ‡æ¢é€‰ä¸­é¡¹æ—¶ï¼ŒImagePageWidgeté‡Œé¢çš„tabWidgetçš„é€‰ä¸­é¡¹
     connect(namesWidget, &NamesWidget::itemSelectedSignal, imagePageWidget, &ImagePageWidget::tabSelectedSlot);
-    //µ±ÔÚNamesWidgetÖĞÇĞ»»Ñ¡ÖĞÏîÊ±£¬VariableWidgetµÄÑ¡ÖĞÏî    
+    //å½“åœ¨NamesWidgetä¸­åˆ‡æ¢é€‰ä¸­é¡¹æ—¶ï¼ŒVariableWidgetçš„é€‰ä¸­é¡¹    
     connect(namesWidget, &NamesWidget::itemSelectedSignal, variableWidget, &VariableWidget::nodeSelectedSlot);
 	//
     connect(imagePageWidget, &ImagePageWidget::tabChangedSignal, namesWidget, &NamesWidget::itemChangedSlot);
@@ -102,57 +104,57 @@ SideWidget::SideWidget(QWidget* parent) : QWidget(parent), unfold(false)
     connect(variableWidget, &VariableWidget::nodeToggledSignal, namesWidget, &NamesWidget::itemToggledSlot);
     
     
-    // ´´½¨Ë®Æ½·½Ïòsplitter
+    // åˆ›å»ºæ°´å¹³æ–¹å‘splitter
 	hSplitter = new QSplitter(Qt::Horizontal);
-	// ÉèÖÃQSplitter·Ö¸îÏßµÄÑùÊ½±í
+	// è®¾ç½®QSplitteråˆ†å‰²çº¿çš„æ ·å¼è¡¨
     hSplitter->setStyleSheet("QSplitter::handle { background: lightgray; border: 1px gray; }");
-	// ½«namesWidgetÌí¼Óµ½hSplitter
+	// å°†namesWidgetæ·»åŠ åˆ°hSplitter
     hSplitter->addWidget(namesWidget);
-	// ½«variableWidgetÌí¼Óµ½hSplitter
+	// å°†variableWidgetæ·»åŠ åˆ°hSplitter
     hSplitter->addWidget(variableWidget);
-	// ÉèÖÃÀ­Éì±ÈÀı
+	// è®¾ç½®æ‹‰ä¼¸æ¯”ä¾‹
     hSplitter->setStretchFactor(0, 1);
     hSplitter->setStretchFactor(1, 1);
     bottomLayout = new QHBoxLayout();
     bottomLayout->addWidget(hSplitter);
-    // ÉèÖÃbottomLayoutÖĞĞ¡¿Ø¼şÖ®¼äµÄ¾àÀë, ¼´ÉèÖÃÄÚ±ß¾à
+    // è®¾ç½®bottomLayoutä¸­å°æ§ä»¶ä¹‹é—´çš„è·ç¦», å³è®¾ç½®å†…è¾¹è·
     bottomLayout->setSpacing(0);
-    // ÉèÖÃbottomLayoutµÄÍâ±ß¾à
+    // è®¾ç½®bottomLayoutçš„å¤–è¾¹è·
     bottomLayout->setContentsMargins(0, 0, 0, 0);
     bottomWidget = new QWidget();
     bottomWidget->setLayout(bottomLayout);
 
-	// ´´½¨´¹Ö±·½Ïòsplitter
+	// åˆ›å»ºå‚ç›´æ–¹å‘splitter
 	vSplitter = new QSplitter(Qt::Vertical);
-	// ÉèÖÃQSplitter·Ö¸îÏßµÄÑùÊ½±í
+	// è®¾ç½®QSplitteråˆ†å‰²çº¿çš„æ ·å¼è¡¨
 	vSplitter->setStyleSheet("QSplitter::handle { background: lightgray; border: 1px gray; }");
-	// ½«upWidgetÌí¼Óµ½vSplitter
+	// å°†upWidgetæ·»åŠ åˆ°vSplitter
 	vSplitter->addWidget(upWidget);
-	// ½«bottomWidgetÌí¼Óµ½vSplitter
+	// å°†bottomWidgetæ·»åŠ åˆ°vSplitter
 	vSplitter->addWidget(bottomWidget);
-	// ÉèÖÃÀ­Éì±ÈÀı
+	// è®¾ç½®æ‹‰ä¼¸æ¯”ä¾‹
 	vSplitter->setStretchFactor(0, 1);
 	vSplitter->setStretchFactor(1, 1);
 	rightLayout = new QVBoxLayout();
 	rightLayout->addWidget(vSplitter);
-	// ÉèÖÃrightLayoutÖĞĞ¡¿Ø¼şÖ®¼äµÄ¾àÀë, ¼´ÉèÖÃÄÚ±ß¾à
+	// è®¾ç½®rightLayoutä¸­å°æ§ä»¶ä¹‹é—´çš„è·ç¦», å³è®¾ç½®å†…è¾¹è·
 	rightLayout->setSpacing(0);
-	// ÉèÖÃrightLayoutµÄÍâ±ß¾à
+	// è®¾ç½®rightLayoutçš„å¤–è¾¹è·
 	rightLayout->setContentsMargins(0, 0, 0, 0);
 	rightWidget = new QWidget();
 	rightWidget->setLayout(rightLayout);
 
-    // ´´½¨Ò»¸öÃûÎªsideLayoutµÄQHBoxLayout
+    // åˆ›å»ºä¸€ä¸ªåä¸ºsideLayoutçš„QHBoxLayout
     sideLayout = new QHBoxLayout();
-    // ½«btnWidgetÌí¼Óµ½sideLayout
+    // å°†btnWidgetæ·»åŠ åˆ°sideLayout
     sideLayout->addWidget(btnWidget);
-    // ½«rightWidgetÌí¼Óµ½sideLayout
+    // å°†rightWidgetæ·»åŠ åˆ°sideLayout
     sideLayout->addWidget(rightWidget);
-    // ½«sideLayoutÉèÖÃÎªÏòÓÒ¶ÔÆë
+    // å°†sideLayoutè®¾ç½®ä¸ºå‘å³å¯¹é½
     sideLayout->setAlignment(Qt::AlignRight);
-    // ÉèÖÃsideLayoutÖĞĞ¡¿Ø¼şÖ®¼äµÄ¾àÀë
+    // è®¾ç½®sideLayoutä¸­å°æ§ä»¶ä¹‹é—´çš„è·ç¦»
     sideLayout->setSpacing(0);
-    // ÉèÖÃsideLayoutµÄÍâ±ß¾à
+    // è®¾ç½®sideLayoutçš„å¤–è¾¹è·
     sideLayout->setContentsMargins(0, 0, 0, 0);
     setLayout(sideLayout);
 }
@@ -201,36 +203,36 @@ void SideWidget::showImageInTabSlot(const std::string& filename, const cv::Mat& 
 {
     XLOG_INFO("SideWidget::showImageInTabSlot ...", CURRENT_THREAD_ID);
 
-    // ÆúÓÃ´úÂë¶Î
-	 // //  ´´½¨Ò»¸öZoomImageLabelÓÃÓÚÏÔÊ¾Í¼Ïñ
+    // å¼ƒç”¨ä»£ç æ®µ
+	 // //  åˆ›å»ºä¸€ä¸ªZoomImageLabelç”¨äºæ˜¾ç¤ºå›¾åƒ
     // ZoomImageLabel* imageLabel = new ZoomImageLabel();
-	// ½«CV::Mat×ª»»ÎªQImage
+	// å°†CV::Matè½¬æ¢ä¸ºQImage
 	// QImage qImage = cvMatToQImage(image);
-	// // ½«QImage×ª»»ÎªQPixmap
+	// // å°†QImageè½¬æ¢ä¸ºQPixmap
 	// QPixmap pixmap = QPixmap::fromImage(qImage);
-	// // ÔÚQLabelÉÏÏÔÊ¾QPixmap
+	// // åœ¨QLabelä¸Šæ˜¾ç¤ºQPixmap
 	// imageLabel->setPixmap(pixmap);
     // imageLabel->setScaledContents(true);
-    // // »ñÈ¡tabWidget
+    // // è·å–tabWidget
     // QTabWidget* tabWidget = imagePageWidget->getTabWidget();
-	// // ½«QWidgetÌí¼ÓÎªĞÂµÄ±êÇ©Ò³
+	// // å°†QWidgetæ·»åŠ ä¸ºæ–°çš„æ ‡ç­¾é¡µ
 	// int tabIndex = tabWidget->addTab(imageLabel, QString::fromStdString(filename));
 
 
 
 
-    // ´´½¨Ò»¸öZoomableGraphicsViewÓÃÓÚÏÔÊ¾Í¼Ïñ
+    // åˆ›å»ºä¸€ä¸ªZoomableGraphicsViewç”¨äºæ˜¾ç¤ºå›¾åƒ
     ZoomableGraphicsView* imageShowWidget = new ZoomableGraphicsView();
     imageShowWidget->initLoad(image);
-     // »ñÈ¡ tabWidget
+     // è·å– tabWidget
 	QTabWidget* tabWidget = imagePageWidget->getTabWidget();
-	// ½« imageShowWidget Ìí¼ÓÎªĞÂµÄ±êÇ©Ò³
+	// å°† imageShowWidget æ·»åŠ ä¸ºæ–°çš„æ ‡ç­¾é¡µ
     int tabIndex = tabWidget->addTab(imageShowWidget, QString::fromStdString(filename));
 
-	// Ê¹ĞÂÌí¼ÓµÄ±êÇ©Ò³³ÉÎª»î¶¯Ò³
+	// ä½¿æ–°æ·»åŠ çš„æ ‡ç­¾é¡µæˆä¸ºæ´»åŠ¨é¡µ
 	tabWidget->setCurrentIndex(tabIndex);
 
-    // Ê¹namesWidgetĞÂÔöÒ»ĞĞ¼ÇÂ¼
+    // ä½¿namesWidgetæ–°å¢ä¸€è¡Œè®°å½•
     namesWidget->addRow(QString::fromStdString(filename));
 
     const std::string xUuid = item->getUuid();
@@ -245,7 +247,7 @@ void SideWidget::tabAddSlot(const QString& itemName)
     XLOG_INFO("SideWidget::tabAddSlot  itemName = " + itemName.toStdString(), CURRENT_THREAD_ID);
     QTabWidget* tabWidget = imagePageWidget->getTabWidget();
 	int tabIndex = -1;
-	// ±éÀútabWidget£¬²éÕÒÓëitemNameÆ¥ÅäµÄtab
+	// éå†tabWidgetï¼ŒæŸ¥æ‰¾ä¸itemNameåŒ¹é…çš„tab
 	for (int i = 0; i < tabWidget->count(); ++i) 
     {
 		if (tabWidget->tabText(i) == itemName) 
@@ -271,7 +273,7 @@ void SideWidget::tabRemoveSlot(const QString& itemName)
     XLOG_INFO("SideWidget::tabRemoveSlot  itemName = " + itemName.toStdString(), CURRENT_THREAD_ID);
     QTabWidget* tabWidget = imagePageWidget->getTabWidget();
 	int tabIndex = -1;
-	// ±éÀútabWidget£¬²éÕÒÓëitemNameÆ¥ÅäµÄtab
+	// éå†tabWidgetï¼ŒæŸ¥æ‰¾ä¸itemNameåŒ¹é…çš„tab
 	for (int i = 0; i < tabWidget->count(); ++i)
 	{
 		if (tabWidget->tabText(i) == itemName)
@@ -290,3 +292,5 @@ void SideWidget::tabRemoveSlot(const QString& itemName)
         XLOG_INFO("SideWidget::tabRemoveSlot  " + itemName.toStdString()+ " not existed.", CURRENT_THREAD_ID);
 	}
 }
+
+} // namespace XVisual

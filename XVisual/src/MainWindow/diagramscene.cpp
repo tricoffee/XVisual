@@ -14,6 +14,8 @@
 #include "Common/StrUtils.h"
 #include "ItemWidget/DiagramProxyWidget.h"
 
+namespace XVisual {
+
 DiagramScene::DiagramScene(QMenu* itemMenu, QObject* parent): QGraphicsScene(parent)
 {
 	myItemMenu = itemMenu;
@@ -131,26 +133,26 @@ void DiagramScene::addItemByJson(ColleagueData data)
 	{
 		std::lock_guard<std::mutex> lock(itemMapMutex);
 		globalItemMap[itemId] = item;
-	}// ×÷ÓÃÓò½áÊøÊ±£¬lock_guard »á×Ô¶¯½âËø»¥³âËøitemMapMutex
+	}// ä½œç”¨åŸŸç»“æŸæ—¶ï¼Œlock_guard ä¼šè‡ªåŠ¨è§£é”äº’æ–¥é”itemMapMutex
 	{
 		std::lock_guard<std::mutex> lock(xGraphMutex);
-		// ´´½¨±êÊ¶ÎªitemIdµÄ½Úµã
+		// åˆ›å»ºæ ‡è¯†ä¸ºitemIdçš„èŠ‚ç‚¹
 		xGraph.push_back(std::make_shared<GraphNode>(itemId));
-	}// ×÷ÓÃÓò½áÊøÊ±£¬lock_guard »á×Ô¶¯½âËø»¥³âËøxGraphMutex
+	}// ä½œç”¨åŸŸç»“æŸæ—¶ï¼Œlock_guard ä¼šè‡ªåŠ¨è§£é”äº’æ–¥é”xGraphMutex
 
 
 	std::string handleId = item->getXHandle()->getUuid();
 	{
 		std::lock_guard<std::mutex> lock(handleMapMutex);
 		globalHandleMap[handleId] = item->getXHandle();
-	}// ×÷ÓÃÓò½áÊøÊ±£¬lock_guard »á×Ô¶¯½âËø»¥³âËøhandleMapMutex
+	}// ä½œç”¨åŸŸç»“æŸæ—¶ï¼Œlock_guard ä¼šè‡ªåŠ¨è§£é”äº’æ–¥é”handleMapMutex
 
-	//½«item¶ÔÓ¦µÄhandleId´æ´¢ÔÚxHandleGraph
+	//å°†itemå¯¹åº”çš„handleIdå­˜å‚¨åœ¨xHandleGraph
 	{
 		std::lock_guard<std::mutex> lock(xHandleGraphMutex);
-		// ´´½¨±êÊ¶ÎªitemIdµÄ½Úµã
+		// åˆ›å»ºæ ‡è¯†ä¸ºitemIdçš„èŠ‚ç‚¹
 		xHandleGraph.push_back(std::make_shared<GraphNode>(handleId));
-	}// ×÷ÓÃÓò½áÊøÊ±£¬lock_guard »á×Ô¶¯½âËø»¥³âËøxHandleGraphMutex
+	}// ä½œç”¨åŸŸç»“æŸæ—¶ï¼Œlock_guard ä¼šè‡ªåŠ¨è§£é”äº’æ–¥é”xHandleGraphMutex
 
 	diagramState = DiagramState::Move;
 	diagramType = DiagramType::Item;
@@ -168,7 +170,7 @@ void DiagramScene::addArrowByJson(const std::pair<std::string, std::set<std::str
 	{
 		std::lock_guard<std::mutex> lock(itemMapMutex);
 		pItem = globalItemMap[pItemId];
-	}// ×÷ÓÃÓò½áÊøÊ±£¬lock_guard »á×Ô¶¯½âËø»¥³âËøitemMapMutex
+	}// ä½œç”¨åŸŸç»“æŸæ—¶ï¼Œlock_guard ä¼šè‡ªåŠ¨è§£é”äº’æ–¥é”itemMapMutex
 
 	XBaseItem* qItem = nullptr;
 	for (const auto& qItemId : qItemIds)
@@ -176,7 +178,7 @@ void DiagramScene::addArrowByJson(const std::pair<std::string, std::set<std::str
 		{
 			std::lock_guard<std::mutex> lock(itemMapMutex);
 			qItem = globalItemMap[qItemId];
-		}// ×÷ÓÃÓò½áÊøÊ±£¬lock_guard »á×Ô¶¯½âËø»¥³âËøitemMapMutex
+		}// ä½œç”¨åŸŸç»“æŸæ—¶ï¼Œlock_guard ä¼šè‡ªåŠ¨è§£é”äº’æ–¥é”itemMapMutex
 
 
 		lineItem = new QGraphicsLineItem(QLineF(pItem->scenePos(), qItem->scenePos()));
@@ -211,19 +213,19 @@ void DiagramScene::addArrowByJson(const std::pair<std::string, std::set<std::str
 		{
 			XLOG_INFO("DiagramScene::addArrowByJson, pItem != nullptr ...  ", CURRENT_THREAD_ID);
 			std::lock_guard<std::mutex> lock(xGraphMutex);
-			// »ñÈ¡½ÚµãpItem->getUuid()ÔÚxGraphÀïÃæµÄË÷ÒıpIndex
+			// è·å–èŠ‚ç‚¹pItem->getUuid()åœ¨xGraphé‡Œé¢çš„ç´¢å¼•pIndex
 			int pIndex = XGraph::findNodeIndex(xGraph, pItem->getUuid());
 			if (qItem != nullptr)
 			{
 				XLOG_INFO("DiagramScene::addArrowByJson, endItem != nullptr ...  ", CURRENT_THREAD_ID);
-				// »ñÈ¡½ÚµãqItem->getUuid()ÔÚxGraphÀïÃæµÄË÷ÒıqIndex
+				// è·å–èŠ‚ç‚¹qItem->getUuid()åœ¨xGraphé‡Œé¢çš„ç´¢å¼•qIndex
 				int qIndex = XGraph::findNodeIndex(xGraph, qItem->getUuid());
-				// °ÑxGraph[qIndex]ÉèÖÃÎªxGraph[pIndex]µÄÁÚ½Úµã, Ìí¼Ó±ß, ±êÊ¶ÎªpItemIdµÄ½Úµã---¡·Ö¸Ïò---¡·±êÊ¶ÎªqItemIdµÄ½Úµã(¼´getUuid()µÄ·µ»ØÖµ)µÄ½Úµã, Õâ¸öÂß¼­Ó¦¸Ã½ô¸úÁ¬Ïß¶¯×÷ÊÍ·ÅÖ®ºó
+				// æŠŠxGraph[qIndex]è®¾ç½®ä¸ºxGraph[pIndex]çš„é‚»èŠ‚ç‚¹, æ·»åŠ è¾¹, æ ‡è¯†ä¸ºpItemIdçš„èŠ‚ç‚¹---ã€‹æŒ‡å‘---ã€‹æ ‡è¯†ä¸ºqItemIdçš„èŠ‚ç‚¹(å³getUuid()çš„è¿”å›å€¼)çš„èŠ‚ç‚¹, è¿™ä¸ªé€»è¾‘åº”è¯¥ç´§è·Ÿè¿çº¿åŠ¨ä½œé‡Šæ”¾ä¹‹å
 				xGraph[pIndex]->neighbors.push_back(xGraph[qIndex]);
 			}
-		}//×÷ÓÃÓò½áÊøÊ±£¬lock_guard»á×Ô¶¯½âËø»¥³âËøxGraphMutex
+		}//ä½œç”¨åŸŸç»“æŸæ—¶ï¼Œlock_guardä¼šè‡ªåŠ¨è§£é”äº’æ–¥é”xGraphMutex
 
-		// sourceFromUMap Î¬»¤ qItemId ÀïÃæÃ¿¸ö±äÁ¿µÄ sourceFrom
+		// sourceFromUMap ç»´æŠ¤ qItemId é‡Œé¢æ¯ä¸ªå˜é‡çš„ sourceFrom
 		std::unordered_map<std::string, SourceFrom> sourceFromUMap;
 		if (qItemIdSourceFromUMap.find(qItemId) != qItemIdSourceFromUMap.end())
 		{
@@ -236,7 +238,7 @@ void DiagramScene::addArrowByJson(const std::pair<std::string, std::set<std::str
 		std::unordered_map<std::string, TableData> defaultValuesUMap;
 		for (const auto& qSourceName : qSourceNames)
 		{
-			//IS_MEMBER_FROM_OUTSIDE_STRÎªtrue,Ö÷ÒªÕë¶ÔĞèÒª´ÓÁ÷³ÌÍâ²¿»ñÈ¡µÄÖµ(±ÈÈçimagePath,savedModelPath)
+			//IS_MEMBER_FROM_OUTSIDE_STRä¸ºtrue,ä¸»è¦é’ˆå¯¹éœ€è¦ä»æµç¨‹å¤–éƒ¨è·å–çš„å€¼(æ¯”å¦‚imagePath,savedModelPath)
 			if (IS_MEMBER_FROM_OUTSIDE_STR(qS, qSourceName))
 			{
 				//do nothing
@@ -245,11 +247,11 @@ void DiagramScene::addArrowByJson(const std::pair<std::string, std::set<std::str
 			{
 				XLOG_INFO("DiagramScene::addArrowByJson, uniqueName " + qHandle->getUniqueName(), CURRENT_THREAD_ID);
 
-				//Done, ´Ó qItemId µÄ sourceFromUMap ½âÎö³ö qSourceName µÄ TableData, ²¢ÇÒ yItemId == pItem->getXHandle()->getUuid() Ê±, ¸üĞÂ defaultValuesUMap
+				//Done, ä» qItemId çš„ sourceFromUMap è§£æå‡º qSourceName çš„ TableData, å¹¶ä¸” yItemId == pItem->getXHandle()->getUuid() æ—¶, æ›´æ–° defaultValuesUMap
 				if(sourceFromUMap.find(qSourceName) != sourceFromUMap.end())
 				{
 					SourceFrom sourceFrom = sourceFromUMap.at(qSourceName);
-					std::string yItemId = sourceFrom.itemId; // ÕâÀïyItemIdÊµ¼ÊÉÏÊÇHandleµÄId
+					std::string yItemId = sourceFrom.itemId; // è¿™é‡ŒyItemIdå®é™…ä¸Šæ˜¯Handleçš„Id
 					std::string yName = sourceFrom.variableName;
 					XLOG_INFO("DiagramScene::addArrowByJson, yItemId " + yItemId, CURRENT_THREAD_ID);
 					XLOG_INFO("DiagramScene::addArrowByJson, pItemId " + pItem->getXHandle()->getUuid(), CURRENT_THREAD_ID);
@@ -267,8 +269,8 @@ void DiagramScene::addArrowByJson(const std::pair<std::string, std::set<std::str
 
 		XLOG_INFO("DiagramScene::addArrowByJson, defaultValuesUMap.size() = " + std::to_string(defaultValuesUMap.size()), CURRENT_THREAD_ID);
 
-		// Done, ÖØĞ´ XArrow::setDefaultYforVariablesX ·½·¨£¬½«²ÎÊıµ÷ÕûÎª std::unordered_map<std::string, TableData>
-		// Done, ÏàÓ¦µÄ XArrow::getDefaultYforVariablesX ·½·¨Ò²ÒªÖØĞ´
+		// Done, é‡å†™ XArrow::setDefaultYforVariablesX æ–¹æ³•ï¼Œå°†å‚æ•°è°ƒæ•´ä¸º std::unordered_map<std::string, TableData>
+		// Done, ç›¸åº”çš„ XArrow::getDefaultYforVariablesX æ–¹æ³•ä¹Ÿè¦é‡å†™
 
 		arrow->setDefaultYforVariablesX(defaultValuesUMap);
 
@@ -285,7 +287,7 @@ void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
 	if (DiagramType::Item == diagramType && DiagramState::Insert == diagramState)
 	{
 		std::string itemclass = diagramName.toStdString();
-		// ĞÂÔö²ÎÊı GraphicsWidget* graphicsWidget
+		// æ–°å¢å‚æ•° GraphicsWidget* graphicsWidget
 		item = ItemRegistry::createObject(itemclass, graphicsWidget, myItemMenu, nullptr);
 		item->setPos(mouseEvent->scenePos());
 		item->setBrush(myItemColor);
@@ -297,12 +299,12 @@ void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
 		{
 			std::lock_guard<std::mutex> lock(itemMapMutex); 
 			globalItemMap[itemId] = item;
-		}// ×÷ÓÃÓò½áÊøÊ±£¬lock_guard »á×Ô¶¯½âËø»¥³âËøitemMapMutex
+		}// ä½œç”¨åŸŸç»“æŸæ—¶ï¼Œlock_guard ä¼šè‡ªåŠ¨è§£é”äº’æ–¥é”itemMapMutex
 		{
 			std::lock_guard<std::mutex> lock(xGraphMutex);
-			// ´´½¨±êÊ¶ÎªitemIdµÄ½Úµã
+			// åˆ›å»ºæ ‡è¯†ä¸ºitemIdçš„èŠ‚ç‚¹
 			xGraph.push_back(std::make_shared<GraphNode>(itemId));
-		}// ×÷ÓÃÓò½áÊøÊ±£¬lock_guard »á×Ô¶¯½âËø»¥³âËøxGraphMutex
+		}// ä½œç”¨åŸŸç»“æŸæ—¶ï¼Œlock_guard ä¼šè‡ªåŠ¨è§£é”äº’æ–¥é”xGraphMutex
 
 
 		std::string handleId = item->getXHandle()->getUuid();
@@ -310,7 +312,7 @@ void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
 			std::lock_guard<std::mutex> lock(handleMapMutex);
 			globalHandleMap[handleId] = item->getXHandle();
 
-			// Ê¹ÓÃ·¶Î§Ñ­»·±éÀúunordered_map
+			// ä½¿ç”¨èŒƒå›´å¾ªç¯éå†unordered_map
 			for (const auto& pair : globalHandleMap)
 			{
 				// std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
@@ -318,14 +320,14 @@ void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
 				std::string uuidStr = pair.second->getUuid();
 				XLOG_INFO("globalHandleMap pair, key = " + keyStr + "uuid = " + uuidStr, CURRENT_THREAD_ID);
 			}
-		}// ×÷ÓÃÓò½áÊøÊ±£¬lock_guard »á×Ô¶¯½âËø»¥³âËøhandleMapMutex
+		}// ä½œç”¨åŸŸç»“æŸæ—¶ï¼Œlock_guard ä¼šè‡ªåŠ¨è§£é”äº’æ–¥é”handleMapMutex
 
-		//½«item¶ÔÓ¦µÄhandleId´æ´¢ÔÚxHandleGraph
+		//å°†itemå¯¹åº”çš„handleIdå­˜å‚¨åœ¨xHandleGraph
 		{
 			std::lock_guard<std::mutex> lock(xHandleGraphMutex);
-			// ´´½¨±êÊ¶ÎªitemIdµÄ½Úµã
+			// åˆ›å»ºæ ‡è¯†ä¸ºitemIdçš„èŠ‚ç‚¹
 			xHandleGraph.push_back(std::make_shared<GraphNode>(handleId));
-		}// ×÷ÓÃÓò½áÊøÊ±£¬lock_guard »á×Ô¶¯½âËø»¥³âËøxHandleGraphMutex
+		}// ä½œç”¨åŸŸç»“æŸæ—¶ï¼Œlock_guard ä¼šè‡ªåŠ¨è§£é”äº’æ–¥é”xHandleGraphMutex
 
 		diagramState = DiagramState::Move;
 		diagramType = DiagramType::Item;
@@ -358,8 +360,8 @@ void DiagramScene::mouseMoveEvent(QGraphicsSceneMouseEvent* mouseEvent)
 		//lineItem->setZValue(9999.99);
 		diagramState = DiagramState::Move;
 		diagramType = DiagramType::Line;
-		//ÕâÀï²ÉÓÃ	mouseEvent->ignore();¶ø²»ÊÇQGraphicsScene::mouseMoveEvent(mouseEvent);ÆäÄ¿µÄÊÇ
-		//ÎªÁË±ÜÃâÒÔÍÏ×§·½Ê½»æÖÆÁ½¸öitemÖ®¼äµÄÁ´½ÓÏßÊ±Ôì³ÉitemµÄÎ»ÒÆ
+		//è¿™é‡Œé‡‡ç”¨	mouseEvent->ignore();è€Œä¸æ˜¯QGraphicsScene::mouseMoveEvent(mouseEvent);å…¶ç›®çš„æ˜¯
+		//ä¸ºäº†é¿å…ä»¥æ‹–æ‹½æ–¹å¼ç»˜åˆ¶ä¸¤ä¸ªitemä¹‹é—´çš„é“¾æ¥çº¿æ—¶é€ æˆitemçš„ä½ç§»
 		mouseEvent->ignore();
 	}
 	else if (DiagramState::Move == diagramState && DiagramType::Item == diagramType && item != nullptr)
@@ -505,17 +507,17 @@ void DiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* mouseEvent)
 				{
 					XLOG_INFO("DiagramScene::mouseReleaseEvent, startItem != nullptr ...  ", CURRENT_THREAD_ID);
 					std::lock_guard<std::mutex> lock(xGraphMutex);
-					// »ñÈ¡½ÚµãstartItem->getUuid()ÔÚxGraphÀïÃæµÄË÷ÒıstartIndex
+					// è·å–èŠ‚ç‚¹startItem->getUuid()åœ¨xGraphé‡Œé¢çš„ç´¢å¼•startIndex
 					int startIndex = XGraph::findNodeIndex(xGraph, startItem->getUuid());
 					if (endItem != nullptr)
 					{
 						XLOG_INFO("DiagramScene::mouseReleaseEvent, endItem != nullptr ...  ", CURRENT_THREAD_ID);
-						// »ñÈ¡½ÚµãendItem->getUuid()ÔÚxGraphÀïÃæµÄË÷ÒıendIndex
+						// è·å–èŠ‚ç‚¹endItem->getUuid()åœ¨xGraphé‡Œé¢çš„ç´¢å¼•endIndex
 						int endIndex = XGraph::findNodeIndex(xGraph, endItem->getUuid());
-						// °ÑxGraph[endIndex]ÉèÖÃÎªxGraph[startIndex]µÄÁÚ½Úµã, Ìí¼Ó±ß, ±êÊ¶ÎªyItemIdµÄ½Úµã---¡·Ö¸Ïò---¡·±êÊ¶ÎªxItemIdµÄ½Úµã(¼´getUuid()µÄ·µ»ØÖµ)µÄ½Úµã, Õâ¸öÂß¼­Ó¦¸Ã½ô¸úÁ¬Ïß¶¯×÷ÊÍ·ÅÖ®ºó
+						// æŠŠxGraph[endIndex]è®¾ç½®ä¸ºxGraph[startIndex]çš„é‚»èŠ‚ç‚¹, æ·»åŠ è¾¹, æ ‡è¯†ä¸ºyItemIdçš„èŠ‚ç‚¹---ã€‹æŒ‡å‘---ã€‹æ ‡è¯†ä¸ºxItemIdçš„èŠ‚ç‚¹(å³getUuid()çš„è¿”å›å€¼)çš„èŠ‚ç‚¹, è¿™ä¸ªé€»è¾‘åº”è¯¥ç´§è·Ÿè¿çº¿åŠ¨ä½œé‡Šæ”¾ä¹‹å
 						xGraph[startIndex]->neighbors.push_back(xGraph[endIndex]);
 					}
-				}//×÷ÓÃÓò½áÊøÊ±£¬lock_guard»á×Ô¶¯½âËø»¥³âËøxGraphMutex
+				}//ä½œç”¨åŸŸç»“æŸæ—¶ï¼Œlock_guardä¼šè‡ªåŠ¨è§£é”äº’æ–¥é”xGraphMutex
 			}
 		}
 		QGraphicsScene::mouseReleaseEvent(mouseEvent);
@@ -541,3 +543,5 @@ bool DiagramScene::isThisType(int type) const
 	const auto cb = [type](const QGraphicsItem* item) { return item->type() == type; };
 	return std::find_if(items.begin(), items.end(), cb) != items.end();
 }
+
+} // namespace XVisual

@@ -3,6 +3,8 @@
 
 #include<QTextEdit>
 
+namespace XVisual {
+
 class XTextEdit : public QTextEdit
 {
     Q_OBJECT
@@ -15,5 +17,7 @@ class XTextEdit : public QTextEdit
 		void focusInEvent(QFocusEvent* e) override;
 		void focusOutEvent(QFocusEvent* e) override;
 };
+
+} // namespace XVisual
 
 #endif //XTextEdit_H

@@ -1,6 +1,8 @@
 #include "Common/BoxUtils.h"
 #include "Common/ImagePre.h"
 
+namespace XVisual {
+
 // ImageWidth, ImageHeight is expected to match the input size of TFModel
 void acquireValidBoxes(float* output_data, const int output_elements_num, 
 	int imageWidth, int imageHeight, std::vector<DetectResult>& results)
@@ -82,3 +84,5 @@ void drawBoxes(cv::Mat image, const std::vector<DetectResult>& boxes, const std:
 		drawBox(image, boxes[i], class_names);
 	}
 }
+
+} // namespace XVisual

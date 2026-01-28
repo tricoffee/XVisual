@@ -1,7 +1,9 @@
 #include "Common/JsonFileUtils.h"
 #include <filesystem>
 
-// 读取文件内容到字符串
+namespace XVisual {
+
+// 璇诲彇鏂囦欢鍐呭鍒板瓧绗︿覆
 char* readJsonFile(const char* filename)
 {
 	FILE* file = fopen(filename, "rb");
@@ -27,7 +29,7 @@ char* readJsonFile(const char* filename)
 	return buffer;
 }
 
-// 判断 Json 文件是否存在
+// 鍒ゆ柇 Json 鏂囦欢鏄惁瀛樺湪
 bool isJsonFile(const std::string& path)
 {
 
@@ -42,3 +44,5 @@ bool isJsonFile(const std::string& path)
 		return false;
 	}
 }
+
+} // namespace XVisual

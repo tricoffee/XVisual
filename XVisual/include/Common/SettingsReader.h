@@ -8,6 +8,8 @@
 #include <QFile>
 #include "Common/ErrorCode.h"
 
+namespace XVisual {
+
 struct WorkSpaceData
 {
 	QString defaultWorkSpace;
@@ -36,5 +38,7 @@ class SettingsReader
 		QJsonObject settingsObj;
 		QJsonObject workspaceObj;
 };
+
+} // namespace XVisual
 
 #endif // SettingsReader_H

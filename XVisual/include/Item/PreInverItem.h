@@ -5,6 +5,8 @@
 //#include "Common/DebugConfigMacro.h"
 #include "Common/PreParam.h"
 
+namespace XVisual {
+
 class PreInverItem : public XBaseItem
 {
 	Q_OBJECT
@@ -18,6 +20,8 @@ class PreInverItem : public XBaseItem
 		void printPreParam(const PreParam& mParam);
 	#endif
 };
+
+} // namespace XVisual
 
 #endif //PreInverItem_H
 

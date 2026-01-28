@@ -3,14 +3,18 @@
 
 #include <QString>
 
+namespace XVisual {
+
 bool qGetBaseFileName(const QString& absoluteFilePath, QString& baseFileName);
 
 bool qRemoveDirContents(const QString& dirPath);
 
-// ¿½±´ÎÄ¼ş
+// æ‹·è´æ–‡ä»¶
 bool qCopyFile(const QString& srcFilePath, const QString& destFilePath);
 
-// ¿½±´ÎÄ¼ş¼Ğ
+// æ‹·è´æ–‡ä»¶å¤¹
 bool qCopyDirectory(const QString& srcDirPath, const QString& destDirPath);
+
+} // namespace XVisual
 
 #endif // QFileUtils_H

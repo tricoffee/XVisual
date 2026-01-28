@@ -13,6 +13,8 @@
 #include "Handle/CVCropHandle.h"
 #include "Common/StrUtils.h"
 
+namespace XVisual {
+
 CVCropItem::CVCropItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent)
 	: XBaseItem(gWidget,contextMenu, parent)
 {
@@ -21,11 +23,11 @@ CVCropItem::CVCropItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsIte
 }
 void CVCropItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 {
-	//Done Ê¹ÓÃCropDialog»ñÈ¡ÓÃ»§ÊäÈëµÄ²Ã¼ôÇøÓò×ø±êºÍ³ß´ç
+	//Done ä½¿ç”¨CropDialogè·å–ç”¨æˆ·è¾“å…¥çš„è£å‰ªåŒºåŸŸåæ ‡å’Œå°ºå¯¸
 	CVCropHandle* cvHandle = dynamic_cast<CVCropHandle*>(xHandle);
 	cv::Rect regionOfInterest = cvHandle->getRoI();
 	CropDialog dialog;
-	// Ê¹ÓÃ setX, setY, setWidth ºÍ setHeight À´ÉèÖÃ³õÊ¼Öµ
+	// ä½¿ç”¨ setX, setY, setWidth å’Œ setHeight æ¥è®¾ç½®åˆå§‹å€¼
 	dialog.setX(regionOfInterest.x);
 	dialog.setY(regionOfInterest.y);
 	dialog.setWidth(regionOfInterest.width);
@@ -36,7 +38,7 @@ void CVCropItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 		int y = dialog.getY();
 		int width = dialog.getWidth();
 		int height = dialog.getHeight();
-		// ¶¨Òå²Ã¼ôÇøÓò(x, y, width, height)
+		// å®šä¹‰è£å‰ªåŒºåŸŸ(x, y, width, height)
 		regionOfInterest = cv::Rect(x, y, width, height);
 		cvHandle->setRoI(regionOfInterest);
 	}
@@ -65,3 +67,5 @@ void CVCropItem::xOperate()
 }
 
 REGISTER_ITEM(CVCrop);
+
+} // namespace XVisual

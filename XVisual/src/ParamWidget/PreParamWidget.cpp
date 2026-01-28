@@ -3,6 +3,8 @@
 #include "Common/DeletePtrMacro.h"
 #include "ParamWidget/PreParamWidget.h"
 
+namespace XVisual {
+
 PreParamWidget::~PreParamWidget()
 {
 	//qDebug() << " === PreParamWidget::~PreParamWidget() === ";
@@ -26,3 +28,5 @@ void PreParamWidget::setPreParam(const PreParam& params)
 }
 
 REGISTER_ParamWidget(Pre);
+
+} // namespace XVisual

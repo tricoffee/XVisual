@@ -4,7 +4,10 @@
 #include <iostream>
 #include "HandleBase/XBaseHandle.h"
 
+namespace XVisual {
+
 class Colleague;
+
 class CVCropHandle : public XBaseHandle
 {
 	public:
@@ -23,5 +26,7 @@ class CVCropHandle : public XBaseHandle
 	private:
 
 };
+
+} // namespace XVisual
 
 #endif // CVCropHandle_H

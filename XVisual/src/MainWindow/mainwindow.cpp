@@ -13,8 +13,8 @@
 #include "ItemBase/XArrow.h"
 #include "ItemBase/XBaseItem.h"
 #include "HandleBase/XBaseHandle.h"
-#include "MainWindow/Diagramscene.h"
-#include "MainWindow/Mainwindow.h"
+#include "MainWindow/diagramscene.h"
+#include "MainWindow/mainwindow.h"
 #include "Common/constants.h"
 #include "MainWindow/GraphicsWidget.h"
 #include "MainWindow/SideWidget.h"
@@ -37,11 +37,13 @@
 
 #define CHECK_NULLPTR(ptr) ((ptr) == nullptr)
 
+namespace XVisual {
+
 void MainWindow::checkAndCreateDirectory(const QString& path)
 {
 	QDir dir(path);
 
-	// ¼ì²éÎÄ¼ş¼ĞÊÇ·ñ´æÔÚ
+	// æ£€æŸ¥æ–‡ä»¶å¤¹æ˜¯å¦å­˜åœ¨
 	if (dir.exists())
 	{
 		XLOG_INFO("MainWindow::checkAndCreateDirectory, " + path.toStdString() + "Existed. ", CURRENT_THREAD_ID);
@@ -50,7 +52,7 @@ void MainWindow::checkAndCreateDirectory(const QString& path)
 	{
 		XLOG_INFO("MainWindow::checkAndCreateDirectory, No Found, " + path.toStdString() + ", Creating ... ", CURRENT_THREAD_ID);
 
-		// ´´½¨ÎÄ¼ş¼Ğ
+		// åˆ›å»ºæ–‡ä»¶å¤¹
 		if (dir.mkpath("."))
 		{
 			XLOG_INFO("MainWindow::checkAndCreateDirectory, Created " + path.toStdString() + " Successfully ! ", CURRENT_THREAD_ID);
@@ -64,7 +66,7 @@ void MainWindow::checkAndCreateDirectory(const QString& path)
 
 void MainWindow::makeDefaultSettings()
 {
-	/* Èç¹ûÄ¬ÈÏ settingsFilePath ²»´æÔÚ, Ôò´´½¨Ò»¸ö settings.json */
+	/* å¦‚æœé»˜è®¤ settingsFilePath ä¸å­˜åœ¨, åˆ™åˆ›å»ºä¸€ä¸ª settings.json */
 	// create JSON object
 	QJsonObject workspaceObject;
 	workspaceObject["DefaultWorkSpace"] = QDir::toNativeSeparators(workspaceData.defaultWorkSpace);
@@ -77,14 +79,14 @@ void MainWindow::makeDefaultSettings()
 	// create JSON document
 	QJsonDocument jsonDoc(rootObject);
 
-	// ½« JSON ÎÄµµ×ª»»Îª×Ö·û´®
+	// å°† JSON æ–‡æ¡£è½¬æ¢ä¸ºå­—ç¬¦ä¸²
 	QString jsonString = jsonDoc.toJson(QJsonDocument::Indented);
 
-	// Êä³ö JSON ×Ö·û´®µ½¿ØÖÆÌ¨
+	// è¾“å‡º JSON å­—ç¬¦ä¸²åˆ°æ§åˆ¶å°
 	XLOG_INFO("MainWindow::makeDefaultSettings, jsonString = " + jsonString.toStdString(), CURRENT_THREAD_ID);
 	XLOG_INFO("MainWindow::makeDefaultSettings, settingsFilePath_ = " + settingsFilePath.toStdString(), CURRENT_THREAD_ID);
 
-	// ½« JSON ×Ö·û´®Ğ´ÈëÎÄ¼ş
+	// å°† JSON å­—ç¬¦ä¸²å†™å…¥æ–‡ä»¶
 	QFile file(settingsFilePath);
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
 	{
@@ -92,7 +94,7 @@ void MainWindow::makeDefaultSettings()
 		XLOG_INFO("MainWindow::makeDefaultSettings, Cannot open " + settingsFilePath.toStdString(), CURRENT_THREAD_ID);
 		// Done, emit error
 		m_lastError = XVisual::ErrorCode::OpenJsonFileError;
-		// ·¢Éä´íÎóĞÅºÅ£¬Í¨Öª´íÎó·¢Éú
+		// å‘å°„é”™è¯¯ä¿¡å·ï¼Œé€šçŸ¥é”™è¯¯å‘ç”Ÿ
 		emit errorOccurred(m_lastError);
 		return;
 	}
@@ -103,7 +105,7 @@ void MainWindow::makeDefaultSettings()
 
 MainWindow::MainWindow(const QString& mProjectRootDir, QWidget* parent)
 	: QMainWindow(parent)
-	, ui(new Ui::MainWindow)
+	, ui(new ::Ui::MainWindow)
 {
 	ui->setupUi(this);
 
@@ -202,12 +204,12 @@ void MainWindow::runButtonClicked(bool checked)
 	XLOG_INFO("void MainWindow::runButtonClicked to do executeXGraph", CURRENT_THREAD_ID);
 	{
 		std::lock_guard<std::mutex> lock(xGraphMutex);
-		// ±éÀúxGraphµÄÃ¿¸öÔªËØ
+		// éå†xGraphçš„æ¯ä¸ªå…ƒç´ 
 		//for(auto it = xGraph.begin(); it != xGraph.end(); ++it) 
 		//{
-		//	// »ñÈ¡µ±Ç°½Úµãnode
+		//	// è·å–å½“å‰èŠ‚ç‚¹node
 		//	std::shared_ptr<GraphNode> node = *it;
-		//	// »ñÈ¡µ±Ç°½ÚµãµÄnodeId
+		//	// è·å–å½“å‰èŠ‚ç‚¹çš„nodeId
 		//	std::string nodeId = node->nodeId;
 		//	XLOG_INFO("void MainWindow::runButtonClicked, nodeId = "+nodeId, CURRENT_THREAD_ID);
 		//}
@@ -221,13 +223,13 @@ void MainWindow::runButtonClicked(bool checked)
 			//        std::cout << "=== === ===" << e.what() << "=== === ===" << std::endl;
 			XLOG_INFO("====== void MainWindow::runButtonClicked, UmapKeyNoFoundException  ======" + std::string(e.what()), CURRENT_THREAD_ID);
 			//throw UmapKeyNoFoundException(e.what());
-			// ²¶»ñÒì³£²¢¼ÇÂ¼´íÎóÂë
+			// æ•è·å¼‚å¸¸å¹¶è®°å½•é”™è¯¯ç 
 			m_lastError = XVisual::ErrorCode::UmapKeyNoFound;
-			// ·¢Éä´íÎóĞÅºÅ£¬Í¨Öª´íÎó·¢Éú
+			// å‘å°„é”™è¯¯ä¿¡å·ï¼Œé€šçŸ¥é”™è¯¯å‘ç”Ÿ
 			emit errorOccurred(m_lastError);
 		}
 
-	}// ×÷ÓÃÓò½áÊøÊ±£¬lock_guard »á×Ô¶¯½âËø»¥³âËøxGraphMutex
+	}// ä½œç”¨åŸŸç»“æŸæ—¶ï¼Œlock_guard ä¼šè‡ªåŠ¨è§£é”äº’æ–¥é”xGraphMutex
 	XLOG_INFO("void MainWindow::runButtonClicked xGraph is executed.", CURRENT_THREAD_ID);
 }
 
@@ -236,51 +238,51 @@ void MainWindow::exportButtonClicked(bool checked)
 {
 	XLOG_INFO("MainWindow::exportButtonClicked, to do export XGraph", CURRENT_THREAD_ID);
 
-	// handle_parentsÎ¬ÏµÃ¿¸öhandle½ÚµãµÄ¸¸½Úµã
+	// handle_parentsç»´ç³»æ¯ä¸ªhandleèŠ‚ç‚¹çš„çˆ¶èŠ‚ç‚¹
 	std::unordered_map<std::string, std::set<std::string>> handle_parents;
 	{
 		std::lock_guard<std::mutex> lock(xGraphMutex);
-		// ±éÀúxGraphµÄÃ¿¸öÔªËØ
+		// éå†xGraphçš„æ¯ä¸ªå…ƒç´ 
 		for(auto it = xGraph.begin(); it != xGraph.end(); ++it) 
 		{
-			// »ñÈ¡µ±Ç°½Úµãnode
+			// è·å–å½“å‰èŠ‚ç‚¹node
 			std::shared_ptr<GraphNode> node = *it;
-			// »ñÈ¡µ±Ç°½ÚµãµÄnodeId
+			// è·å–å½“å‰èŠ‚ç‚¹çš„nodeId
 			std::string pItemId = node->nodeId;
-			// »ñÈ¡µ±Ç°½Úµã¶ÔÓ¦HandleµÄnodeId
+			// è·å–å½“å‰èŠ‚ç‚¹å¯¹åº”Handleçš„nodeId
 			std::string pDelimiter = "_";
 			std::string pUuidStr2 = extractSubstrAfterDelimiter(pItemId, pDelimiter);
 			std::string pHandleId = "Handle_" + pUuidStr2;
 			
 			for (const auto& neighbor : node->neighbors)
 			{
-				// »ñÈ¡µ±Ç°½ÚµãÄ³¸öÁÚ¾ÓµÄnodeId
+				// è·å–å½“å‰èŠ‚ç‚¹æŸä¸ªé‚»å±…çš„nodeId
 				std::string qItemId = neighbor->nodeId;
 
-				//Unused, item_parentsÎ¬ÏµÃ¿¸öitem½ÚµãµÄ¸¸½Úµã
+				//Unused, item_parentsç»´ç³»æ¯ä¸ªitemèŠ‚ç‚¹çš„çˆ¶èŠ‚ç‚¹
 				//item_parents[qItemId].insert(pItemId);
 				
-				// »ñÈ¡µ±Ç°½ÚµãÄ³¸öÁÚ¾Ó¶ÔÓ¦HandleµÄnodeId
+				// è·å–å½“å‰èŠ‚ç‚¹æŸä¸ªé‚»å±…å¯¹åº”Handleçš„nodeId
 				std::string qDelimiter = "_";
 				std::string qUuidStr2 = extractSubstrAfterDelimiter(qItemId, qDelimiter);
 				std::string qHandleId = "Handle_" + qUuidStr2;
 				handle_parents[qHandleId].insert(pHandleId);
 			}
 		}
-	}// ×÷ÓÃÓò½áÊøÊ±£¬lock_guard »á×Ô¶¯½âËø»¥³âËøxGraphMutex
+	}// ä½œç”¨åŸŸç»“æŸæ—¶ï¼Œlock_guard ä¼šè‡ªåŠ¨è§£é”äº’æ–¥é”xGraphMutex
 
 	cJSON* cjson_root = NULL;
-	/* ´´½¨Ò»¸öJSONÊı¾İ¶ÔÏó(Á´±íÍ·½áµã) */
+	/* åˆ›å»ºä¸€ä¸ªJSONæ•°æ®å¯¹è±¡(é“¾è¡¨å¤´ç»“ç‚¹) */
 	cjson_root = cJSON_CreateObject();
 	cJSON* cjson_arr = cJSON_CreateArray();
 	{
 		std::lock_guard<std::mutex> lock(xGraphMutex);
 		for (const auto& eMap: globalItemMap)
 		{
-			// cjson_arr_elementÎ¬»¤ItemÏà¹ØĞÅÏ¢, HandleÏà¹ØĞÅÏ¢, ÒÔ¼°innerParamºÍouterParam
+			// cjson_arr_elementç»´æŠ¤Itemç›¸å…³ä¿¡æ¯, Handleç›¸å…³ä¿¡æ¯, ä»¥åŠinnerParamå’ŒouterParam
 			cJSON* cjson_arr_element = cJSON_CreateObject();
 
-			// »ñÈ¡ItemÏà¹ØĞÅÏ¢(Item_ClassName,Item_ColleagueType,Item_ColleagueType,Item_UniqueName)
+			// è·å–Itemç›¸å…³ä¿¡æ¯(Item_ClassName,Item_ColleagueType,Item_ColleagueType,Item_UniqueName)
 			XBaseItem* item = eMap.second;
 			std::string item_classNameStr = item->getClassName();
 			ColleagueType item_colleagueType = item->getColleagueType();
@@ -288,21 +290,21 @@ void MainWindow::exportButtonClicked(bool checked)
 			std::string item_colleagueId = item->getUuid();
 			std::string item_uniqueName = item->getUniqueName();
 
-			// Ğ´ÈëItemÏà¹ØĞÅÏ¢(Item_ClassName,Item_ColleagueType,Item_ColleagueType,Item_UniqueName)µ½JSON
+			// å†™å…¥Itemç›¸å…³ä¿¡æ¯(Item_ClassName,Item_ColleagueType,Item_ColleagueType,Item_UniqueName)åˆ°JSON
 			cJSON_AddStringToObject(cjson_arr_element, "Item_ClassName", item_classNameStr.c_str());
 			cJSON_AddNumberToObject(cjson_arr_element, "Item_ColleagueType", item_colleagueTypeIntValue);
 			cJSON_AddStringToObject(cjson_arr_element, "Item_ColleagueId", item_colleagueId.c_str());
 			cJSON_AddStringToObject(cjson_arr_element, "Item_UniqueName", item_uniqueName.c_str());
 
-			// »ñÈ¡ItemµÄÎ»ÖÃĞÅÏ¢
+			// è·å–Itemçš„ä½ç½®ä¿¡æ¯
 			QPointF itemPos = item->scenePos();
-			// Ğ´ÈëItemµÄÎ»ÖÃĞÅÏ¢µ½JSON
+			// å†™å…¥Itemçš„ä½ç½®ä¿¡æ¯åˆ°JSON
 			cJSON* cjson_itemPos = cJSON_CreateArray();
 			cJSON_AddItemToArray(cjson_itemPos, cJSON_CreateNumber(itemPos.x()));
 			cJSON_AddItemToArray(cjson_itemPos, cJSON_CreateNumber(itemPos.y()));
 			cJSON_AddItemToObject(cjson_arr_element, "Item_Position", cjson_itemPos);
 
-			// »ñÈ¡HandleµÄÏà¹ØĞÅÏ¢(ClassName,ColleagueType,ColleagueType,UniqueName)
+			// è·å–Handleçš„ç›¸å…³ä¿¡æ¯(ClassName,ColleagueType,ColleagueType,UniqueName)
 			XBaseHandle* handle = eMap.second->getXHandle();
 			std::string handle_classNameStr = handle->getClassName();
 			ColleagueType handle_colleagueType = handle->getColleagueType();
@@ -310,13 +312,13 @@ void MainWindow::exportButtonClicked(bool checked)
 			std::string handle_colleagueId = handle->getUuid();
 			std::string handle_uniqueName = handle->getUniqueName();
 
-            // Ğ´ÈëHandleÏà¹ØĞÅÏ¢(ClassName,ColleagueType,ColleagueType,UniqueName)µ½JSON
+            // å†™å…¥Handleç›¸å…³ä¿¡æ¯(ClassName,ColleagueType,ColleagueType,UniqueName)åˆ°JSON
 			cJSON_AddStringToObject(cjson_arr_element, "ClassName", handle_classNameStr.c_str());
 			cJSON_AddNumberToObject(cjson_arr_element, "ColleagueType", handle_colleagueTypeIntValue);
 			cJSON_AddStringToObject(cjson_arr_element, "ColleagueId", handle_colleagueId.c_str());
 			cJSON_AddStringToObject(cjson_arr_element, "UniqueName", handle_uniqueName.c_str());
 
-			// »ñÈ¡sourcesÀïÃæÃ¿¸ösource±äÁ¿xName¶ÔÓ¦µÄsourceFrom, ²¢½«ÆäĞ´Èëµ½JSON
+			// è·å–sourcesé‡Œé¢æ¯ä¸ªsourceå˜é‡xNameå¯¹åº”çš„sourceFrom, å¹¶å°†å…¶å†™å…¥åˆ°JSON
 			cJSON* cjson_sourceFrom = cJSON_CreateObject();
 			Source& sources = handle->getSources();
 			std::vector<std::string> xVaribleNames = ACQUIRE_NAMES(sources);
@@ -337,7 +339,7 @@ void MainWindow::exportButtonClicked(bool checked)
 					handle->writeOuterParam(cjson_variableSource, xName);
 				}
 				/*
-				// ¾ÙÀıËµÃ÷SourceFromÔÚJSONÎÄ¼şÀïÃæµÄ±íÏÖĞÎÊ½
+				// ä¸¾ä¾‹è¯´æ˜SourceFromåœ¨JSONæ–‡ä»¶é‡Œé¢çš„è¡¨ç°å½¢å¼
 				"SourceFrom":      {
 				    // e.g. XName is "imagePath", 	cJSON_AddItemToObject(cjson_sourceFrom, "imagePath", cjson_variableSource);
 					"imagePath":      {
@@ -368,22 +370,22 @@ void MainWindow::exportButtonClicked(bool checked)
 
 			cJSON_AddItemToArray(cjson_arr, cjson_arr_element);
 		}
-	}// ×÷ÓÃÓò½áÊøÊ±£¬lock_guard »á×Ô¶¯½âËø»¥³âËøxGraphMutex
+	}// ä½œç”¨åŸŸç»“æŸæ—¶ï¼Œlock_guard ä¼šè‡ªåŠ¨è§£é”äº’æ–¥é”xGraphMutex
 
 	cJSON_AddItemToObject(cjson_root, "ClassInfo", cjson_arr);
 
-	/* ´òÓ¡JSON¶ÔÏó(ÕûÌõÁ´±í)µÄËùÓĞÊı¾İ */
+	/* æ‰“å°JSONå¯¹è±¡(æ•´æ¡é“¾è¡¨)çš„æ‰€æœ‰æ•°æ® */
 	char* str = NULL;
 	str = cJSON_Print(cjson_root);
 	// printf("%s\n", str);
 
 	const std::string file_name = "solutions.json";
-	// ´´½¨ std::filesystem::path ¶ÔÏó±íÊ¾ÎÄ¼şÂ·¾¶
+	// åˆ›å»º std::filesystem::path å¯¹è±¡è¡¨ç¤ºæ–‡ä»¶è·¯å¾„
 	std::filesystem::path file_path = globalWorkSpaceDir;
-	file_path /= file_name; // Ê¹ÓÃ /= ÔËËã·û½øĞĞÂ·¾¶Æ´½Ó
+	file_path /= file_name; // ä½¿ç”¨ /= è¿ç®—ç¬¦è¿›è¡Œè·¯å¾„æ‹¼æ¥
 	std::string solutionJsonFilePath = file_path.string();
 
-	// ½« JSON Êı¾İ±£´æµ½ .json ÎÄ¼şÖĞ
+	// å°† JSON æ•°æ®ä¿å­˜åˆ° .json æ–‡ä»¶ä¸­
 	std::ofstream outFile(solutionJsonFilePath);
 	outFile << str;
 	outFile.close();
@@ -398,14 +400,14 @@ void MainWindow::loadButtonClicked(bool checked)
 	QString jsonPath = QFileDialog::getOpenFileName(nullptr, "Select JSON", defaultPath, "JSON FILE (*.json)");
 	if (!jsonPath.isEmpty())
 	{
-		// ±£´æµ±Ç°Ñ¡ÖĞµÄÎÄ¼şÂ·¾¶
+		// ä¿å­˜å½“å‰é€‰ä¸­çš„æ–‡ä»¶è·¯å¾„
 		latestJsonPath = jsonPath;
 		XLOG_INFO("MainWindow::loadButtonClicked, jsonPath is NOT empty ..., jsonPath is " + latestJsonPath.toStdString() , CURRENT_THREAD_ID);
 		
 		XParser& jsonParser = XParser::getInstance();
 		jsonParser.initParser(latestJsonPath.toStdString());
 
-		//Done, ½«solution.jsonµÄ¸¸Ä¿Â¼×÷Îªµ±Ç°µÄglobalWorkSpace,Í¬Ê±¸üĞÂsettings.jsonµÄCustomWorkSpaceÒÔ¼°½«EnableCustomÉèÖÃÎª1
+		//Done, å°†solution.jsonçš„çˆ¶ç›®å½•ä½œä¸ºå½“å‰çš„globalWorkSpace,åŒæ—¶æ›´æ–°settings.jsonçš„CustomWorkSpaceä»¥åŠå°†EnableCustomè®¾ç½®ä¸º1
 		std::string parentPathStr;
 		getParentPathStr(jsonPath.toStdString(), parentPathStr);
 
@@ -433,17 +435,17 @@ void MainWindow::loadButtonClicked(bool checked)
 
 			DiagramScene*& mScene = graphicsWidget->getScene();
 
-			// ÇåÀí³¡¾°ÖĞµÄËùÓĞÏî
+			// æ¸…ç†åœºæ™¯ä¸­çš„æ‰€æœ‰é¡¹
 			mScene->clear();
 
 			int arrSize = cJSON_GetArraySize(classInfoArr);
 			XLOG_INFO("== === ===  classInfoArr.size() " + std::to_string(arrSize) + " === === ===", CURRENT_THREAD_ID);
 
 
-			//item_childrean Î¬ÏµÃ¿¸öitem½ÚµãµÄº¢×Ó½Úµã
+			//item_childrean ç»´ç³»æ¯ä¸ªitemèŠ‚ç‚¹çš„å­©å­èŠ‚ç‚¹
 			std::unordered_map<std::string, std::set<std::string>> itemChildrenLinks;
 
-			//Î¬ÏµqItemIdµÄÃ¿¸ösourceFrom
+			//ç»´ç³»qItemIdçš„æ¯ä¸ªsourceFrom
 			std::unordered_map<std::string, std::unordered_map<std::string, SourceFrom>> qItemIdSourceFromUMap;
 
 			// Done, iterate XInfer::constructHandle over classInfoArr 
@@ -621,7 +623,7 @@ void MainWindow::loadButtonClicked(bool checked)
 				jsonParser.getSourceFromAt(sourceFromPtr, i);
 				if (cJSON_IsObject(sourceFromPtr))
 				{
-					// ±éÀú SourceFrom µÄÃ¿¸ö½Úµã
+					// éå† SourceFrom çš„æ¯ä¸ªèŠ‚ç‚¹
 					cJSON* source_node = NULL;
 					cJSON_ArrayForEach(source_node, sourceFromPtr)
 					{
@@ -714,9 +716,9 @@ void MainWindow::sceneScaleChanged(const QString& scale)
 }
 
 /*
-µ¥»÷fontColorToolButtonµÄµ¯³ö²Ëµ¥µÄÄ³Ò»¸öQActionÊ±,
-slotº¯ÊıMainWindow::textColorChangedÏìÓ¦, fontColorToolButtonµÄÍ¼±ê(Icon)ÓĞÏàÓ¦±ä»¯,
-Í¬Ê±³¡¾°sceneÖĞtextµÄ±³¾°É«ÓĞÏàÓ¦±ä»¯
+å•å‡»fontColorToolButtonçš„å¼¹å‡ºèœå•çš„æŸä¸€ä¸ªQActionæ—¶,
+slotå‡½æ•°MainWindow::textColorChangedå“åº”, fontColorToolButtonçš„å›¾æ ‡(Icon)æœ‰ç›¸åº”å˜åŒ–,
+åŒæ—¶åœºæ™¯sceneä¸­textçš„èƒŒæ™¯è‰²æœ‰ç›¸åº”å˜åŒ–
 */
 void MainWindow::textColorChanged()
 {
@@ -724,16 +726,16 @@ void MainWindow::textColorChanged()
 	fontColorToolButton->setIcon(createColorToolButtonIcon(
 		ImageSources::TextPointer,
 		qvariant_cast<QColor>(textAction->data())));
-	//È¥µôÔ­À´µÄtextButtonTriggered();Ö±½Ó°ÑtextButtonTriggered()ÀïÃæµÄÕâÒ»¾äÄÃ¹ıÀ´£¬ÈçÏÂ£º
-	//Õâ¶Î´úÂë±íÊ¾ÉèÖÃ³¡¾°sceneÖĞtextµÄ±³¾°É«
+	//å»æ‰åŸæ¥çš„textButtonTriggered();ç›´æ¥æŠŠtextButtonTriggered()é‡Œé¢çš„è¿™ä¸€å¥æ‹¿è¿‡æ¥ï¼Œå¦‚ä¸‹ï¼š
+	//è¿™æ®µä»£ç è¡¨ç¤ºè®¾ç½®åœºæ™¯sceneä¸­textçš„èƒŒæ™¯è‰²
 	QColor color = qvariant_cast<QColor>(textAction->data());
 	graphicsWidget->setItemTextColor(color);
 }
 
 /*
-µ¥»÷fillColorToolButtonµÄµ¯³ö²Ëµ¥µÄÄ³Ò»¸öQActionÊ±,
-slotº¯ÊıMainWindow::itemColorChangedÏìÓ¦, fillColorToolButtonµÄÍ¼±ê(Icon)ÓĞÏàÓ¦±ä»¯,
-Í¬Ê±³¡¾°sceneÖĞitemµÄÑÕÉ«ÓĞÏàÓ¦±ä»¯
+å•å‡»fillColorToolButtonçš„å¼¹å‡ºèœå•çš„æŸä¸€ä¸ªQActionæ—¶,
+slotå‡½æ•°MainWindow::itemColorChangedå“åº”, fillColorToolButtonçš„å›¾æ ‡(Icon)æœ‰ç›¸åº”å˜åŒ–,
+åŒæ—¶åœºæ™¯sceneä¸­itemçš„é¢œè‰²æœ‰ç›¸åº”å˜åŒ–
 */
 void MainWindow::itemColorChanged()
 {
@@ -741,16 +743,16 @@ void MainWindow::itemColorChanged()
 	fillColorToolButton->setIcon(createColorToolButtonIcon(
 		ImageSources::FloodFill,
 		qvariant_cast<QColor>(fillAction->data())));
-	//È¥µôÔ­À´µÄfillButtonTriggered();Ö±½Ó°ÑfillButtonTriggeredÀïÃæµÄÕâÒ»¾äÄÃ¹ıÀ´£¬ÈçÏÂ:
-    //Õâ¶Î´úÂë±íÊ¾ÉèÖÃ³¡¾°sceneÖĞitemµÄÑÕÉ«
+	//å»æ‰åŸæ¥çš„fillButtonTriggered();ç›´æ¥æŠŠfillButtonTriggeredé‡Œé¢çš„è¿™ä¸€å¥æ‹¿è¿‡æ¥ï¼Œå¦‚ä¸‹:
+    //è¿™æ®µä»£ç è¡¨ç¤ºè®¾ç½®åœºæ™¯sceneä¸­itemçš„é¢œè‰²
 	QColor color = qvariant_cast<QColor>(fillAction->data());
 	graphicsWidget->setSceneItemColor(color);
 }
 
 /*
-µ¥»÷lineColorToolButtonµÄµ¯³ö²Ëµ¥µÄÄ³Ò»¸öQActionÊ±,
-slotº¯ÊıMainWindow::lineColorChangedÏìÓ¦, lineColorToolButtonµÄÍ¼±ê(Icon)ÓĞÏàÓ¦±ä»¯,
-Í¬Ê±³¡¾°sceneÖĞlineµÄÑÕÉ«ÓĞÏàÓ¦±ä»¯
+å•å‡»lineColorToolButtonçš„å¼¹å‡ºèœå•çš„æŸä¸€ä¸ªQActionæ—¶,
+slotå‡½æ•°MainWindow::lineColorChangedå“åº”, lineColorToolButtonçš„å›¾æ ‡(Icon)æœ‰ç›¸åº”å˜åŒ–,
+åŒæ—¶åœºæ™¯sceneä¸­lineçš„é¢œè‰²æœ‰ç›¸åº”å˜åŒ–
 */
 void MainWindow::lineColorChanged()
 {
@@ -758,8 +760,8 @@ void MainWindow::lineColorChanged()
 	lineColorToolButton->setIcon(createColorToolButtonIcon(
 		ImageSources::LineColor,
 		qvariant_cast<QColor>(lineAction->data())));
-	//È¥µôÔ­À´µÄlineButtonTriggered();Ö±½Ó°ÑlineButtonTriggeredÀïÃæµÄÕâÒ»¾äÄÃ¹ıÀ´£¬ÈçÏÂ:
-	//Õâ¶Î´úÂë±íÊ¾ÉèÖÃ³¡¾°sceneÖĞlineµÄÑÕÉ«
+	//å»æ‰åŸæ¥çš„lineButtonTriggered();ç›´æ¥æŠŠlineButtonTriggeredé‡Œé¢çš„è¿™ä¸€å¥æ‹¿è¿‡æ¥ï¼Œå¦‚ä¸‹:
+	//è¿™æ®µä»£ç è¡¨ç¤ºè®¾ç½®åœºæ™¯sceneä¸­lineçš„é¢œè‰²
 	QColor color = qvariant_cast<QColor>(lineAction->data());
 	graphicsWidget->setSceneLineColor(color);
 }
@@ -809,7 +811,7 @@ void MainWindow::handleWorkspaceChanged()
 
 			if (m_lastError != XVisual::ErrorCode::Success)
 			{
-				// ·¢Éä´íÎóĞÅºÅ£¬Í¨Öª´íÎó·¢Éú
+				// å‘å°„é”™è¯¯ä¿¡å·ï¼Œé€šçŸ¥é”™è¯¯å‘ç”Ÿ
 				emit errorOccurred(m_lastError);
 				return;
 			}
@@ -979,7 +981,7 @@ QWidget* MainWindow::createCellWidget(const QString& text)
 	std::string itemclass = text.toStdString();
 	XBaseItem  *item = ItemRegistry::createObject(itemclass, graphicsWidget, itemMenu, nullptr);
 	QIcon icon(item->image());
-	// ÔÚÕâÀï item ½ö½öÊÇÎªÁË»ñµÃimageÍ¼ĞÎ, ËùÒÔÓÃÍê¾ÍÉ¾³ı
+	// åœ¨è¿™é‡Œ item ä»…ä»…æ˜¯ä¸ºäº†è·å¾—imageå›¾å½¢, æ‰€ä»¥ç”¨å®Œå°±åˆ é™¤
 	// The item here is only for obtaining image graphics, so it will be deleted after used
 	delete item;
 	item = nullptr;
@@ -1036,9 +1038,9 @@ QIcon MainWindow::createColorToolButtonIcon(const QString& imageFile, QColor col
 	QRect target(4, 0, 42, 43);
 	QPixmap image(imageFile);
 	QRect source(0, 0, 42, 43);
-	// ToolButtonµÄÍ¼±ê´óĞ¡42x43, ×óÉÏ½Ç(4,0), ÓÒÏÂ½Ç(46,43)
+	// ToolButtonçš„å›¾æ ‡å¤§å°42x43, å·¦ä¸Šè§’(4,0), å³ä¸‹è§’(46,43)
 	painter.drawPixmap(target, image, source);
-	// ÑÕÉ«¿é´óĞ¡50x20, ×óÉÏ½Ç(0,60), ÓÒÏÂ½Ç(50,80)
+	// é¢œè‰²å—å¤§å°50x20, å·¦ä¸Šè§’(0,60), å³ä¸‹è§’(50,80)
 	painter.fillRect(QRect(0, 60, 50, 20), color);
 	return QIcon(pixmap);
 }
@@ -1066,21 +1068,21 @@ void MainWindow::initSceneBackground()
 
 void MainWindow::listenForError()
 {
-	// Á¬½Ó´íÎó·¢ÉúĞÅºÅµ½²Ûº¯Êı´¦Àí
+	// è¿æ¥é”™è¯¯å‘ç”Ÿä¿¡å·åˆ°æ§½å‡½æ•°å¤„ç†
 	QObject::connect(this, &MainWindow::errorOccurred, [&](XVisual::ErrorCode errorCode) 
 	{
 		std::string errorCodeStr = XVisual::errorCodeToStr(errorCode);
 		std::string warningStr = "\"" + errorCodeStr + "\" occurred. Program cannot continue.";
 		QString warningQStr = QString::fromStdString(warningStr);
-		// ÏÔÊ¾¾¯¸æ¶Ô»°¿ò
+		// æ˜¾ç¤ºè­¦å‘Šå¯¹è¯æ¡†
 		QMessageBox::critical(nullptr, "Error", warningQStr);
 
-		// ²ÉÓÃ QMessageBox::question
-		// QMessageBox::Yes ºÍ QMessageBox::No Á½¸ö°´Å¥Í¬Ê±ÏÔÊ¾
-		// ÌáÊ¾ÓÃ»§ÖÕÖ¹³ÌĞò
+		// é‡‡ç”¨ QMessageBox::question
+		// QMessageBox::Yes å’Œ QMessageBox::No ä¸¤ä¸ªæŒ‰é’®åŒæ—¶æ˜¾ç¤º
+		// æç¤ºç”¨æˆ·ç»ˆæ­¢ç¨‹åº
 		QMessageBox::StandardButton button = QMessageBox::question(nullptr, "Error", "Terminate program?",
 		QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-		// Èç¹ûÓÃ»§Ñ¡ÔñÖÕÖ¹³ÌĞò£¬ÔòÍË³öÓ¦ÓÃ
+		// å¦‚æœç”¨æˆ·é€‰æ‹©ç»ˆæ­¢ç¨‹åºï¼Œåˆ™é€€å‡ºåº”ç”¨
 		if (button == QMessageBox::Yes) 
 		{
 			qApp->quit();
@@ -1088,3 +1090,5 @@ void MainWindow::listenForError()
 
 	});
 }
+
+} // namespace XVisual

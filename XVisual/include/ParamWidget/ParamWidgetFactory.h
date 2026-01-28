@@ -5,7 +5,10 @@
 #include<string>
 #include<map>
 
+namespace XVisual {
+
 class PreParamWidget;
+
 class ParamWidgetRegistry
 {
 public:
@@ -32,6 +35,8 @@ public:
         return (PreParamWidget*)(new T##ParamWidget()); \
     } \
     static ParamWidgetClassRegisterer  xpre_##T##_register(#T, xpre_##T##_constructor)
+
+} // namespace XVisual
 
 #endif // ParamWidgetFactory_H
 

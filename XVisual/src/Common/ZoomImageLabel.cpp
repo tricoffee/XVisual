@@ -6,30 +6,32 @@
 #include "Common/OpenCVHeaders.h"
 #include "Common/ZoomImageLabel.h"
 
-ZoomImageLabel::ZoomImageLabel(QWidget* parent):QLabel(parent), scaleFactor(1.0)
-{
-	setScaledContents(true);
-}
-void ZoomImageLabel::setPixmap(const QPixmap& pixmap)
-{
-	originalPixmap = pixmap;
-	QLabel::setPixmap(originalPixmap.scaled(originalPixmap.size() * scaleFactor));
-}
-void ZoomImageLabel::wheelEvent(QWheelEvent* event)
-{
-	// ¹öÂÖ¹ö¶¯µÄ½Ç¶È
-	int delta = event->angleDelta().y();
+namespace XVisual {
 
-	// µ÷ÕûËõ·ÅÒò×Ó
-	scaleFactor += delta > 0 ? 0.1 : -0.1;
+	ZoomImageLabel::ZoomImageLabel(QWidget* parent) :QLabel(parent), scaleFactor(1.0)
+	{
+		setScaledContents(true);
+	}
+	void ZoomImageLabel::setPixmap(const QPixmap& pixmap)
+	{
+		originalPixmap = pixmap;
+		QLabel::setPixmap(originalPixmap.scaled(originalPixmap.size() * scaleFactor));
+	}
+	void ZoomImageLabel::wheelEvent(QWheelEvent* event)
+	{
+		// æ»šè½®æ»šåŠ¨çš„è§’åº¦
+		int delta = event->angleDelta().y();
 
-	// ÏŞÖÆËõ·ÅÒò×ÓµÄ·¶Î§
-	scaleFactor = qMax(0.1, qMin(scaleFactor, 3.0));
+		// è°ƒæ•´ç¼©æ”¾å› å­
+		scaleFactor += delta > 0 ? 0.1 : -0.1;
 
-	// ¸ù¾İËõ·ÅÒò×Óµ÷ÕûQPixmapµÄ´óĞ¡
-	QPixmap scaledPixmap = originalPixmap.scaled(originalPixmap.size() * scaleFactor);
+		// é™åˆ¶ç¼©æ”¾å› å­çš„èŒƒå›´
+		scaleFactor = qMax(0.1, qMin(scaleFactor, 3.0));
 
-	// ÔÚQLabelÉÏÏÔÊ¾µ÷ÕûºóµÄQPixmap
-	QLabel::setPixmap(scaledPixmap);
-}
+		// æ ¹æ®ç¼©æ”¾å› å­è°ƒæ•´QPixmapçš„å¤§å°
+		QPixmap scaledPixmap = originalPixmap.scaled(originalPixmap.size() * scaleFactor);
 
+		// åœ¨QLabelä¸Šæ˜¾ç¤ºè°ƒæ•´åçš„QPixmap
+		QLabel::setPixmap(scaledPixmap);
+	}
+} // namespace XVisual 

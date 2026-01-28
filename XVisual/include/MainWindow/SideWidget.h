@@ -9,10 +9,14 @@
 #include <QFrame>
 #include "MainWindow/VariableWidget.h"
 #include "Common/OpenCVHeaders.h"
+
+namespace XVisual {
+
 class ImagePageWidget;
 class NamesWidget;
 class VariableWidget;
 class XBaseItem;
+
 class SideWidget : public QWidget
 {
 	Q_OBJECT
@@ -37,8 +41,8 @@ class SideWidget : public QWidget
 		QWidget* upWidget;
 
 		/*
-		bottomWidget是SideWidget底部的widget其遵循水平布局bottomLayout, 
-	    hSplitter被添加到bottomLayout, hSplitter包含namesWidget, variableWidget
+		bottomWidget鏄疭ideWidget搴曢儴鐨剋idget鍏堕伒寰按骞冲竷灞�bottomLayout, 
+	    hSplitter琚坊鍔犲埌bottomLayout, hSplitter鍖呭惈namesWidget, variableWidget
 		*/
 		QSplitter* hSplitter;
 	    NamesWidget* namesWidget;
@@ -47,8 +51,8 @@ class SideWidget : public QWidget
 		QWidget* bottomWidget;
 
 		/*
-		rightWidget是btnWidget右侧的widget遵循垂直布局rightLayout, 
-		vSplitter被添加到rightLayout, vSplitter包含upWidget, bottomWidget
+		rightWidget鏄痓tnWidget鍙充晶鐨剋idget閬靛惊鍨傜洿甯冨眬rightLayout, 
+		vSplitter琚坊鍔犲埌rightLayout, vSplitter鍖呭惈upWidget, bottomWidget
 		*/
 		QSplitter* vSplitter;
 		QVBoxLayout* rightLayout;
@@ -59,5 +63,7 @@ class SideWidget : public QWidget
 	
 
 };
+
+} // namespace XVisual
 
 #endif // SIDEWIDGET_H

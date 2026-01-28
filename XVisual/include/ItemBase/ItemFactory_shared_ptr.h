@@ -5,6 +5,9 @@
 class QGraphicsItem;
 class QMenu;
 class XBaseItem;
+
+namespace XVisual {
+
 class ItemRegistry
 {
 public:
@@ -27,4 +30,6 @@ public:
 		return std::shared_ptr<XBaseItem>(new T##Item(contextMenu,parent)); \
 	} \
     static ClasssRegisterer  xvisual_##T##_register(#T, xvisual_##T##_construtor)
+
+} // namespace XVisual
 

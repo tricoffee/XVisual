@@ -5,6 +5,9 @@
 #include<string>
 
 #include "CJSON/cJSON.h"
+
+namespace XVisual {
+
 class XParser
 {
 	public:
@@ -15,62 +18,64 @@ class XParser
 		bool getClassInfoItemAt(int i = 0);
 		bool getClassInfoItemAt(cJSON*& classInfoElement, int i = 0);
 
-		// »ñÈ¡ ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ Item_ClassName for Item 
+		// è·å– ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ Item_ClassName for Item 
 		bool getItemClassNameAt(cJSON*& itemClassName, int i);
-		// »ñÈ¡ ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ Item_ColleagueType for Item 
+		// è·å– ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ Item_ColleagueType for Item 
 		bool getItemColleagueTypeAt(cJSON*& itemColleagueType, int i = 0);
-		// »ñÈ¡ ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ Item_ColleagueId for Item 
+		// è·å– ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ Item_ColleagueId for Item 
 		bool getItemColleagueIdAt(cJSON*& itemColleagueId, int i = 0);
-		// »ñÈ¡ ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ Item_UniqueName for Item 
+		// è·å– ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ Item_UniqueName for Item 
 		bool getItemUniqueNameAt(cJSON*& itemUniqueName, int i = 0);
 
-		// »ñÈ¡ ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ Item_Position for Item 
+		// è·å– ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ Item_Position for Item 
 		bool getItemPosition(cJSON*& itemPos, int i = 0);
 
-		// »ñÈ¡ ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ ClassName for Handle  
+		// è·å– ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ ClassName for Handle  
 		bool getClassNameAt(cJSON*& className, int i = 0); 
-		// »ñÈ¡ ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ ColleagueType for Handle 
+		// è·å– ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ ColleagueType for Handle 
 		bool getColleagueTypeAt(cJSON*& colleagueType, int i = 0);
-		// »ñÈ¡ ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ ColleagueId for Handle 
+		// è·å– ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ ColleagueId for Handle 
 		bool getColleagueIdAt(cJSON*& colleagueId, int i = 0);
-		// »ñÈ¡ ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ UniqueName for Handle 
+		// è·å– ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ UniqueName for Handle 
 		bool getUniqueNameAt(cJSON*& uniqueName, int i = 0);
 
 		bool getSourceFromAt(cJSON*& sourceFrom, int i = 0);
 		bool getInnerParamAt(cJSON*& innerParam, int i = 0);
 	private:
 		XParser();
-		// json ÎÄ¼şÎÄ±¾ÄÚÈİµÄ const char*±íÊ¾
+		// json æ–‡ä»¶æ–‡æœ¬å†…å®¹çš„ const char*è¡¨ç¤º
 		const char* json_data;
-		// ½âÎö JSON »ñµÃµÄ¸ù½Úµã
+		// è§£æ JSON è·å¾—çš„æ ¹èŠ‚ç‚¹
 		cJSON* root;
-		// »ñÈ¡ ClassInfo Êı×é
+		// è·å– ClassInfo æ•°ç»„
 		cJSON* classinfo_array;
-		// ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element
+		// ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element
 		cJSON* classinfo_element;
 
-		// ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ Item_ClassName for Item
+		// ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ Item_ClassName for Item
 		cJSON* item_class_name;
-		// ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ Item_ColleagueType for Item 
+		// ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ Item_ColleagueType for Item 
 		cJSON* item_colleague_type;
-		// ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ Item_ColleagueId for Item
+		// ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ Item_ColleagueId for Item
 		cJSON* item_colleague_id;
-		// ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ Item_UniqueName for Item
+		// ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ Item_UniqueName for Item
 		cJSON* item_unique_name;
 
-		// ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ ClassName for Handle
+		// ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ ClassName for Handle
 		cJSON* class_name;
-		// ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ ColleagueType for Handle
+		// ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ ColleagueType for Handle
 		cJSON* colleague_type;
-		// ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ ColleagueId for Handle
+		// ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ ColleagueId for Handle
 		cJSON* colleague_id;
-		// ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ UniqueName for Handle
+		// ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ UniqueName for Handle
 		cJSON* unique_name;
 
-		// ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ SourceFrom
+		// ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ SourceFrom
 		cJSON* source_from;
-		// ClassInfo Êı×éÔÚË÷Òı i ´¦µÄ classinfo_element µÄ InnerParam
+		// ClassInfo æ•°ç»„åœ¨ç´¢å¼• i å¤„çš„ classinfo_element çš„ InnerParam
 		cJSON* inner_param;
 };
+
+} // namespace XVisual
 
 #endif // XParser_H

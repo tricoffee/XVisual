@@ -1,15 +1,17 @@
 #ifndef WorkSpaceDialog_H
 #define WorkSpaceDialog_H
 
-
 #include <QDialog>
-class QWidget;
-class QVBoxLayout;
-class QHBoxLayout;
-class QRadioButton;
-class QLineEdit;
-class QPushButton;
+#include <QWidget>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QRadioButton>
+#include <QLineEdit>
+#include <QPushButton>
+
 #include "Common/SettingsReader.h"
+
+namespace XVisual {
 
 class WorkSpaceDialog : public QDialog
 {
@@ -42,5 +44,6 @@ class WorkSpaceDialog : public QDialog
 
 };
 
+} // namespace XVisual
 
 #endif // WorkSpaceDialog_H

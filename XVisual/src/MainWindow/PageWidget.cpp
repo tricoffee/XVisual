@@ -1,4 +1,7 @@
 #include "MainWindow/PageWidget.h"
+
+namespace XVisual {
+
 PageWidget::PageWidget(QWidget* parent) :QWidget(parent)
 {
 	vLayout = new QVBoxLayout();
@@ -11,3 +14,5 @@ void PageWidget::addWidgetsToLayout(QList<QWidget*> widgetList)
 	}
 	setLayout(vLayout);
 }
+
+} // namespace XVisual

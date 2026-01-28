@@ -3,6 +3,8 @@
 
 #include <QString>
 
+namespace XVisual {
+
 class ImageSources
 {
     public:
@@ -25,5 +27,7 @@ class ImageSources
 
 enum DiagramState { Insert, Move, Release };
 enum DiagramType { Item, Line, Text, None };
+
+} // namespace XVisual
 
 #endif //Constants_H

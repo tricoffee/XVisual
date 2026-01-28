@@ -5,7 +5,9 @@
 #include <QString>
 #include "Common/FileCopyData.h"
 
-// 定义一个发射信号的对象
+namespace XVisual {
+
+// 瀹氫箟涓�涓彂灏勪俊鍙风殑瀵硅薄
 class AsynchronousFileEmitter : public QObject 
 {
 	Q_OBJECT
@@ -16,6 +18,8 @@ class AsynchronousFileEmitter : public QObject
 		void copyFileSignal(FileCopyData data);
 };
 
-using AFEmitter = AsynchronousFileEmitter;
+	using AFEmitter = AsynchronousFileEmitter;
+
+} // namespace XVisual
 
 #endif // AsynchronousFileEmitter_H

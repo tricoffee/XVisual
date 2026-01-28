@@ -8,6 +8,8 @@
 #include <QVBoxLayout>
 #include <QGridLayout>
 
+namespace XVisual {
+
 Normalize01ParamWidget::~Normalize01ParamWidget()
 {
 	//qDebug() << " === Normalize01ParamWidget::~Normalize01ParamWidget() === ";
@@ -23,9 +25,9 @@ Normalize01ParamWidget::Normalize01ParamWidget(QWidget* parent) : PreParamWidget
 	label = new QLabel(tr("convert 0~255 to 0~1"));
 	mLayout = new QHBoxLayout();
 	mLayout->addWidget(label);
-	// 设置布局的对齐方式为居中
+	// 璁剧疆甯冨眬鐨勫榻愭柟寮忎负灞呬腑
 	mLayout->setAlignment(Qt::AlignLeft);
-	mLayout->setContentsMargins(0, 0, 0, 0); // 设置外边距为0
+	mLayout->setContentsMargins(0, 0, 0, 0); // 璁剧疆澶栬竟璺濅负0
 	setLayout(mLayout);
 }
 
@@ -46,3 +48,5 @@ void Normalize01ParamWidget::setPreParam(const PreParam& params)
 }
 
 REGISTER_ParamWidget(Normalize01);
+
+} // namespace XVisual

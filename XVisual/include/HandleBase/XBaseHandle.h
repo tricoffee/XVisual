@@ -19,6 +19,8 @@ class CVCropItem;
 class ImagePreItem;
 class TFDetectItem;
 
+namespace XVisual {
+
 class XBaseHandle : public Colleague
 {
 	public:
@@ -56,5 +58,7 @@ class XBaseHandle : public Colleague
 		std::unordered_map<std::string, std::any> innerParam;
 		
 };
+
+} // namespace XVisual
 
 #endif // XBaseHandle_H

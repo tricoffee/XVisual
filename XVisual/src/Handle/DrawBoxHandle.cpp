@@ -6,6 +6,8 @@
 #include "Common/BoxUtils.h"
 #include "Common/FileUtils.h"
 
+namespace XVisual {
+
 DrawBoxHandle::DrawBoxHandle() : XBaseHandle()
 {
 	XLOG_INFO("class DrawBoxHandle: public XBaseHandle ...", CURRENT_THREAD_ID);
@@ -18,21 +20,21 @@ DrawBoxHandle::~DrawBoxHandle()
 {
 
 }
-XVisual::ErrorCode DrawBoxHandle::setInnerParam(cJSON* innerParamPtr)
+ErrorCode DrawBoxHandle::setInnerParam(cJSON* innerParamPtr)
 {
-	return XVisual::ErrorCode::Success;
+	return ErrorCode::Success;
 }
-XVisual::ErrorCode DrawBoxHandle::setOuterParam(std::unordered_map<std::string, cJSON*> outerParamUMap)
+ErrorCode DrawBoxHandle::setOuterParam(std::unordered_map<std::string, cJSON*> outerParamUMap)
 {
-	return XVisual::ErrorCode::Success;
+	return ErrorCode::Success;
 }
-XVisual::ErrorCode DrawBoxHandle::writeOuterParam(cJSON* cjson_variableSource, const std::string& xName)
+ErrorCode DrawBoxHandle::writeOuterParam(cJSON* cjson_variableSource, const std::string& xName)
 {
-	return XVisual::ErrorCode::Success;
+	return ErrorCode::Success;
 }
-XVisual::ErrorCode DrawBoxHandle::writeInnerParam(cJSON* cjson_innerParam)
+ErrorCode DrawBoxHandle::writeInnerParam(cJSON* cjson_innerParam)
 {
-	return XVisual::ErrorCode::Success;
+	return ErrorCode::Success;
 }
 void DrawBoxHandle::initParams()
 {
@@ -56,8 +58,8 @@ void DrawBoxHandle::xOperate()
 	{
 		int imageWidth = image.cols;
 		int imageHeight = image.rows;
-		XLOG_INFO("DrawBoxHandle::xOperate ÕºœÒøÌ∂»: " + std::to_string(imageWidth), CURRENT_THREAD_ID);
-		XLOG_INFO("DrawBoxHandle::xOperate ÕºœÒ∏ﬂ∂»: " + std::to_string(imageHeight), CURRENT_THREAD_ID);
+		XLOG_INFO("DrawBoxHandle::xOperate ÂõæÂÉèÂÆΩÂ∫¶: " + std::to_string(imageWidth), CURRENT_THREAD_ID);
+		XLOG_INFO("DrawBoxHandle::xOperate ÂõæÂÉèÈ´òÂ∫¶: " + std::to_string(imageHeight), CURRENT_THREAD_ID);
 		std::vector<DetectResult> detections = GET_MEMBER_WITH_TYPE_STR(sources, std::vector<DetectResult>, "detections");
 		std::vector<std::string> classNames = GET_MEMBER_WITH_TYPE_STR(sources, std::vector<std::string>, "classNames");
 		drawBoxes(image, detections, classNames);
@@ -70,3 +72,5 @@ void DrawBoxHandle::xOperate()
 }
 
 REGISTER_HANDLE(DrawBox);
+
+} // namespace XVisual

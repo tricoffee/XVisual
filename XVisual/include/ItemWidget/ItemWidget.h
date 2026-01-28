@@ -5,6 +5,9 @@
 #include <QTextEdit>
 
 class XTextEdit;
+
+namespace XVisual {
+
 class ItemWidget : public QWidget
 {
 	public:
@@ -14,5 +17,7 @@ class ItemWidget : public QWidget
 	protected:
 		XTextEdit* edit;
 };
+
+} // namespace XVisual
 
 #endif //ItemWidget_H

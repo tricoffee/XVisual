@@ -3,6 +3,8 @@
 
 #include "ItemBase/XBaseItem.h"
 
+namespace XVisual {
+
 class CVCropItem : public XBaseItem
 {
 		Q_OBJECT
@@ -14,6 +16,8 @@ class CVCropItem : public XBaseItem
 	private:
 
 };
+
+} // namespace XVisual
 
 #endif //CVCropItem_H
 

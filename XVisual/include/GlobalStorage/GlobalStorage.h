@@ -7,24 +7,28 @@
 
 
 /*
-extern¹Ø¼ü×ÖÓÃÓÚÉùÃ÷È«¾Ö±äÁ¿£¬µ«Ëü²»·ÖÅä´æ´¢¿Õ¼ä¡£
-ËüµÄÄ¿µÄÊÇÈÃ±àÒëÆ÷ÖªµÀ¸Ã±äÁ¿ÊÇÔÚÁíÒ»¸öÔ´ÎÄ¼þÖÐ¶¨ÒåµÄ¡£
-ÔÚÄãµÄ´úÂëÖÐ£¬globalItemMapºÍitemMapMutexµÄ¶¨ÒåºÜ¿ÉÄÜÔÚÁíÒ»¸öÔ´ÎÄ¼þÖÐ£¬
-¶øÕâÀïÄãÖ»ÊÇÔÚÕâ¸öÍ·ÎÄ¼þÖÐÉùÃ÷ÁËËüÃÇ¡£
-Òò´Ë£¬ÕâÊÇÕýÈ·µÄÓÃ·¨£¬ÒòÎªËü¸æËß±àÒëÆ÷ÕâÐ©±äÁ¿µÄ¶¨ÒåÔÚÆäËûµØ·½£¬
-ÄãÖ»ÐèÒªÉùÃ÷ËüÃÇ¡£È¥µôextern¿ÉÄÜ»áµ¼ÖÂÖØ¸´¶¨ÒåµÄ´íÎó£¬ÒòÎª±äÁ¿¿ÉÄÜÔÚ¶à¸öÔ´ÎÄ¼þÖÐ±»¶¨Òå¡£
-ËùÒÔ£¬²»½¨ÒéÈ¥µôextern¡£
+externå…³é”®å­—ç”¨äºŽå£°æ˜Žå…¨å±€å˜é‡ï¼Œä½†å®ƒä¸åˆ†é…å­˜å‚¨ç©ºé—´ã€‚
+å®ƒçš„ç›®çš„æ˜¯è®©ç¼–è¯‘å™¨çŸ¥é“è¯¥å˜é‡æ˜¯åœ¨å¦ä¸€ä¸ªæºæ–‡ä»¶ä¸­å®šä¹‰çš„ã€‚
+åœ¨ä½ çš„ä»£ç ä¸­ï¼ŒglobalItemMapå’ŒitemMapMutexçš„å®šä¹‰å¾ˆå¯èƒ½åœ¨å¦ä¸€ä¸ªæºæ–‡ä»¶ä¸­ï¼Œ
+è€Œè¿™é‡Œä½ åªæ˜¯åœ¨è¿™ä¸ªå¤´æ–‡ä»¶ä¸­å£°æ˜Žäº†å®ƒä»¬ã€‚
+å› æ­¤ï¼Œè¿™æ˜¯æ­£ç¡®çš„ç”¨æ³•ï¼Œå› ä¸ºå®ƒå‘Šè¯‰ç¼–è¯‘å™¨è¿™äº›å˜é‡çš„å®šä¹‰åœ¨å…¶ä»–åœ°æ–¹ï¼Œ
+ä½ åªéœ€è¦å£°æ˜Žå®ƒä»¬ã€‚åŽ»æŽ‰externå¯èƒ½ä¼šå¯¼è‡´é‡å¤å®šä¹‰çš„é”™è¯¯ï¼Œå› ä¸ºå˜é‡å¯èƒ½åœ¨å¤šä¸ªæºæ–‡ä»¶ä¸­è¢«å®šä¹‰ã€‚
+æ‰€ä»¥ï¼Œä¸å»ºè®®åŽ»æŽ‰externã€‚
 */
 
-//Ò»¸öÈ«¾ÖµÄstd::unordered_mapÓÃÀ´´æ´¢itemIdºÍ¶ÔÓ¦µÄXBaseItem*
+namespace XVisual {
+
+//ä¸€ä¸ªå…¨å±€çš„std::unordered_mapç”¨æ¥å­˜å‚¨itemIdå’Œå¯¹åº”çš„XBaseItem*
 extern std::unordered_map<std::string, XBaseItem*> globalItemMap;
-//»¥³âËø(mutex)À´±£»¤È«¾ÖglobalItemMap£¬ÕâÑù¿ÉÒÔÈ·±£Í¬Ê±Ö»ÓÐÒ»¸öÏß³Ì·ÃÎÊËü£¬ÒÔ±ÜÃâ×ÊÔ´¾ºÕùºÍÊý¾Ý²»Ò»ÖÂ
+//äº’æ–¥é”(mutex)æ¥ä¿æŠ¤å…¨å±€globalItemMapï¼Œè¿™æ ·å¯ä»¥ç¡®ä¿åŒæ—¶åªæœ‰ä¸€ä¸ªçº¿ç¨‹è®¿é—®å®ƒï¼Œä»¥é¿å…èµ„æºç«žäº‰å’Œæ•°æ®ä¸ä¸€è‡´
 extern std::mutex itemMapMutex;
 
 
-//Ò»¸öÈ«¾ÖµÄxGraphÓÃÀ´´æ´¢itemId±êÊ¶µÄGraphNode
+//ä¸€ä¸ªå…¨å±€çš„xGraphç”¨æ¥å­˜å‚¨itemIdæ ‡è¯†çš„GraphNode
 extern std::vector<std::shared_ptr<GraphNode>> xGraph;
-//»¥³âËø(mutex)À´±£»¤È«¾ÖµÄxGraph£¬ÕâÑù¿ÉÒÔÈ·±£Í¬Ê±Ö»ÓÐÒ»¸öÏß³Ì·ÃÎÊËü£¬ÒÔ±ÜÃâ×ÊÔ´¾ºÕùºÍÊý¾Ý²»Ò»ÖÂ
+//äº’æ–¥é”(mutex)æ¥ä¿æŠ¤å…¨å±€çš„xGraphï¼Œè¿™æ ·å¯ä»¥ç¡®ä¿åŒæ—¶åªæœ‰ä¸€ä¸ªçº¿ç¨‹è®¿é—®å®ƒï¼Œä»¥é¿å…èµ„æºç«žäº‰å’Œæ•°æ®ä¸ä¸€è‡´
 extern std::mutex xGraphMutex;
+
+} // namespace XVisual
 
 #endif //GlobalStorage_H

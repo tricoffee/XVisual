@@ -6,7 +6,10 @@
 #include <QComboBox>
 #include <QPainter>
 #include "TableData.h"
+
 // Custom delegate for QComboBox in the second column
+namespace XVisual {
+
 class ComboBoxDelegate : public QStyledItemDelegate
 {
 public:
@@ -16,10 +19,13 @@ public:
 	void setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const override;
 	void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 private:
-	//QComboBoxÎ¬»¤µÄÊı¾İ
+	//QComboBoxç»´æŠ¤çš„æ•°æ®
 	QList<TableData> variables;
-	//ÉùÃ÷Ò»¸öÃûÎªcomboModelµÄQStandardItemModelÖ¸Õë£¬ Î¬»¤×ÅQComboBoxÏÂÀ­ÁĞ±íÊı¾İ
+	//å£°æ˜ä¸€ä¸ªåä¸ºcomboModelçš„QStandardItemModelæŒ‡é’ˆï¼Œ ç»´æŠ¤ç€QComboBoxä¸‹æ‹‰åˆ—è¡¨æ•°æ®
 	QStandardItemModel* comboModel;
 };
+
+} // namespace XVisual
+
 #endif //ComboBoxDelegate_H
 

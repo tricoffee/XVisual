@@ -4,7 +4,10 @@
 #include <iostream>
 #include "HandleBase/XBaseHandle.h"
 
+namespace XVisual {
+
 class Colleague;
+
 class LoadImageHandle : public XBaseHandle
 {
 	public:
@@ -19,5 +22,7 @@ class LoadImageHandle : public XBaseHandle
 	private:
 
 };
+
+} // namespace XVisual
 
 #endif // LoadImageHandle_H

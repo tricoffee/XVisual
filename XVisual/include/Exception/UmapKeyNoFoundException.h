@@ -4,6 +4,8 @@
 #include <string>
 #include "MyException.h"
 
+namespace XVisual {
+
 class UmapKeyNoFoundException : public MyException
 {
 	public:
@@ -17,6 +19,8 @@ class UmapKeyNoFoundException : public MyException
 	private:
 		std::string message;
 };
+
+} // namespace XVisual
 
 #endif //UmapKeyNoFoundException_H
 

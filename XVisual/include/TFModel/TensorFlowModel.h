@@ -14,6 +14,8 @@
 #include "TFModel/ModelUtils.h"
 #include "Common/DetectResult.h"
 
+namespace XVisual {
+
 class TensorFlowModel
 {
 	private:
@@ -69,7 +71,7 @@ class TensorFlowModel
 		void getResults(std::vector<DetectResult >& results);
 };
 
-
+} // namespace XVisual
 
 #endif //TensorFlowModel_H
 

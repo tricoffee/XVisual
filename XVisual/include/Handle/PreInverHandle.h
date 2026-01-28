@@ -5,7 +5,10 @@
 #include "HandleBase/XBaseHandle.h"
 #include "Common/PreParam.h"
 
+namespace XVisual {
+
 class Colleague;
+
 class PreInverHandle : public XBaseHandle
 {
 	public:
@@ -22,6 +25,8 @@ class PreInverHandle : public XBaseHandle
 	private:
 
 };
+
+} // namespace XVisual
 
 #endif // PreInverHandle_H
 

@@ -1,64 +1,67 @@
 #include "Common/ZoomableGraphicsView.h"
-ZoomableGraphicsView::ZoomableGraphicsView(QWidget* parent)
-	: QGraphicsView(parent)
-{
-	scene = new QGraphicsScene(this);
-	setScene(scene);
-	//QString filePath = "C:/NDev/CPPDev/XVisual/SEB2023.bmp";
-	//cv::Mat inputImage = cv::imread(filePath.toStdString());
-	//initLoad(inputImage);
-	// ½ûÓÃ¹ö¶¯Ìõ
-	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-}
-// ¾ÓÖĞÏÔÊ¾Í¼Ïñ
-void ZoomableGraphicsView::centerImage()
-{
-	// »ñÈ¡³¡¾°ºÍÍ¼ÏñÏîµÄ¾ØĞÎ
-	QRectF sceneRect = scene->sceneRect();
-	QRectF itemRect = pixmapItem->sceneBoundingRect();
 
-	// ¼ÆËã¾ÓÖĞÎ»ÖÃ
-	qreal xOffset = (sceneRect.width() - itemRect.width()) / 2.0;
-	qreal yOffset = (sceneRect.height() - itemRect.height()) / 2.0;
+namespace XVisual {
 
-	// ÉèÖÃÍ¼ÏñÏîµÄÎ»ÖÃ
-	pixmapItem->setPos(sceneRect.x() + xOffset, sceneRect.y() + yOffset);
-}
-void ZoomableGraphicsView::initLoad(cv::Mat inputImage)
-{
-	// »ñÈ¡Í¼ÏñµÄ»ù±¾ĞÅÏ¢
-	imageWidth = inputImage.cols;
-	imageHeight = inputImage.rows;
-	// Çå¿Õ³¡¾°
-	scene->clear();
-	// viewport geometry
-	int viewWidth = viewport()->geometry().width();
-	int viewHeight = viewport()->geometry().height();
-	// ¼ÆËãËõÂÔÍ¼µÄËõ·Å±ÈÀı
-	qreal hScaleFactor = qMin(1.0, static_cast<qreal>(viewWidth) / static_cast<qreal>(imageWidth));
-	qreal vScaleFactor = qMin(1.0, static_cast<qreal>(viewHeight) / static_cast<qreal>(imageHeight));
-	qDebug() << "hScaleFactor =  " << hScaleFactor;
-	qDebug() << "vScaleFactor =  " << vScaleFactor;
-	// ÉèÖÃÕûÌåËõ·Å±ÈÀıÎªscaleFactor
-	qreal scaleFactor = qMin(hScaleFactor, vScaleFactor);
-	//
-	QPixmap pixmap = cvMatToQPixmap(inputImage);
-	pixmapItem = new QGraphicsPixmapItem(pixmap);
-	pixmapItem->setPos(0, 0);
-	scene->addItem(pixmapItem);
-	// Ëõ·ÅÍ¼ÏñÏî
-	QTransform transform;
-	transform.scale(scaleFactor, scaleFactor);
-	setTransform(transform);
-	// ¾ÓÖĞÏÔÊ¾Í¼Ïñ
-	centerImage();
-}
-QPixmap ZoomableGraphicsView::cvMatToQPixmap(const cv::Mat& inMat)
-{
-	switch (inMat.type())
+	ZoomableGraphicsView::ZoomableGraphicsView(QWidget* parent)
+		: QGraphicsView(parent)
 	{
-		// 8-bit, 4 channel
+		scene = new QGraphicsScene(this);
+		setScene(scene);
+		//QString filePath = "C:/NDev/CPPDev/XVisual/SEB2023.bmp";
+		//cv::Mat inputImage = cv::imread(filePath.toStdString());
+		//initLoad(inputImage);
+		// ç¦ç”¨æ»šåŠ¨æ¡
+		setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+		setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	}
+	// å±…ä¸­æ˜¾ç¤ºå›¾åƒ
+	void ZoomableGraphicsView::centerImage()
+	{
+		// è·å–åœºæ™¯å’Œå›¾åƒé¡¹çš„çŸ©å½¢
+		QRectF sceneRect = scene->sceneRect();
+		QRectF itemRect = pixmapItem->sceneBoundingRect();
+
+		// è®¡ç®—å±…ä¸­ä½ç½®
+		qreal xOffset = (sceneRect.width() - itemRect.width()) / 2.0;
+		qreal yOffset = (sceneRect.height() - itemRect.height()) / 2.0;
+
+		// è®¾ç½®å›¾åƒé¡¹çš„ä½ç½®
+		pixmapItem->setPos(sceneRect.x() + xOffset, sceneRect.y() + yOffset);
+	}
+	void ZoomableGraphicsView::initLoad(cv::Mat inputImage)
+	{
+		// è·å–å›¾åƒçš„åŸºæœ¬ä¿¡æ¯
+		imageWidth = inputImage.cols;
+		imageHeight = inputImage.rows;
+		// æ¸…ç©ºåœºæ™¯
+		scene->clear();
+		// viewport geometry
+		int viewWidth = viewport()->geometry().width();
+		int viewHeight = viewport()->geometry().height();
+		// è®¡ç®—ç¼©ç•¥å›¾çš„ç¼©æ”¾æ¯”ä¾‹
+		qreal hScaleFactor = qMin(1.0, static_cast<qreal>(viewWidth) / static_cast<qreal>(imageWidth));
+		qreal vScaleFactor = qMin(1.0, static_cast<qreal>(viewHeight) / static_cast<qreal>(imageHeight));
+		qDebug() << "hScaleFactor =  " << hScaleFactor;
+		qDebug() << "vScaleFactor =  " << vScaleFactor;
+		// è®¾ç½®æ•´ä½“ç¼©æ”¾æ¯”ä¾‹ä¸ºscaleFactor
+		qreal scaleFactor = qMin(hScaleFactor, vScaleFactor);
+		//
+		QPixmap pixmap = cvMatToQPixmap(inputImage);
+		pixmapItem = new QGraphicsPixmapItem(pixmap);
+		pixmapItem->setPos(0, 0);
+		scene->addItem(pixmapItem);
+		// ç¼©æ”¾å›¾åƒé¡¹
+		QTransform transform;
+		transform.scale(scaleFactor, scaleFactor);
+		setTransform(transform);
+		// å±…ä¸­æ˜¾ç¤ºå›¾åƒ
+		centerImage();
+	}
+	QPixmap ZoomableGraphicsView::cvMatToQPixmap(const cv::Mat& inMat)
+	{
+		switch (inMat.type())
+		{
+			// 8-bit, 4 channel
 		case CV_8UC4:
 		{
 			QImage image(inMat.data,
@@ -91,39 +94,40 @@ QPixmap ZoomableGraphicsView::cvMatToQPixmap(const cv::Mat& inMat)
 		default:
 			qWarning() << "cvMatToQPixmap() - cv::Mat image type not handled in switch:" << inMat.type();
 			break;
+		}
+		return QPixmap();
 	}
-	return QPixmap();
-}
-void ZoomableGraphicsView::wheelEvent(QWheelEvent* event)
-{
-	if (event->angleDelta().y() > 0)
+	void ZoomableGraphicsView::wheelEvent(QWheelEvent* event)
 	{
-		scale(1.1, 1.1);
+		if (event->angleDelta().y() > 0)
+		{
+			scale(1.1, 1.1);
+		}
+		else
+		{
+			scale(1 / 1.1, 1 / 1.1);
+		}
 	}
-	else
+	void ZoomableGraphicsView::mousePressEvent(QMouseEvent* event)
 	{
-		scale(1 / 1.1, 1 / 1.1);
+		// è®°å½•é¼ æ ‡æŒ‰ä¸‹çš„åˆå§‹ä½ç½®
+		lastMousePos = event->pos();
 	}
-}
-void ZoomableGraphicsView::mousePressEvent(QMouseEvent* event)
-{
-	// ¼ÇÂ¼Êó±ê°´ÏÂµÄ³õÊ¼Î»ÖÃ
-	lastMousePos = event->pos();
-}
-void ZoomableGraphicsView::mouseMoveEvent(QMouseEvent* event)
-{
-	// »ñÈ¡Êó±êÎ»ÖÃ
-	currentMousePos = event->position().toPoint();
-}
-void ZoomableGraphicsView::mouseReleaseEvent(QMouseEvent* event)
-{
-	// ¼ÆËãÊó±êÒÆ¶¯µÄ¾àÀë
-	delta = mapToScene(currentMousePos) - mapToScene(lastMousePos);
-	// ¸üĞÂlastMousePos
-	lastMousePos = currentMousePos;
-	qDebug() << " scene->sceneRect() = " << scene->sceneRect();
-	QRectF newRect = scene->sceneRect().translated(-delta);
-	// Set the scene's sceneRect to the new rectangle
-	scene->setSceneRect(newRect);
-}
+	void ZoomableGraphicsView::mouseMoveEvent(QMouseEvent* event)
+	{
+		// è·å–é¼ æ ‡ä½ç½®
+		currentMousePos = event->position().toPoint();
+	}
+	void ZoomableGraphicsView::mouseReleaseEvent(QMouseEvent* event)
+	{
+		// è®¡ç®—é¼ æ ‡ç§»åŠ¨çš„è·ç¦»
+		delta = mapToScene(currentMousePos) - mapToScene(lastMousePos);
+		// æ›´æ–°lastMousePos
+		lastMousePos = currentMousePos;
+		qDebug() << " scene->sceneRect() = " << scene->sceneRect();
+		QRectF newRect = scene->sceneRect().translated(-delta);
+		// Set the scene's sceneRect to the new rectangle
+		scene->setSceneRect(newRect);
+	}
 
+} // namespace XVisual 

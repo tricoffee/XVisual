@@ -2,9 +2,11 @@
 #include <fstream>
 #include <filesystem>
 
+namespace XVisual {
+
 int readClassNames(const std::string& classNamesPath, std::vector<std::string>& classNames)
 {
-	// ´ò¿ªÎÄ¼ş
+	// æ‰“å¼€æ–‡ä»¶
 	std::ifstream file(classNamesPath);
 	if (!file)
 	{
@@ -12,7 +14,7 @@ int readClassNames(const std::string& classNamesPath, std::vector<std::string>& 
 		return -1;
 	}
 
-	// ¶ÁÈ¡ÎÄ¼şÖĞµÄÃ¿Ò»ĞĞ£¬²¢½«ÆäÌí¼Óµ½ÏòÁ¿ÖĞ
+	// è¯»å–æ–‡ä»¶ä¸­çš„æ¯ä¸€è¡Œï¼Œå¹¶å°†å…¶æ·»åŠ åˆ°å‘é‡ä¸­
 	std::string line;
 	while (std::getline(file, line))
 	{
@@ -22,7 +24,7 @@ int readClassNames(const std::string& classNamesPath, std::vector<std::string>& 
 		}
 	}
 
-	// ¹Ø±ÕÎÄ¼ş
+	// å…³é—­æ–‡ä»¶
 	file.close();
 
 	return 0;
@@ -31,7 +33,9 @@ int readClassNames(const std::string& classNamesPath, std::vector<std::string>& 
 void getParentPathStr(const std::string& str1, std::string& parentPathStr)
 {
 	std::filesystem::path filePath(str1);
-	// »ñÈ¡¸¸Ä¿Â¼Â·¾¶
+	// è·å–çˆ¶ç›®å½•è·¯å¾„
 	std::filesystem::path parentPath = filePath.parent_path();
 	parentPathStr = parentPath.string();
 }
+
+} // namespace XVisual

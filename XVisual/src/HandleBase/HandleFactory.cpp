@@ -1,5 +1,8 @@
 #include "HandleBase/HandleFactory.h"
 #include "HandleBase/XBaseHandle.h"
+
+namespace XVisual {
+
 HandleRegistry::HandleRegistry() {}
 HandleRegistry::HandleClassRegistry& HandleRegistry::RegistryInstance()
 {
@@ -24,3 +27,5 @@ HandleClassRegisterer::HandleClassRegisterer(const std::string& type,
 {
 	HandleRegistry::putConstructor(type, creator);
 }
+
+} // namespace XVisual

@@ -11,6 +11,8 @@
 #include "HandleBase/XBaseHandle.h"
 #include "ItemBase/XBaseItem.h"
 
+namespace XVisual {
+
 VariableWidget::VariableWidget(QWidget* parent) : QWidget(parent)
 {
 	// 创建树形控件
@@ -132,3 +134,5 @@ void VariableWidget::nodeSelectionChanged()
 		emit nodeToggledSignal(itemName);
 	}
 }
+
+} // namespace XVisual

@@ -6,6 +6,8 @@
 #include <QLineEdit>
 #include <QPushButton>
 
+namespace XVisual {
+
 class CropDialog : public QDialog
 {
 	Q_OBJECT
@@ -26,5 +28,7 @@ class CropDialog : public QDialog
 		QLineEdit* widthEdit;
 		QLineEdit* heightEdit;
 };
+
+} // namespace XVisual
 
 #endif // CropDialog_H

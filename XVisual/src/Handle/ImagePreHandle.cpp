@@ -7,6 +7,8 @@
 #define CHECK_NULLPTR(ptr) ((ptr) == nullptr)
 #define CHECK_ObjectItem(object) ((object != nullptr) && ((object)->type & cJSON_Object))
 
+namespace XVisual {
+
 ImagePreHandle::ImagePreHandle() : XBaseHandle()
 {
 	//std::cout << "class ImagePreHandle: public XBaseHandle " << std::endl;
@@ -20,7 +22,7 @@ ImagePreHandle::~ImagePreHandle()
 {
 
 }
-XVisual::ErrorCode ImagePreHandle::setInnerParam(cJSON* innerParamPtr)
+ErrorCode ImagePreHandle::setInnerParam(cJSON* innerParamPtr)
 {
 	cJSON* cjson_preParamPtr = cJSON_GetObjectItemCaseSensitive(innerParamPtr, "PreParam");
 	if (CHECK_ObjectItem(cjson_preParamPtr))
@@ -32,23 +34,23 @@ XVisual::ErrorCode ImagePreHandle::setInnerParam(cJSON* innerParamPtr)
 		imgPre3.readPreParam(cjson_preParamPtr);
 		mParams = imgPre3.getPreParam();
 		innerParam["imagePreParams"] = mParams;
-		return XVisual::ErrorCode::Success;
+		return ErrorCode::Success;
 	}
 	else
 	{
-		return XVisual::ErrorCode::ParseJsonUnknownObjectItemError;
+		return ErrorCode::ParseJsonUnknownObjectItemError;
 	}
 	
 }
-XVisual::ErrorCode ImagePreHandle::setOuterParam(std::unordered_map<std::string, cJSON*> outerParamUMap)
+ErrorCode ImagePreHandle::setOuterParam(std::unordered_map<std::string, cJSON*> outerParamUMap)
 {
-	return XVisual::ErrorCode::Success;
+	return ErrorCode::Success;
 }
-XVisual::ErrorCode ImagePreHandle::writeOuterParam(cJSON* cjson_variableSource, const std::string& xName)
+ErrorCode ImagePreHandle::writeOuterParam(cJSON* cjson_variableSource, const std::string& xName)
 {
-	return XVisual::ErrorCode::Success;
+	return ErrorCode::Success;
 }
-XVisual::ErrorCode ImagePreHandle::writeInnerParam(cJSON* cjson_innerParam)
+ErrorCode ImagePreHandle::writeInnerParam(cJSON* cjson_innerParam)
 {
 	cJSON* cjson_preparam = cJSON_CreateObject();
 	PreParam mParams = std::any_cast<PreParam>(innerParam["imagePreParams"]);
@@ -56,7 +58,7 @@ XVisual::ErrorCode ImagePreHandle::writeInnerParam(cJSON* cjson_innerParam)
 	ImagePre imgPre2(mParams);
 	imgPre2.writePreParam(cjson_preparam);
 	cJSON_AddItemToObject(cjson_innerParam, "PreParam", cjson_preparam);
-	return XVisual::ErrorCode::Success;
+	return ErrorCode::Success;
 }
 void ImagePreHandle::initParams()
 {
@@ -113,3 +115,5 @@ PreParam ImagePreHandle::getImagePreParams()
 }
 
 REGISTER_HANDLE(ImagePre);
+
+} // namespace XVisual

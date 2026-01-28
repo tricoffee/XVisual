@@ -6,6 +6,10 @@
 #include <iomanip>
 #include <sstream>
 
+namespace XVisual {
+
 std::string generateUUID();
+
+} // namespace XVisual
 
 #endif //UuidGenerator_H
