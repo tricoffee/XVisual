@@ -22,7 +22,7 @@
 
 namespace XVisual {
 
-	// �ְ汾, ����һ������(����)Colleague, sources��dests��ʵ����ת�����丸��(����)Colleagueʵ��
+	// 现版本, 新增一个父类(基类)Colleague, sources和dests的实例化转由在其父类(基类)Colleague实现
 	XBaseItem::XBaseItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent) :QGraphicsPolygonItem(parent), myContextMenu(contextMenu)
 	{
 		setColleagueType();
@@ -30,25 +30,25 @@ namespace XVisual {
 		setFlag(QGraphicsItem::ItemIsSelectable, true);
 		setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 
-		// ����Item��Uuid
+		// 创建Item的Uuid
 		createUuid();
 
 
-		// ��Item��ʼ��һ������
+		// 给Item初始化一个代理
 		initProxy();
-		// ����������һ��widget������setPos
+		// 给代理设置一个widget，并且setPos
 		setWidget();
 
 
 		// set polygon shape for Item
 		set_polygon();
 
-		// Item���������ά����QWidget����xitemWidget�����һ��QTextEdit���������ź�
+		// Item接收其代理维护的QWidget对象xitemWidget里面的一个QTextEdit发过来的信号
 		connect(xitemWidget->getEdit(), &XTextEdit::TextEditFocusOutSignal, this, &XBaseItem::TextEditFocusOutSlot);
 
-		// ���ӷ���showImage�źŵ��ۺ���
+		// 连接发送showImage信号到槽函数
 		connect(this, &XBaseItem::showImageSignal, gWidget, &GraphicsWidget::showImageSlot);
-		// ����Ҫ��XBaseItem����configItem("XBase"); ��ΪXBaseItem�ǻ��಻����ʵ��ҵ��
+		// 不需要在XBaseItem调用configItem("XBase"); 因为XBaseItem是基类不负责实际业务
 	}
 	void XBaseItem::configItem(const std::string& classNameStr)
 	{
@@ -60,11 +60,11 @@ namespace XVisual {
 		{
 
 
-			// ������ʾ��Item�ϵ��ı�
+			// 设置显示在Item上的文本
 			setEditText(QString::fromStdString(uniqueName));
 
 
-			// ����xHandle
+			// 创建xHandle
 			xHandle = HandleRegistry::createObject(classNameStr);
 			xHandle->setUuidConsistentWithItem(uuid);
 			initParams();
@@ -193,19 +193,17 @@ namespace XVisual {
 	{
 		className1 = classNameStr + "Item";
 	}
-	// initParams()��ʼ����������Ϊ���麯���޷��������������ڴ����麯�������Ǵ��麯������XBaseItem����Ҫ��������߼�, �����߼���������ʵ��
+	// initParams()初始化参数，因为纯虚函数无法创建对象，所以在此用虚函数而不是纯虚函数，而XBaseItem不需要做具体的逻辑, 具体逻辑在子类中实现
 	void XBaseItem::initParams()
 	{
 
 	}
-	// xOperate()ִ�м����߼�����Ϊ���麯���޷��������������ڴ����麯�������Ǵ��麯������XBaseItem����Ҫ��������߼�, �����߼���������ʵ��
+	// xOperate()执行计算逻辑，因为纯虚函数无法创建对象，所以在此用虚函数而不是纯虚函数，而XBaseItem不需要做具体的逻辑, 具体逻辑在子类中实现
 	void XBaseItem::xOperate()
 	{
 
 	}
-	/*
-	��sourceFrom����sources�����ÿ����������Դ���ҳ�ʼ���ò���
-	*/
+	// 从sourceFrom查找sources里面的每个参数的来源并且初始化该参数
 	void XBaseItem::initOperands()
 	{
 		xHandle->initOperands();
