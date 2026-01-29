@@ -20,7 +20,8 @@ TFDetectHandle::TFDetectHandle() : XBaseHandle()
 }
 TFDetectHandle::~TFDetectHandle()
 {
-
+	delete model;
+	model = nullptr;
 }
 ErrorCode TFDetectHandle::setInnerParam(cJSON* innerParamPtr)
 {

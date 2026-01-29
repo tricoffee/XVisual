@@ -13,6 +13,7 @@
 #include <unordered_map>
 #include <queue>
 #include "GlobalStorage/GlobalVariable.h"
+#include "Common/ErrorCode.h"
 
 namespace XVisual {
 
@@ -66,7 +67,9 @@ class XGraph
         */
 
         template<typename T>
-        static void executeXGraph(std::unordered_map<std::string, T*>& uMap, std::vector<std::shared_ptr<GraphNode>>& graph)
+		static XVisual::ErrorCode executeXGraph(std::unordered_map<std::string, T*>& uMap,
+			std::vector<std::shared_ptr<GraphNode>>& graph,
+			std::stop_token stopToken = {})
         {
             std::unordered_map<std::string, int> inDegrees;
             std::queue<std::shared_ptr<GraphNode>> q; // 注意这里的队列类型改为 std::shared_ptr<GraphNode>
@@ -99,6 +102,13 @@ class XGraph
             // 执行广度优先遍历
             while (!q.empty())
             {
+				// PR-1: Cancel at node boundary
+				if (stopToken.stop_requested())
+				{
+					XLOG_INFO("XGraph::executeXGraph canceled (stop requested).", CURRENT_THREAD_ID);
+					return XVisual::ErrorCode::Canceled;
+				}
+
                 std::shared_ptr<GraphNode> node = q.front();
                 q.pop();
 
@@ -125,11 +135,13 @@ class XGraph
                     inDegrees[neighbor->nodeId]--;
                     if (inDegrees[neighbor->nodeId] == 0)
                     {
-                        q.push(std::shared_ptr<GraphNode>(neighbor));
-
+                        // neighbor is already a shared_ptr; do NOT wrap it into a new shared_ptr (would cause double-free)
+                        q.push(neighbor);
                     }
                 }
             }
+
+			return XVisual::ErrorCode::Success;
         }
 };
 

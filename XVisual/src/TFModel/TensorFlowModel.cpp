@@ -8,28 +8,73 @@ TensorFlowModel::TensorFlowModel() : status_(nullptr), session_(nullptr), graph_
 
 TensorFlowModel::~TensorFlowModel()
 {
-	// 释放资源
-	for (int i = 0; i < NumInputs_; ++i)
+	// Release resources defensively. Some pointers may remain null if model loading failed.
+	if (InputValues_ != nullptr)
 	{
-		if (InputValues_[i] != nullptr)
+		for (int i = 0; i < NumInputs_; ++i)
 		{
-			TF_DeleteTensor(InputValues_[i]);
+			if (InputValues_[i] != nullptr)
+			{
+				TF_DeleteTensor(InputValues_[i]);
+				InputValues_[i] = nullptr;
+			}
 		}
-
+		std::free(InputValues_);
+		InputValues_ = nullptr;
 	}
-	for (int i = 0; i < NumOutputs_; ++i)
+	if (OutputValues_ != nullptr)
 	{
-		if (OutputValues_[i] != nullptr)
+		for (int i = 0; i < NumOutputs_; ++i)
 		{
-			TF_DeleteTensor(OutputValues_[i]);
+			if (OutputValues_[i] != nullptr)
+			{
+				TF_DeleteTensor(OutputValues_[i]);
+				OutputValues_[i] = nullptr;
+			}
 		}
+		std::free(OutputValues_);
+		OutputValues_ = nullptr;
 	}
-	if (session_ != nullptr) TF_DeleteSession(session_, status_);
-	if (metagraph_ != nullptr) TF_DeleteBuffer(metagraph_);
-	if (graph_ != nullptr) TF_DeleteGraph(graph_);
-	if (run_options_ != nullptr) TF_DeleteBuffer(run_options_);
-	if (session_opts_ != nullptr) TF_DeleteSessionOptions(session_opts_);
-	if (status_ != nullptr) TF_DeleteStatus(status_);
+	if (inputs_ != nullptr)
+	{
+		std::free(inputs_);
+		inputs_ = nullptr;
+	}
+	if (outputs_ != nullptr)
+	{
+		std::free(outputs_);
+		outputs_ = nullptr;
+	}
+	if (session_ != nullptr)
+	{
+		TF_DeleteSession(session_, status_);
+		session_ = nullptr;
+	}
+	if (metagraph_ != nullptr)
+	{
+		TF_DeleteBuffer(metagraph_);
+		metagraph_ = nullptr;
+	}
+	if (graph_ != nullptr)
+	{
+		TF_DeleteGraph(graph_);
+		graph_ = nullptr;
+	}
+	if (run_options_ != nullptr)
+	{
+		TF_DeleteBuffer(run_options_);
+		run_options_ = nullptr;
+	}
+	if (session_opts_ != nullptr)
+	{
+		TF_DeleteSessionOptions(session_opts_);
+		session_opts_ = nullptr;
+	}
+	if (status_ != nullptr)
+	{
+		TF_DeleteStatus(status_);
+		status_ = nullptr;
+	}
 }
 
 void TensorFlowModel::printOperations(const std::string& tfOperNameRecordDir)
@@ -245,4 +290,3 @@ void TensorFlowModel::getResults(std::vector<DetectResult>& results)
 }
 
 } // namespace XVisual
-

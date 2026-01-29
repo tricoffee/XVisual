@@ -19,6 +19,7 @@ class ImageSources
 		   static const QString Underline;
 		   static const QString LinePointer;
 		   static const QString RunButton;
+		   static const QString CancelRunButton;
 		   static const QString ExportButton;
 		   static const QString LoadButton;
 		   static const QString XVisualLogo;

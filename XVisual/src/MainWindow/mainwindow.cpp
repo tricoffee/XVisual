@@ -31,9 +31,13 @@
 #include "WorkSpaceDialog/WorkSpaceDialog.h"
 
 #include "Common/ErrorCode.h"
+#include "GlobalStorage/GlobalVariable.h"
 #include <QFile>
 #include "Common/FileUtils.h"
 #include "Common/JsonFileUtils.h"
+
+// PR-1 async
+#include <stop_token>
 
 #define CHECK_NULLPTR(ptr) ((ptr) == nullptr)
 
@@ -138,6 +142,7 @@ MainWindow::MainWindow(const QString& mProjectRootDir, QWidget* parent)
 	sceneScaleBar = ui->scaleToolBar;
 	pointerToolBar = ui->pointerToolBar;
 	runButtonToolBar = ui->runButtonToolBar;
+	cancelRunButtonToolBar = ui->cancelRunButtonToolBar;
 	exportButtonToolBar = ui->exportButtonToolBar;
 	loadButtonToolBar = ui->loadButtonToolBar;
 
@@ -180,6 +185,16 @@ MainWindow::MainWindow(const QString& mProjectRootDir, QWidget* parent)
 
 MainWindow::~MainWindow()
 {
+	// Ensure background execution is stopped before UI objects are destroyed.
+	if (g_graphExecuting.load())
+	{
+		XLOG_INFO("MainWindow::~MainWindow request stop (graph executing).", CURRENT_THREAD_ID);
+		g_graphStopSource.request_stop();
+	}
+
+	// m_execThread is std::jthread (via unique_ptr). Its destructor will join.
+	m_execThread.reset();
+
 	delete ui;
 }
 
@@ -201,41 +216,92 @@ void MainWindow::linePointerButtonClicked(bool checked)
 
 void MainWindow::runButtonClicked(bool checked)
 {
-	XLOG_INFO("void MainWindow::runButtonClicked to do executeXGraph", CURRENT_THREAD_ID);
+	// QToolButton is checkable and emits toggled(true/false). Only handle the "pressed" edge.
+	if (!checked)
+		return;
+
+	// Make it behave like a momentary button.
+	if (runButton)
+		runButton->setChecked(false);
+
+	// If already running, ignore.
+	if (g_graphExecuting.load())
+	{
+		XLOG_INFO("MainWindow::runButtonClicked ignored: graph already executing.", CURRENT_THREAD_ID);
+		return;
+	}
+
+	XLOG_INFO("MainWindow::runButtonClicked start async executeXGraph", CURRENT_THREAD_ID);
+
+	// Prepare cancel source and mark running
+	g_graphStopSource = std::stop_source{};
+	g_graphExecuting.store(true);
+	setUiLocked(true);
+
+	// Capture a snapshot under lock to reduce shared-state access during execution
+	std::vector<std::shared_ptr<GraphNode>> graphSnapshot;
 	{
 		std::lock_guard<std::mutex> lock(xGraphMutex);
-		// 遍历xGraph的每个元素
-		//for(auto it = xGraph.begin(); it != xGraph.end(); ++it) 
-		//{
-		//	// 获取当前节点node
-		//	std::shared_ptr<GraphNode> node = *it;
-		//	// 获取当前节点的nodeId
-		//	std::string nodeId = node->nodeId;
-		//	XLOG_INFO("void MainWindow::runButtonClicked, nodeId = "+nodeId, CURRENT_THREAD_ID);
-		//}
+		graphSnapshot = xGraph;
+	}
 
-		try 
+	// Start background execution
+	m_execThread = std::make_unique<std::jthread>([this, graphSnapshot](std::stop_token) mutable
+	{
+		XVisual::ErrorCode execResult = XVisual::ErrorCode::Success;
+		try
 		{
-			XGraph::executeXGraph<XBaseItem>(globalItemMap, xGraph);
+			// Note: globalItemMap is still used; it should be treated as read-only during execution
+			execResult = XGraph::executeXGraph<XBaseItem>(globalItemMap, graphSnapshot, g_graphStopSource.get_token());
 		}
 		catch (UmapKeyNoFoundException& e)
 		{
-			//        std::cout << "=== === ===" << e.what() << "=== === ===" << std::endl;
-			XLOG_INFO("====== void MainWindow::runButtonClicked, UmapKeyNoFoundException  ======" + std::string(e.what()), CURRENT_THREAD_ID);
-			//throw UmapKeyNoFoundException(e.what());
-			// 捕获异常并记录错误码
-			m_lastError = XVisual::ErrorCode::UmapKeyNoFound;
-			// 发射错误信号，通知错误发生
-			emit errorOccurred(m_lastError);
+			XLOG_INFO("====== MainWindow async run, UmapKeyNoFoundException ======" + std::string(e.what()), CURRENT_THREAD_ID);
+			execResult = XVisual::ErrorCode::UmapKeyNoFound;
 		}
 
-	}// 作用域结束时，lock_guard 会自动解锁互斥锁xGraphMutex
-	XLOG_INFO("void MainWindow::runButtonClicked xGraph is executed.", CURRENT_THREAD_ID);
+		// Marshal UI updates back to Qt main thread
+		QMetaObject::invokeMethod(this, [this, execResult]()
+		{
+			g_graphExecuting.store(false);
+			setUiLocked(false);
+			m_lastError = execResult;
+			if (execResult != XVisual::ErrorCode::Success && execResult != XVisual::ErrorCode::Canceled)
+			{
+				emit errorOccurred(m_lastError);
+			}
+			XLOG_INFO("MainWindow async run finished, code=" + XVisual::errorCodeToStr(execResult), CURRENT_THREAD_ID);
+		}, Qt::QueuedConnection);
+	});
+}
+
+void MainWindow::cancelRunButtonClicked(bool checked)
+{
+	// Only handle the "pressed" edge.
+	if (!checked)
+		return;
+
+	// Make it behave like a momentary button.
+	if (cancelRunButton)
+		cancelRunButton->setChecked(false);
+
+	// user requested cancel
+	if (!g_graphExecuting.load())
+		return;
+
+	XLOG_INFO("MainWindow::cancelRunButtonClicked request stop", CURRENT_THREAD_ID);
+	g_graphStopSource.request_stop();
 }
 
 
 void MainWindow::exportButtonClicked(bool checked)
 {
+	if (!checked)
+		return;
+
+	if (exportButton)
+		exportButton->setChecked(false);
+
 	XLOG_INFO("MainWindow::exportButtonClicked, to do export XGraph", CURRENT_THREAD_ID);
 
 	// handle_parents维系每个handle节点的父节点
@@ -395,6 +461,12 @@ void MainWindow::exportButtonClicked(bool checked)
 
 void MainWindow::loadButtonClicked(bool checked)
 {
+	if (!checked)
+		return;
+
+	if (loadButton)
+		loadButton->setChecked(false);
+
 	XLOG_INFO("void MainWindow::loadButtonClicked to do export XGraph", CURRENT_THREAD_ID);
 	QString defaultPath = latestJsonPath.isEmpty() ? QDir::homePath() : latestJsonPath;
 	QString jsonPath = QFileDialog::getOpenFileName(nullptr, "Select JSON", defaultPath, "JSON FILE (*.json)");
@@ -945,6 +1017,13 @@ void MainWindow::createToolbars()
 	runButton->setIcon(QIcon(ImageSources::RunButton));
 	connect(runButton, &QAbstractButton::toggled, this, &MainWindow::runButtonClicked);
 
+	cancelRunButton = new QToolButton;
+	cancelRunButton->setCheckable(true);
+	cancelRunButton->setChecked(false);
+	cancelRunButton->setEnabled(false);
+	cancelRunButton->setIcon(QIcon(ImageSources::CancelRunButton));
+	connect(cancelRunButton, &QAbstractButton::toggled, this, &MainWindow::cancelRunButtonClicked);
+
 	exportButton = new QToolButton;
 	exportButton->setCheckable(true);
 	exportButton->setChecked(false);
@@ -969,10 +1048,76 @@ void MainWindow::createToolbars()
 	pointerToolBar->addWidget(linePointerButton);
 
 	runButtonToolBar->addWidget(runButton);
+	cancelRunButtonToolBar->addWidget(cancelRunButton);
 
 	exportButtonToolBar->addWidget(exportButton);
 
 	loadButtonToolBar->addWidget(loadButton);
+}
+
+void MainWindow::setUiLocked(bool locked)
+{
+	// Lock ALL editing interactions while running (industrial standard).
+	// Only "Cancel" is enabled during execution.
+	if (runButton)
+		runButton->setEnabled(!locked);
+	if (cancelRunButton)
+		cancelRunButton->setEnabled(locked);
+	if (exportButton)
+		exportButton->setEnabled(!locked);
+	if (loadButton)
+		loadButton->setEnabled(!locked);
+
+	// Disable editing actions
+	if (deleteAction)
+		deleteAction->setEnabled(!locked);
+	if (toFrontAction)
+		toFrontAction->setEnabled(!locked);
+	if (sendBackAction)
+		sendBackAction->setEnabled(!locked);
+
+	// Disable other menu actions that may mutate runtime environment
+	if (workspaceAction)
+		workspaceAction->setEnabled(!locked);
+
+	// Disable main UI editing areas
+	if (graphicsWidget)
+		graphicsWidget->setEnabled(!locked);
+	if (toolBox)
+		toolBox->setEnabled(!locked);
+	if (sideWidget)
+		sideWidget->setEnabled(!locked);
+
+	// Disable toolbars that can change the graph / scene
+	if (editToolBar)
+		editToolBar->setEnabled(!locked);
+	if (textToolBar)
+		textToolBar->setEnabled(!locked);
+	if (colorToolBar)
+		colorToolBar->setEnabled(!locked);
+	if (sceneScaleBar)
+		sceneScaleBar->setEnabled(!locked);
+	if (pointerToolBar)
+		pointerToolBar->setEnabled(!locked);
+	if (runButtonToolBar)
+		runButtonToolBar->setEnabled(!locked);
+	if (cancelRunButtonToolBar)
+		cancelRunButtonToolBar->setEnabled(true); // keep toolbar available; the button itself decides enabled state
+	if (exportButtonToolBar)
+		exportButtonToolBar->setEnabled(!locked);
+	if (loadButtonToolBar)
+		loadButtonToolBar->setEnabled(!locked);
+
+	// Menus
+	if (fileMenu)
+		fileMenu->setEnabled(!locked);
+	if (itemMenu)
+		itemMenu->setEnabled(!locked);
+	if (settingsMenu)
+		settingsMenu->setEnabled(!locked);
+
+	// Help/About can stay available, but keep it consistent if you prefer full lock.
+	// if (aboutMenu) aboutMenu->setEnabled(!locked);
 }
 
 QWidget* MainWindow::createCellWidget(const QString& text)

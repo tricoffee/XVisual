@@ -122,7 +122,7 @@ XVisual::ErrorCode XInfer::build()
 			parser.getSourceFromAt(sourceFromPtr, i);
 			if (cJSON_IsObject(sourceFromPtr))
 			{
-				// ±éÀú SourceFrom µÄÃ¿¸ö½Úµã
+				// éå† SourceFrom çš„æ¯ä¸ªèŠ‚ç‚¹
 				cJSON* source_node = NULL;
 				cJSON_ArrayForEach(source_node, sourceFromPtr)
 				{
@@ -176,13 +176,13 @@ XVisual::ErrorCode XInfer::build()
 		{
 			std::string startStr = e.first;
 			std::set<std::string> endStrList = e.second;
-			// ÔÚ xHandleGraph ÀïÃæ¼ìË÷½Úµã startStr ¶ÔÓ¦µÄË÷Òı startIndex
+			// åœ¨ xHandleGraph é‡Œé¢æ£€ç´¢èŠ‚ç‚¹ startStr å¯¹åº”çš„ç´¢å¼• startIndex
 			int startIndex = XGraph::findNodeIndex(xHandleGraph, startStr);
 			for (const auto& endStr : endStrList)
 			{
-				// ÔÚ xHandleGraph ÀïÃæ¼ìË÷½Úµã endStr ¶ÔÓ¦µÄË÷ÒıendIndex
+				// åœ¨ xHandleGraph é‡Œé¢æ£€ç´¢èŠ‚ç‚¹ endStr å¯¹åº”çš„ç´¢å¼•endIndex
 				int endIndex = XGraph::findNodeIndex(xHandleGraph, endStr);
-				// °ÑxHandleGraph[endIndex]ÉèÖÃÎªxHandleGraph[startIndex]µÄÁÚ½Úµã, Ìí¼Ó±ß, ±êÊ¶ÎªyHandleIdµÄ½Úµã---¡·Ö¸Ïò---¡·±êÊ¶ÎªxHandleIdµÄ½Úµã(¼´getUuid()µÄ·µ»ØÖµ)µÄ½Úµã, Õâ¸öÂß¼­Ó¦¸Ã½ô¸úÁ¬Ïß¶¯×÷ÊÍ·ÅÖ®ºó
+				// æŠŠxHandleGraph[endIndex]è®¾ç½®ä¸ºxHandleGraph[startIndex]çš„é‚»èŠ‚ç‚¹, æ·»åŠ è¾¹, æ ‡è¯†ä¸ºyHandleIdçš„èŠ‚ç‚¹---ã€‹æŒ‡å‘---ã€‹æ ‡è¯†ä¸ºxHandleIdçš„èŠ‚ç‚¹(å³getUuid()çš„è¿”å›å€¼)çš„èŠ‚ç‚¹, è¿™ä¸ªé€»è¾‘åº”è¯¥ç´§è·Ÿè¿çº¿åŠ¨ä½œé‡Šæ”¾ä¹‹å
 				xHandleGraph[startIndex]->neighbors.push_back(xHandleGraph[endIndex]);
 			}
 
@@ -218,7 +218,7 @@ XVisual::ErrorCode XInfer::constructHandle(int i)
 	cJSON* innerParam = nullptr;
 	parser.getInnerParamAt(innerParam, i);
 
-	// ´íÎó´úÂë²»ÓÃÌí¼ÓÕâĞ©
+	// é”™è¯¯ä»£ç ä¸ç”¨æ·»åŠ è¿™äº›
 	//if (CHECK_NULLPTR(innerParam))
 	//{
 	//	return XVisual::ErrorCode::ParseInnerParamFromJsonFailed;

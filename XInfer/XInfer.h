@@ -28,7 +28,7 @@ class XInfer
 		XInfer();
 		XParser parser; 
 		//std::unordered_map<std::string, std::string> idLink;
-		//idLinkάϵÿ��handle�ڵ�ĺ��ӽڵ�
+		//idLink维系每个handle节点的孩子节点
 		std::unordered_map<std::string, std::set<std::string>> idLink;
 		ColleagueData data;
 		XBaseHandle* xHandle;

@@ -7,6 +7,7 @@ namespace XVisual
 	enum class ErrorCode
 	{
 		Success = 0,
+			Canceled = 10,
 		FileNotFound = 1,
 		UmapKeyNoFound = 2,
 		UnImplementedError = 3,
@@ -36,8 +37,8 @@ namespace XVisual
 	};
 
 	/*
-	º¯Êý½« ErrorCode ×ª»»Îª¶ÔÓ¦µÄ×Ö·û´®¡£
-	½«º¯Êý¶¨ÒåÎª inline£¬¿ÉÒÔÈÃ±àÒëÆ÷ÔÚÃ¿¸öÊ¹ÓÃº¯ÊýµÄµØ·½²åÈëº¯ÊýµÄ´úÂë£¬´Ó¶ø±ÜÃâÖØ¸´¶¨ÒåµÄÎÊÌâ¡£
+	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ErrorCode ×ªï¿½ï¿½Îªï¿½ï¿½Ó¦ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½
+	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª inlineï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½Ê¹ï¿½Ãºï¿½ï¿½ï¿½ï¿½ÄµØ·ï¿½ï¿½ï¿½ï¿½ëº¯ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ë£¬ï¿½Ó¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½â¡£
 	*/
 	inline std::string errorCodeToStr(ErrorCode code)
 	{
@@ -45,6 +46,8 @@ namespace XVisual
 		{
 			case ErrorCode::Success:
 				return "Success";
+			case ErrorCode::Canceled:
+				return "Canceled";
 			case ErrorCode::FileNotFound:
 				return "FileNotFoundError";
 			case ErrorCode::UmapKeyNoFound:

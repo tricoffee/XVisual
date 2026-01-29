@@ -13,6 +13,10 @@
 #include <QToolButton>
 #include <QAbstractButton>
 
+// PR-1 async execute
+#include <memory>
+#include <thread>
+
 #include "TableWidget/TableData.h"
 #include "Common/ErrorCode.h"
 #include "Common/SettingsReader.h"
@@ -46,6 +50,7 @@ private slots:
 	void buttonGroupClicked(QAbstractButton* button);
 	void linePointerButtonClicked(bool checked);
 	void runButtonClicked(bool checked);
+	void cancelRunButtonClicked(bool checked);
 	void exportButtonClicked(bool checked);
 	void loadButtonClicked(bool checked);
 	void currentFontChanged(const QFont& font);
@@ -85,6 +90,7 @@ private:
 	QToolButton* linePointerButton;
 	QButtonGroup* buttonGroup;
 	QToolButton* runButton;
+	QToolButton* cancelRunButton;
 	QToolButton* exportButton;
 	QToolButton* loadButton;
 
@@ -132,8 +138,14 @@ private:
     QToolBar* sceneScaleBar;
     QToolBar* pointerToolBar;
     QToolBar* runButtonToolBar;
+	QToolBar* cancelRunButtonToolBar;
     QToolBar* exportButtonToolBar;
     QToolBar* loadButtonToolBar;
+
+	// PR-1: background execution thread (serial run)
+	std::unique_ptr<std::jthread> m_execThread;
+
+	void setUiLocked(bool locked);
 };
 
 } // namespace XVisual

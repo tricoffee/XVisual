@@ -32,17 +32,12 @@ char* readJsonFile(const char* filename)
 // 判断 Json 文件是否存在
 bool isJsonFile(const std::string& path)
 {
-
-	if (std::filesystem::exists(path) && std::filesystem::is_regular_file(path) && std::filesystem::path(path).extension() != ".json")
-	{
-		//std::cout << path << " does not exists, or is not json file. " << path << std::endl;
-		return true;
-	}
-	else
-	{
-		//std::cout << path << " is Json File." << std::endl;
-		return false;
-	}
+	// NOTE:
+	// The function name suggests: return true when `path` exists and is a ".json" regular file.
+	// The previous implementation inverted the extension check, which made callers behave backwards.
+	return std::filesystem::exists(path) &&
+		std::filesystem::is_regular_file(path) &&
+		std::filesystem::path(path).extension() == ".json";
 }
 
 } // namespace XVisual

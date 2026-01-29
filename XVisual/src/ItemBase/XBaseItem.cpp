@@ -22,7 +22,7 @@
 
 namespace XVisual {
 
-	// ÏÖ°æ±¾, ÐÂÔöÒ»¸ö¸¸Àà(»ùÀà)Colleague, sourcesºÍdestsµÄÊµÀý»¯×ªÓÉÔÚÆä¸¸Àà(»ùÀà)ColleagueÊµÏÖ
+	// ï¿½Ö°æ±¾, ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½)Colleague, sourcesï¿½ï¿½destsï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ä¸¸ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½)ColleagueÊµï¿½ï¿½
 	XBaseItem::XBaseItem(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent) :QGraphicsPolygonItem(parent), myContextMenu(contextMenu)
 	{
 		setColleagueType();
@@ -30,41 +30,41 @@ namespace XVisual {
 		setFlag(QGraphicsItem::ItemIsSelectable, true);
 		setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 
-		// ´´½¨ItemµÄUuid
+		// ï¿½ï¿½ï¿½ï¿½Itemï¿½ï¿½Uuid
 		createUuid();
 
 
-		// ¸øItem³õÊ¼»¯Ò»¸ö´úÀí
+		// ï¿½ï¿½Itemï¿½ï¿½Ê¼ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		initProxy();
-		// ¸ø´úÀíÉèÖÃÒ»¸öwidget£¬²¢ÇÒsetPos
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½widgetï¿½ï¿½ï¿½ï¿½ï¿½ï¿½setPos
 		setWidget();
 
 
 		// set polygon shape for Item
 		set_polygon();
 
-		// Item½ÓÊÕÆä´úÀíÎ¬»¤µÄQWidget¶ÔÏóxitemWidgetÀïÃæµÄÒ»¸öQTextEdit·¢¹ýÀ´µÄÐÅºÅ
+		// Itemï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î¬ï¿½ï¿½ï¿½ï¿½QWidgetï¿½ï¿½ï¿½ï¿½xitemWidgetï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½QTextEditï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Åºï¿½
 		connect(xitemWidget->getEdit(), &XTextEdit::TextEditFocusOutSignal, this, &XBaseItem::TextEditFocusOutSlot);
 
-		// Á¬½Ó·¢ËÍshowImageÐÅºÅµ½²Ûº¯Êý
+		// ï¿½ï¿½ï¿½Ó·ï¿½ï¿½ï¿½showImageï¿½ÅºÅµï¿½ï¿½Ûºï¿½ï¿½ï¿½
 		connect(this, &XBaseItem::showImageSignal, gWidget, &GraphicsWidget::showImageSlot);
-		// ²»ÐèÒªÔÚXBaseItemµ÷ÓÃconfigItem("XBase"); ÒòÎªXBaseItemÊÇ»ùÀà²»¸ºÔðÊµ¼ÊÒµÎñ
+		// ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½XBaseItemï¿½ï¿½ï¿½ï¿½configItem("XBase"); ï¿½ï¿½ÎªXBaseItemï¿½Ç»ï¿½ï¿½à²»ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½Òµï¿½ï¿½
 	}
 	void XBaseItem::configItem(const std::string& classNameStr)
 	{
 		setClassName(classNameStr);
 		createUniqueName(classNameStr);
 		setObjectName(QString::fromStdString(uniqueName));
-		// "XBase" ÒÔ¼° "XBaseF" Ö»ÊÇÒ»¸ö»ùÀà²»¸ºÔð¾ßÌåÂß¼­, ËùÒÔÅÅ³ý "XBase" ÒÔ¼° "XBaseF"
-		if ("XBase" != classNameStr || "XBaseF" != classNameStr)
+		// NOTE: use AND here; otherwise this condition is always true.
+		if ("XBase" != classNameStr && "XBaseF" != classNameStr)
 		{
 
 
-			// ÉèÖÃÏÔÊ¾ÔÚItemÉÏµÄÎÄ±¾
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½Itemï¿½Ïµï¿½ï¿½Ä±ï¿½
 			setEditText(QString::fromStdString(uniqueName));
 
 
-			// ´´½¨xHandle
+			// ï¿½ï¿½ï¿½ï¿½xHandle
 			xHandle = HandleRegistry::createObject(classNameStr);
 			xHandle->setUuidConsistentWithItem(uuid);
 			initParams();
@@ -193,18 +193,18 @@ namespace XVisual {
 	{
 		className1 = classNameStr + "Item";
 	}
-	// initParams()³õÊ¼»¯²ÎÊý£¬ÒòÎª´¿Ðéº¯ÊýÎÞ·¨´´½¨¶ÔÏó£¬ËùÒÔÔÚ´ËÓÃÐéº¯Êý¶ø²»ÊÇ´¿Ðéº¯Êý£¬¶øXBaseItem²»ÐèÒª×ö¾ßÌåµÄÂß¼­, ¾ßÌåÂß¼­ÔÚ×ÓÀàÖÐÊµÏÖ
+	// initParams()ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½éº¯ï¿½ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½éº¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç´ï¿½ï¿½éº¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½XBaseItemï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß¼ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ß¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½
 	void XBaseItem::initParams()
 	{
 
 	}
-	// xOperate()Ö´ÐÐ¼ÆËãÂß¼­£¬ÒòÎª´¿Ðéº¯ÊýÎÞ·¨´´½¨¶ÔÏó£¬ËùÒÔÔÚ´ËÓÃÐéº¯Êý¶ø²»ÊÇ´¿Ðéº¯Êý£¬¶øXBaseItem²»ÐèÒª×ö¾ßÌåµÄÂß¼­, ¾ßÌåÂß¼­ÔÚ×ÓÀàÖÐÊµÏÖ
+	// xOperate()Ö´ï¿½Ð¼ï¿½ï¿½ï¿½ï¿½ß¼ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½éº¯ï¿½ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½éº¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç´ï¿½ï¿½éº¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½XBaseItemï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß¼ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ß¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½
 	void XBaseItem::xOperate()
 	{
 
 	}
 	/*
-	´ÓsourceFrom²éÕÒsourcesÀïÃæµÄÃ¿¸ö²ÎÊýµÄÀ´Ô´²¢ÇÒ³õÊ¼»¯¸Ã²ÎÊý
+	ï¿½ï¿½sourceFromï¿½ï¿½ï¿½ï¿½sourcesï¿½ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½Ò³ï¿½Ê¼ï¿½ï¿½ï¿½Ã²ï¿½ï¿½ï¿½
 	*/
 	void XBaseItem::initOperands()
 	{

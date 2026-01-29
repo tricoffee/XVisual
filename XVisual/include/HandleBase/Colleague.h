@@ -1,3 +1,7 @@
+/*
+Author: HeLiheng
+Email: liheng93@foxmail.com
+*/
 #ifndef Colleague_H
 #define Colleague_H
 
