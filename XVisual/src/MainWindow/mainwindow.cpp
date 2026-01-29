@@ -36,7 +36,9 @@
 #include "Common/FileUtils.h"
 #include "Common/JsonFileUtils.h"
 
-// PR-1 async
+#include "Adapter/Qt/QtEventBridge.h"
+
+// PR-2 uses std::stop_token in core executor
 #include <stop_token>
 
 #define CHECK_NULLPTR(ptr) ((ptr) == nullptr)
@@ -185,15 +187,10 @@ MainWindow::MainWindow(const QString& mProjectRootDir, QWidget* parent)
 
 MainWindow::~MainWindow()
 {
-	// Ensure background execution is stopped before UI objects are destroyed.
-	if (g_graphExecuting.load())
-	{
-		XLOG_INFO("MainWindow::~MainWindow request stop (graph executing).", CURRENT_THREAD_ID);
-		g_graphStopSource.request_stop();
-	}
-
-	// m_execThread is std::jthread (via unique_ptr). Its destructor will join.
-	m_execThread.reset();
+	// PR-2: ensure executor is stopped/joined BEFORE UI objects are destroyed,
+	// because event bridge may marshal callbacks onto this object.
+	m_graphExecutor.cancel();
+	m_graphExecutor.wait();
 
 	delete ui;
 }
@@ -225,17 +222,14 @@ void MainWindow::runButtonClicked(bool checked)
 		runButton->setChecked(false);
 
 	// If already running, ignore.
-	if (g_graphExecuting.load())
+	if (m_graphExecutor.isRunning())
 	{
 		XLOG_INFO("MainWindow::runButtonClicked ignored: graph already executing.", CURRENT_THREAD_ID);
 		return;
 	}
 
-	XLOG_INFO("MainWindow::runButtonClicked start async executeXGraph", CURRENT_THREAD_ID);
+	XLOG_INFO("MainWindow::runButtonClicked start GraphExecutor (PR-2)", CURRENT_THREAD_ID);
 
-	// Prepare cancel source and mark running
-	g_graphStopSource = std::stop_source{};
-	g_graphExecuting.store(true);
 	setUiLocked(true);
 
 	// Capture a snapshot under lock to reduce shared-state access during execution
@@ -245,34 +239,68 @@ void MainWindow::runButtonClicked(bool checked)
 		graphSnapshot = xGraph;
 	}
 
-	// Start background execution
-	m_execThread = std::make_unique<std::jthread>([this, graphSnapshot](std::stop_token) mutable
+	// Build per-run adapters to avoid exposing XBaseItem to core executor
+	struct ItemNodeAdapter final : public XVisual::INode
 	{
-		XVisual::ErrorCode execResult = XVisual::ErrorCode::Success;
-		try
-		{
-			// Note: globalItemMap is still used; it should be treated as read-only during execution
-			execResult = XGraph::executeXGraph<XBaseItem>(globalItemMap, graphSnapshot, g_graphStopSource.get_token());
-		}
-		catch (UmapKeyNoFoundException& e)
-		{
-			XLOG_INFO("====== MainWindow async run, UmapKeyNoFoundException ======" + std::string(e.what()), CURRENT_THREAD_ID);
-			execResult = XVisual::ErrorCode::UmapKeyNoFound;
-		}
+		XBaseItem* item = nullptr;
+		explicit ItemNodeAdapter(XBaseItem* i) : item(i) {}
+		void initOperands() override { item->initOperands(); }
+		void run(std::stop_token) override { item->xOperate(); } // node-boundary cancel only
+	};
 
-		// Marshal UI updates back to Qt main thread
-		QMetaObject::invokeMethod(this, [this, execResult]()
+	auto adapters = std::make_shared<std::unordered_map<std::string, std::unique_ptr<ItemNodeAdapter>>>();
+	adapters->reserve(globalItemMap.size());
+	for (const auto& kv : globalItemMap)
+	{
+		adapters->emplace(kv.first, std::make_unique<ItemNodeAdapter>(kv.second));
+	}
+
+	// Resolver returns INode* for nodeId
+	auto resolver = [adapters](const std::string& nodeId) -> XVisual::INode*
+	{
+		auto it = adapters->find(nodeId);
+		if (it == adapters->end())
+			return nullptr;
+		return it->second.get();
+	};
+
+	// Event bridge marshals core events to UI thread
+	auto bridge = std::make_shared<XVisual::QtEventBridge>(this, [this](const XVisual::NodeEvent& e)
+	{
+		// Minimal handling for PR-2: mainly job finish -> unlock UI + error
+		if (e.type == XVisual::EventType::JobFinished)
 		{
-			g_graphExecuting.store(false);
+			auto code = static_cast<XVisual::ErrorCode>(e.code);
+			m_lastError = code;
 			setUiLocked(false);
-			m_lastError = execResult;
-			if (execResult != XVisual::ErrorCode::Success && execResult != XVisual::ErrorCode::Canceled)
-			{
+			if (code != XVisual::ErrorCode::Success && code != XVisual::ErrorCode::Canceled)
 				emit errorOccurred(m_lastError);
-			}
-			XLOG_INFO("MainWindow async run finished, code=" + XVisual::errorCodeToStr(execResult), CURRENT_THREAD_ID);
-		}, Qt::QueuedConnection);
+		}
 	});
+
+	// Start executor (serial). Keep adapters/bridge alive until finished by capturing them in callback.
+	const bool started = m_graphExecutor.start(
+		"XGraph",
+		graphSnapshot,
+		resolver,
+		bridge.get(),
+		[this, adapters, bridge](XVisual::ErrorCode code)
+		{
+			// Ensure UI unlock even if event sink is missing; marshal to UI thread.
+			QMetaObject::invokeMethod(this, [this, code]()
+			{
+				m_lastError = code;
+				setUiLocked(false);
+				if (code != XVisual::ErrorCode::Success && code != XVisual::ErrorCode::Canceled)
+					emit errorOccurred(m_lastError);
+			}, Qt::QueuedConnection);
+		},
+		XVisual::GraphExecutor::Options{ true });
+
+	if (!started)
+	{
+		setUiLocked(false);
+	}
 }
 
 void MainWindow::cancelRunButtonClicked(bool checked)
@@ -285,12 +313,11 @@ void MainWindow::cancelRunButtonClicked(bool checked)
 	if (cancelRunButton)
 		cancelRunButton->setChecked(false);
 
-	// user requested cancel
-	if (!g_graphExecuting.load())
+	if (!m_graphExecutor.isRunning())
 		return;
 
-	XLOG_INFO("MainWindow::cancelRunButtonClicked request stop", CURRENT_THREAD_ID);
-	g_graphStopSource.request_stop();
+	XLOG_INFO("MainWindow::cancelRunButtonClicked request stop (PR-2)", CURRENT_THREAD_ID);
+	m_graphExecutor.cancel();
 }
 
 

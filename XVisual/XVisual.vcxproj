@@ -132,6 +132,7 @@
     <ClCompile Include="src\GlobalStorage\ColleagueManager.cpp" />
     <ClCompile Include="src\GlobalStorage\GlobalStorage.cpp" />
     <ClCompile Include="src\GlobalStorage\GlobalVariable.cpp" />
+    <ClCompile Include="src\Core\Executor\GraphExecutor.cpp" />
     <ClCompile Include="src\GlobalStorage\HandleGlobalStorage.cpp" />
     <ClCompile Include="src\GlobalStorage\HandleManager.cpp" />
     <ClCompile Include="src\GlobalStorage\ItemManager.cpp" />
@@ -282,6 +283,10 @@
     <ClInclude Include="include\TFModel\TensorFlowModel.h" />
     <ClInclude Include="include\TFModel\TFType2CPPType.h" />
     <QtMoc Include="include\WorkSpaceDialog\WorkSpaceDialog.h" />
+    <ClInclude Include="include\Core\Executor\GraphExecutor.h" />
+    <ClInclude Include="include\Core\Executor\IEventSink.h" />
+    <ClInclude Include="include\Core\Executor\INode.h" />
+    <ClInclude Include="include\Adapter\Qt\QtEventBridge.h" />
     <ClInclude Include="include\XGraph\GraphNode.h" />
     <ClInclude Include="include\XGraph\XGraph.h" />
     <ClInclude Include="include\XVariable\Dest.h" />

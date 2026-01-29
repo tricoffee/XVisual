@@ -13,9 +13,15 @@
 #include <QToolButton>
 #include <QAbstractButton>
 
-// PR-1 async execute
 #include <memory>
 #include <thread>
+#include <unordered_map>
+#include <map>
+
+// PR-2: Core executor (no Qt dependency)
+#include "Core/Executor/GraphExecutor.h"
+#include "Core/Executor/IEventSink.h"
+#include "Core/Executor/INode.h"
 
 #include "TableWidget/TableData.h"
 #include "Common/ErrorCode.h"
@@ -142,8 +148,8 @@ private:
     QToolBar* exportButtonToolBar;
     QToolBar* loadButtonToolBar;
 
-	// PR-1: background execution thread (serial run)
-	std::unique_ptr<std::jthread> m_execThread;
+	// PR-2: Core graph executor (serial) + UI bridge
+	XVisual::GraphExecutor m_graphExecutor;
 
 	void setUiLocked(bool locked);
 };
