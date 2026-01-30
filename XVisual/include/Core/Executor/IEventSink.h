@@ -15,6 +15,7 @@ enum class EventType
 	NodeSkipped,    // 新增：节点被跳过（上游失败）
 	JobFinished,
 	ProgressUpdate, // 新增：进度更新
+	NodeHeartbeat,  // PR-4.5b: 长节点心跳（表示节点仍在运行）
 	Log
 };
 
@@ -35,6 +36,7 @@ struct NodeEvent
 	// timing
 	std::uint64_t tsUs = 0;
 	std::uint64_t durationUs = 0;
+	std::uint64_t elapsedUs = 0;  // PR-4.5b: 节点已运行时长（心跳用）
 
 	// progress (for ProgressUpdate event)
 	int progress = 0;       // 0-100

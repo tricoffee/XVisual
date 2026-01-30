@@ -38,6 +38,7 @@
 
 #include "Adapter/Qt/QtEventBridge.h"
 #include "Core/Executor/NodeState.h"
+#include "ItemWidget/NodeStateOverlay.h"
 
 // PR-2 uses std::stop_token in core executor
 #include <stop_token>
@@ -268,19 +269,31 @@ void MainWindow::runButtonClicked(bool checked)
 		return it->second.get();
 	};
 
+	// PR-4.5a: 获取 DiagramScene 用于更新节点状态 overlay
+	DiagramScene* diagramScene = graphicsWidget->getScene();
+
 	// Event bridge marshals core events to UI thread
-	auto bridge = std::make_shared<XVisual::QtEventBridge>(this, [this](const XVisual::NodeEvent& e)
+	auto bridge = std::make_shared<XVisual::QtEventBridge>(this, [this, diagramScene](const XVisual::NodeEvent& e)
 	{
 		// PR-4: Handle all event types
 		switch (e.type)
 		{
 		case XVisual::EventType::JobStarted:
 			XLOG_INFO("Job started: " + e.jobId + ", total nodes: " + std::to_string(e.totalNodes), CURRENT_THREAD_ID);
+			// PR-4.5a: 重置所有节点状态为 Pending
+			if (diagramScene)
+			{
+				diagramScene->clearAllNodeStates();
+			}
 			break;
 
 		case XVisual::EventType::NodeStarted:
 			XLOG_INFO("Node started: " + e.nodeId, CURRENT_THREAD_ID);
-			// TODO: Update UI to show node is running (e.g., change node color to blue)
+			// PR-4.5a: 更新节点状态为 Running
+			if (diagramScene)
+			{
+				diagramScene->setNodeState(e.nodeId, XVisual::NodeState::Running);
+			}
 			break;
 
 		case XVisual::EventType::NodeFinished:
@@ -288,7 +301,11 @@ void MainWindow::runButtonClicked(bool checked)
 				std::string stateStr = XVisual::nodeStateToString(e.state);
 				XLOG_INFO("Node finished: " + e.nodeId + ", state: " + stateStr + 
 				          ", duration: " + std::to_string(e.durationUs / 1000) + "ms", CURRENT_THREAD_ID);
-				// TODO: Update UI to show node completed/failed (e.g., green/red color)
+				// PR-4.5a: 更新节点状态为 Completed 或 Failed
+				if (diagramScene)
+				{
+					diagramScene->setNodeState(e.nodeId, e.state);
+				}
 				if (e.state == XVisual::NodeState::Failed)
 				{
 					XLOG_INFO("Node failed: " + e.nodeId + ", error: " + e.message, CURRENT_THREAD_ID);
@@ -298,13 +315,30 @@ void MainWindow::runButtonClicked(bool checked)
 
 		case XVisual::EventType::NodeSkipped:
 			XLOG_INFO("Node skipped: " + e.nodeId + ", reason: " + e.message, CURRENT_THREAD_ID);
-			// TODO: Update UI to show node was skipped (e.g., gray color)
+			// PR-4.5a: 更新节点状态为 Skipped
+			if (diagramScene)
+			{
+				diagramScene->setNodeState(e.nodeId, XVisual::NodeState::Skipped);
+			}
 			break;
 
 		case XVisual::EventType::ProgressUpdate:
 			XLOG_INFO("Progress: " + std::to_string(e.completedNodes) + "/" + 
 			          std::to_string(e.totalNodes) + " (" + std::to_string(e.progress) + "%)", CURRENT_THREAD_ID);
 			// TODO: Update progress bar in status bar
+			break;
+
+		case XVisual::EventType::NodeHeartbeat:
+			// PR-4.5b: 心跳事件 - 节点仍在运行
+			{
+				double elapsedSec = e.elapsedUs / 1000000.0;
+				XLOG_INFO("Node heartbeat: " + e.nodeId + " running... " + 
+				          std::to_string(elapsedSec) + "s", CURRENT_THREAD_ID);
+				// 可选：更新状态栏显示当前运行节点
+				// statusBar()->showMessage(QString("%1 running... %2s")
+				//     .arg(QString::fromStdString(e.nodeId))
+				//     .arg(elapsedSec, 0, 'f', 1));
+			}
 			break;
 
 		case XVisual::EventType::JobFinished:

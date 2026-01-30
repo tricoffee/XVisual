@@ -14,6 +14,7 @@
 #include "Core/Runtime/VarBag.h"
 #include "Common/StrUtils.h"
 #include "ItemWidget/DiagramProxyWidget.h"
+#include "ItemWidget/NodeStateOverlay.h"
 
 namespace XVisual {
 
@@ -543,6 +544,83 @@ bool DiagramScene::isThisType(int type) const
 	const QList<QGraphicsItem*> items = selectedItems();
 	const auto cb = [type](const QGraphicsItem* item) { return item->type() == type; };
 	return std::find_if(items.begin(), items.end(), cb) != items.end();
+}
+
+// ============================================================================
+// PR-4.5: 节点状态可视化
+// ============================================================================
+
+QGraphicsItem* DiagramScene::findItemByNodeId(const std::string& nodeId) const
+{
+	std::lock_guard<std::mutex> lock(itemMapMutex);
+	auto it = globalItemMap.find(nodeId);
+	if (it != globalItemMap.end())
+		return it->second;
+	return nullptr;
+}
+
+NodeStateOverlay* DiagramScene::getOrCreateOverlay(const std::string& nodeId)
+{
+	// 检查是否已存在
+	auto it = nodeOverlays_.find(nodeId);
+	if (it != nodeOverlays_.end())
+		return it->second;
+
+	// 找到对应的图元
+	QGraphicsItem* targetItem = findItemByNodeId(nodeId);
+	if (!targetItem)
+		return nullptr;
+
+	// 创建新的 overlay
+	NodeStateOverlay* overlay = new NodeStateOverlay(targetItem);
+	nodeOverlays_[nodeId] = overlay;
+	
+	return overlay;
+}
+
+void DiagramScene::setNodeState(const std::string& nodeId, NodeState state)
+{
+	NodeStateOverlay* overlay = getOrCreateOverlay(nodeId);
+	if (overlay)
+	{
+		overlay->setState(state);
+		XLOG_INFO("DiagramScene::setNodeState: nodeId=" + nodeId + 
+		          " state=" + std::to_string(static_cast<int>(state)), CURRENT_THREAD_ID);
+	}
+}
+
+void DiagramScene::clearAllNodeStates()
+{
+	// 删除所有 overlay
+	for (auto& [nodeId, overlay] : nodeOverlays_)
+	{
+		if (overlay)
+		{
+			// overlay 是目标 item 的子对象，删除时会自动从场景中移除
+			delete overlay;
+		}
+	}
+	nodeOverlays_.clear();
+}
+
+void DiagramScene::resetAllNodeStatesToPending()
+{
+	// 将所有现有 overlay 重置为 Pending 状态
+	for (auto& [nodeId, overlay] : nodeOverlays_)
+	{
+		if (overlay)
+		{
+			overlay->setState(NodeState::Pending);
+		}
+	}
+}
+
+NodeState DiagramScene::getNodeState(const std::string& nodeId) const
+{
+	auto it = nodeOverlays_.find(nodeId);
+	if (it != nodeOverlays_.end() && it->second)
+		return it->second->state();
+	return NodeState::Pending;
 }
 
 } // namespace XVisual

@@ -2,6 +2,7 @@
 #define XVISUAL_CORE_EXECUTOR_GRAPHEXECUTOR_H
 
 #include <atomic>
+#include <chrono>
 #include <functional>
 #include <memory>
 #include <mutex>
@@ -41,6 +42,10 @@ public:
 		bool nodeBoundaryCancel = true;
 		bool parallelExecution = true;  // PR-4: 启用并行执行
 		size_t threadPoolSize = 0;      // 0 = auto (hardware_concurrency - 1)
+		
+		// PR-4.5b: 心跳配置
+		bool enableHeartbeat = true;                           // 是否启用心跳
+		std::chrono::milliseconds heartbeatInterval{1000};     // 心跳间隔（默认1秒）
 
 		explicit Options(bool nodeBoundaryCancel_ = true, bool parallel = true)
 			: nodeBoundaryCancel(nodeBoundaryCancel_)
@@ -108,6 +113,11 @@ private:
 	void markDownstreamSkipped(const std::string& nodeId);
 	int64_t nowMicros() const;
 
+	// PR-4.5b: 心跳线程相关
+	void startHeartbeatThread();
+	void stopHeartbeatThread();
+	void heartbeatLoop(std::stop_token st);
+
 	std::atomic_bool running_{ false };
 	std::atomic_bool canceled_{ false };
 	std::atomic_bool failed_{ false };
@@ -134,6 +144,9 @@ private:
 	// 存储图快照供并行执行使用
 	std::vector<std::shared_ptr<GraphNode>> graphSnapshot_;
 	Options currentOptions_;
+
+	// PR-4.5b: 心跳线程
+	std::unique_ptr<std::jthread> heartbeatThread_;
 };
 
 } // namespace XVisual

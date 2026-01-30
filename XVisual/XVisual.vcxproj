@@ -154,6 +154,7 @@
     <ClCompile Include="src\ItemBase\XBaseItem.cpp" />
     <ClCompile Include="src\ItemWidget\DiagramProxyWidget.cpp" />
     <ClCompile Include="src\ItemWidget\ItemWidget.cpp" />
+    <ClCompile Include="src\ItemWidget\NodeStateOverlay.cpp" />
     <ClCompile Include="src\ItemWidget\XTextEdit.cpp" />
     <ClCompile Include="src\Item\CVCropItem.cpp" />
     <ClCompile Include="src\Item\DrawBoxItem.cpp" />
@@ -253,6 +254,7 @@
     <QtMoc Include="include\ItemBase\XBaseFItem.h" />
     <ClInclude Include="include\ItemWidget\DiagramProxyWidget.h" />
     <ClInclude Include="include\ItemWidget\ItemWidget.h" />
+    <QtMoc Include="include\ItemWidget\NodeStateOverlay.h" />
     <QtMoc Include="include\ItemWidget\XTextEdit.h" />
     <QtMoc Include="include\MainWindow\Diagramscene.h" />
     <QtMoc Include="include\MainWindow\MainWindow.h" />

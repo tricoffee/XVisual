@@ -10,6 +10,9 @@
 #include <QGraphicsTextItem>
 #include <QColor>
 
+#include <unordered_map>
+#include <string>
+
 #include "ItemBase/XArrow.h"
 #include "ItemBase/XBaseItem.h"
 #include "Common/constants.h"
@@ -17,6 +20,7 @@
 #include "Common/ColleagueData.h"
 
 #include "XGraph/GraphNode.h"
+#include "Core/Executor/NodeState.h"
 
 namespace XVisual {
 
@@ -42,6 +46,15 @@ public:
 	void addItemByJson(ColleagueData data);
 	void addArrowByJson(const std::pair<std::string, std::set<std::string>>& itemChildren,
 		const std::unordered_map<std::string, std::unordered_map<std::string, SourceFrom>>& qItemIdSourceFromUMap);
+
+	/**
+	 * PR-4.5: 节点状态可视化
+	 */
+	void setNodeState(const std::string& nodeId, NodeState state);
+	void clearAllNodeStates();
+	void resetAllNodeStatesToPending();
+	NodeState getNodeState(const std::string& nodeId) const;
+
 protected:
 	void mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent) override;
 	void mouseMoveEvent(QGraphicsSceneMouseEvent* mouseEvent) override;
@@ -65,6 +78,15 @@ private:
 	XArrow* arrow;
 	QWidget* xView;
 	GraphicsWidget* graphicsWidget = nullptr;
+
+	// PR-4.5: 节点状态 overlay 管理
+	// nodeId -> overlay，overlay 作为对应 Item 的子对象存在
+	std::unordered_map<std::string, class NodeStateOverlay*> nodeOverlays_;
+	
+	// 根据 nodeId 找到对应的 QGraphicsItem
+	QGraphicsItem* findItemByNodeId(const std::string& nodeId) const;
+	// 获取或创建 overlay
+	class NodeStateOverlay* getOrCreateOverlay(const std::string& nodeId);
 };
 
 } // namespace XVisual

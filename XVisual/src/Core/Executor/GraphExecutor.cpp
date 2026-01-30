@@ -68,6 +68,77 @@ int64_t GraphExecutor::nowMicros() const
 }
 
 // ============================================================================
+// PR-4.5b: 心跳线程
+// ============================================================================
+void GraphExecutor::startHeartbeatThread()
+{
+	if (!currentOptions_.enableHeartbeat)
+		return;
+
+	// 创建心跳线程
+	heartbeatThread_ = std::make_unique<std::jthread>(
+		[this](std::stop_token st) {
+			heartbeatLoop(st);
+		}
+	);
+}
+
+void GraphExecutor::stopHeartbeatThread()
+{
+	if (heartbeatThread_)
+	{
+		heartbeatThread_->request_stop();
+		heartbeatThread_->join();
+		heartbeatThread_.reset();
+	}
+}
+
+void GraphExecutor::heartbeatLoop(std::stop_token st)
+{
+	while (!st.stop_requested() && remaining_.load() > 0)
+	{
+		// 等待心跳间隔
+		std::this_thread::sleep_for(currentOptions_.heartbeatInterval);
+
+		// 检查是否应该停止
+		if (st.stop_requested() || remaining_.load() <= 0)
+			break;
+
+		// ✅ 优化：锁内只做快照拷贝，避免持锁期间 emitEvent
+		// 这样心跳线程对 worker 的影响趋近于 0
+		std::vector<std::pair<std::string, std::uint64_t>> runningNodes;
+		{
+			std::lock_guard<std::mutex> lock(stateMutex_);
+			int64_t now = nowMicros();
+			for (const auto& [nodeId, stateInfo] : nodeStates_)
+			{
+				if (stateInfo.state == NodeState::Running)
+				{
+					runningNodes.emplace_back(
+						nodeId,
+						static_cast<std::uint64_t>(now - stateInfo.startTime)
+					);
+				}
+			}
+		}
+		// ✅ 锁已释放，锁外 emitEvent
+		
+		for (const auto& [nodeId, elapsedUs] : runningNodes)
+		{
+			NodeEvent evt;
+			evt.type = EventType::NodeHeartbeat;
+			evt.jobId = jobId_;
+			evt.graphId = graphId_;
+			evt.nodeId = nodeId;
+			evt.state = NodeState::Running;
+			evt.elapsedUs = elapsedUs;
+			evt.tsUs = static_cast<std::uint64_t>(nowMicros());
+			emitEvent(evt);
+		}
+	}
+}
+
+// ============================================================================
 // 获取节点状态
 // ============================================================================
 NodeState GraphExecutor::getNodeState(const std::string& nodeId) const
@@ -357,6 +428,9 @@ void GraphExecutor::runParallel(NodeResolver resolver, Options opt, FinishedCall
 		poolSize = std::max(1u, std::thread::hardware_concurrency() - 1);
 	threadPool_ = std::make_unique<ThreadPool>(poolSize);
 
+	// PR-4.5b: 启动心跳线程
+	startHeartbeatThread();
+
 	// 将所有入度为 0 的节点推入就绪队列
 	for (const auto& nodePtr : graphSnapshot_)
 	{
@@ -398,6 +472,9 @@ void GraphExecutor::runParallel(NodeResolver resolver, Options opt, FinishedCall
 
 	// 等待所有任务完成
 	threadPool_->waitAll();
+
+	// PR-4.5b: 停止心跳线程
+	stopHeartbeatThread();
 
 	// 确定最终结果
 	XVisual::ErrorCode result = XVisual::ErrorCode::Success;
