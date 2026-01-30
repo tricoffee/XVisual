@@ -36,7 +36,7 @@ ErrorCode TFDetectHandle::setOuterParam(std::unordered_map<std::string, cJSON*> 
 		if (it != outerParamUMap.end() && cJSON_IsString(outerParamUMap["savedModelPath"]))
 		{
 			std::string savedModelPath = outerParamUMap["savedModelPath"]->valuestring;
-			REGISTER_MEMBER_STR(sources, "savedModelPath", savedModelPath);
+			REGISTER_MEMBER_STR((*sources), "savedModelPath", savedModelPath);
 		}
 		else
 		{
@@ -55,7 +55,7 @@ ErrorCode TFDetectHandle::writeOuterParam(cJSON* cjson_variableSource, const std
 {
 	if (xName == "savedModelPath")
 	{
-		std::string savedModelPath = GET_MEMBER_WITH_TYPE_STR(sources, std::string, "savedModelPath");
+		std::string savedModelPath = GET_MEMBER_WITH_TYPE_STR((*sources), std::string, "savedModelPath");
 		cJSON_AddStringToObject(cjson_variableSource, "outerParam", savedModelPath.c_str());
 	}
 	else
@@ -72,25 +72,25 @@ void TFDetectHandle::initParams()
 {
 	model = new TensorFlowModel();
 	std::string savedModelPath;
-	REGISTER_MEMBER_ATTR_STR(sources, "savedModelPath", savedModelPath, true);
-	REGISTER_TYPE_STR(sources, "savedModelPath", savedModelPath);
+	REGISTER_MEMBER_ATTR_STR((*sources), "savedModelPath", savedModelPath, true);
+	REGISTER_TYPE_STR((*sources), "savedModelPath", savedModelPath);
 	cv::Mat input_image;
-	REGISTER_MEMBER_ATTR_STR(sources, "input_image", input_image, false);
-	REGISTER_TYPE_STR(sources, "input_image", input_image);
+	REGISTER_MEMBER_ATTR_STR((*sources), "input_image", input_image, false);
+	REGISTER_TYPE_STR((*sources), "input_image", input_image);
 	std::vector<DetectResult>  detectResults;
-	REGISTER_MEMBER_ATTR_STR(dests, "detectResults", detectResults, false);
-	REGISTER_TYPE_STR(dests, "detectResults", detectResults);
+	REGISTER_MEMBER_ATTR_STR((*dests), "detectResults", detectResults, false);
+	REGISTER_TYPE_STR((*dests), "detectResults", detectResults);
 
 	std::vector<std::string>  classNames;
-	REGISTER_MEMBER_ATTR_STR(dests, "classNames", classNames, false);
-	REGISTER_TYPE_STR(dests, "classNames", classNames);
+	REGISTER_MEMBER_ATTR_STR((*dests), "classNames", classNames, false);
+	REGISTER_TYPE_STR((*dests), "classNames", classNames);
 
 }
 void TFDetectHandle::xOperate()
 { 
 	XLOG_INFO(" === @@@ TFDetectHandle::xOperate === @@@ ", CURRENT_THREAD_ID);
 	
-	std::string saved_model_dir = GET_MEMBER_WITH_TYPE_STR(sources, std::string, "savedModelPath");
+	std::string saved_model_dir = GET_MEMBER_WITH_TYPE_STR((*sources), std::string, "savedModelPath");
 	XLOG_INFO("TFDetectHandle::xOperate, saved_model_dir = " + saved_model_dir, CURRENT_THREAD_ID);
 
 	const std::string classNameTxtStr = "classnames.txt";
@@ -102,7 +102,7 @@ void TFDetectHandle::xOperate()
 
 	std::vector<std::string> classNames;
 	readClassNames(absoluteClassNamesPath, classNames);
-	REGISTER_MEMBER_STR(dests, "classNames", classNames);
+	REGISTER_MEMBER_STR((*dests), "classNames", classNames);
 
 	if (model == nullptr)
 	{
@@ -117,7 +117,7 @@ void TFDetectHandle::xOperate()
 	model->loadSavedModel(absolute_saved_model_dir);
 
 
-	cv::Mat image = GET_MEMBER_WITH_TYPE_STR(sources, cv::Mat, "input_image");
+	cv::Mat image = GET_MEMBER_WITH_TYPE_STR((*sources), cv::Mat, "input_image");
 
 	if (image.empty())
 	{
@@ -132,7 +132,7 @@ void TFDetectHandle::xOperate()
 		model->doRun(); 
 		std::vector<DetectResult> detectResults;
 		model->getResults(detectResults);
-		REGISTER_MEMBER_STR(dests, "detectResults", detectResults);
+		REGISTER_MEMBER_STR((*dests), "detectResults", detectResults);
 		for (const auto& DetectResult : detectResults)
 		{
 			XLOG_INFO("DetectResult.classId = " + std::to_string(DetectResult.classId), CURRENT_THREAD_ID);

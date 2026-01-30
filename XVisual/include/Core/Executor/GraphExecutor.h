@@ -11,6 +11,8 @@
 
 #include "Core/Executor/IEventSink.h"
 #include "Core/Executor/INode.h"
+#include "Core/Executor/INodeFactory.h"
+#include "Core/Runtime/ExecutionContext.h"
 #include "XGraph/GraphNode.h"
 #include "Common/ErrorCode.h"
 
@@ -51,6 +53,17 @@ public:
 	bool start(std::string graphId,
 	           std::vector<std::shared_ptr<GraphNode>> graphSnapshot,
 	           NodeResolver resolver,
+	           IEventSink* sink,
+	           FinishedCallback onFinished = {},
+	           Options opt = Options{});
+
+	/**
+	 * PR-3 新增: 使用 INodeFactory 在每次执行时创建节点实例,
+	 * 实例存储在 ExecutionContext 中, job 结束后自动释放.
+	 */
+	bool start(std::string graphId,
+	           std::vector<std::shared_ptr<GraphNode>> graphSnapshot,
+	           INodeFactory* factory,
 	           IEventSink* sink,
 	           FinishedCallback onFinished = {},
 	           Options opt = Options{});

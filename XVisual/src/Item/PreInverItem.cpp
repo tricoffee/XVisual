@@ -11,6 +11,7 @@
 #include "CustomDialog/CropDialog.h"
 #include "MainWindow/GraphicsWidget.h"
 #include "Handle/PreInverHandle.h"
+#include "Core/Runtime/VarBag.h"
 #include "Common/StrUtils.h"
 #include "ParamWidgetDialog/ComboDialog.h"
 
@@ -30,7 +31,7 @@ void PreInverItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 void PreInverItem::xOperate()
 {
 	xHandle->xOperate();
-	Dest& d = xHandle->getDests();
+	VarBag& d = xHandle->getDests();
 	cv::Mat outputImage = GET_MEMBER_WITH_TYPE_STR(d, cv::Mat, "restoredImage");
 	// Done,Add code for sending show image signals to display images on SideWidgets
 	std::string filename = uniqueName;

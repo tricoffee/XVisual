@@ -39,31 +39,31 @@ ErrorCode DrawBoxHandle::writeInnerParam(cJSON* cjson_innerParam)
 void DrawBoxHandle::initParams()
 {
 	cv::Mat image;
-	REGISTER_MEMBER_ATTR_STR(sources, "image", image, false);
-	REGISTER_TYPE_STR(sources, "image", image);
+	REGISTER_MEMBER_ATTR_STR((*sources), "image", image, false);
+	REGISTER_TYPE_STR((*sources), "image", image);
 	std::vector<DetectResult> detections;
-	REGISTER_MEMBER_ATTR_STR(sources, "detections", detections, false);
-	REGISTER_TYPE_STR(sources, "detections", detections);
+	REGISTER_MEMBER_ATTR_STR((*sources), "detections", detections, false);
+	REGISTER_TYPE_STR((*sources), "detections", detections);
 	std::vector<std::string> classNames;
-	REGISTER_MEMBER_ATTR_STR(sources, "classNames", classNames, false);
-	REGISTER_TYPE_STR(sources, "classNames", classNames);
+	REGISTER_MEMBER_ATTR_STR((*sources), "classNames", classNames, false);
+	REGISTER_TYPE_STR((*sources), "classNames", classNames);
 	cv::Mat resultImage;
-	REGISTER_MEMBER_ATTR_STR(dests, "resultImage", resultImage, false);
-	REGISTER_TYPE_STR(dests, "resultImage", resultImage);
+	REGISTER_MEMBER_ATTR_STR((*dests), "resultImage", resultImage, false);
+	REGISTER_TYPE_STR((*dests), "resultImage", resultImage);
 }
 void DrawBoxHandle::xOperate()
 {
-	cv::Mat image = GET_MEMBER_WITH_TYPE_STR(sources, cv::Mat, "image");
+	cv::Mat image = GET_MEMBER_WITH_TYPE_STR((*sources), cv::Mat, "image");
 	if (!image.empty())
 	{
 		int imageWidth = image.cols;
 		int imageHeight = image.rows;
 		XLOG_INFO("DrawBoxHandle::xOperate 图像宽度: " + std::to_string(imageWidth), CURRENT_THREAD_ID);
 		XLOG_INFO("DrawBoxHandle::xOperate 图像高度: " + std::to_string(imageHeight), CURRENT_THREAD_ID);
-		std::vector<DetectResult> detections = GET_MEMBER_WITH_TYPE_STR(sources, std::vector<DetectResult>, "detections");
-		std::vector<std::string> classNames = GET_MEMBER_WITH_TYPE_STR(sources, std::vector<std::string>, "classNames");
+		std::vector<DetectResult> detections = GET_MEMBER_WITH_TYPE_STR((*sources), std::vector<DetectResult>, "detections");
+		std::vector<std::string> classNames = GET_MEMBER_WITH_TYPE_STR((*sources), std::vector<std::string>, "classNames");
 		drawBoxes(image, detections, classNames);
-		REGISTER_MEMBER_STR(dests, "resultImage", image);
+		REGISTER_MEMBER_STR((*dests), "resultImage", image);
 	}
 	else
 	{

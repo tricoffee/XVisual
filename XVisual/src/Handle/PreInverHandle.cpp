@@ -40,26 +40,26 @@ ErrorCode PreInverHandle::writeInnerParam(cJSON* cjson_innerParam)
 void PreInverHandle::initParams()
 {
 	cv::Mat image;
-	REGISTER_MEMBER_ATTR_STR(sources, "image", image, false);
-	REGISTER_TYPE_STR(sources, "image", image);
+	REGISTER_MEMBER_ATTR_STR((*sources), "image", image, false);
+	REGISTER_TYPE_STR((*sources), "image", image);
 	PreParam preParam;
-	REGISTER_MEMBER_ATTR_STR(sources, "preParam", preParam, false);
-	REGISTER_TYPE_STR(sources, "preParam", preParam);
+	REGISTER_MEMBER_ATTR_STR((*sources), "preParam", preParam, false);
+	REGISTER_TYPE_STR((*sources), "preParam", preParam);
 	cv::Mat restoredImage;
-	REGISTER_MEMBER_ATTR_STR(dests, "restoredImage", restoredImage, false);
-	REGISTER_TYPE_STR(dests, "restoredImage", restoredImage);
+	REGISTER_MEMBER_ATTR_STR((*dests), "restoredImage", restoredImage, false);
+	REGISTER_TYPE_STR((*dests), "restoredImage", restoredImage);
 }
 void PreInverHandle::xOperate()
 {
-	cv::Mat image = GET_MEMBER_WITH_TYPE_STR(sources, cv::Mat, "image");
+	cv::Mat image = GET_MEMBER_WITH_TYPE_STR((*sources), cv::Mat, "image");
 	if (!image.empty())
 	{
 		XLOG_INFO("PreInverHandle::xOperate, image is NOT empty ", CURRENT_THREAD_ID);
-		PreParam preParams = GET_MEMBER_WITH_TYPE_STR(sources, PreParam, "preParam");
+		PreParam preParams = GET_MEMBER_WITH_TYPE_STR((*sources), PreParam, "preParam");
 		ImagePre imgPre1(preParams);
 		cv::Mat outputImage;
 		imgPre1.decode(image, outputImage);
-		REGISTER_MEMBER_STR(dests, "restoredImage", outputImage);
+		REGISTER_MEMBER_STR((*dests), "restoredImage", outputImage);
 	}
 	else
 	{

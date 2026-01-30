@@ -8,6 +8,7 @@
 #include "MainWindow/MainWindow.h"
 #include "MainWindow/GraphicsWidget.h"
 #include "HandleBase/XBaseHandle.h"
+#include "Core/Runtime/VarBag.h"
 #include <QStandardItemModel>
 
 namespace XVisual {
@@ -24,7 +25,7 @@ namespace XVisual {
 	{
 		setFlag(QGraphicsItem::ItemIsSelectable, true);
 		setPen(QPen(myColor, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-		// Á¬½ÓË«»÷ĞÅºÅµ½²Ûº¯Êı
+		// è¿æ¥åŒå‡»ä¿¡å·åˆ°æ§½å‡½æ•°
 		GraphicsWidget* mWidget = static_cast<GraphicsWidget*>(widget);
 		connect(this, &XArrow::showTableViewSingle,
 			mWidget, &GraphicsWidget::showTableViewSlot);
@@ -115,7 +116,7 @@ namespace XVisual {
 
 	void XArrow::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 	{
-		// µ±Ë«»÷XArrowÊ±£¬¸ü¸ÄXArrowµÄÑÕÉ«ÎªºìÉ«
+		// å½“åŒå‡»XArrowæ—¶ï¼Œæ›´æ”¹XArrowçš„é¢œè‰²ä¸ºçº¢è‰²
 		myColor = Qt::red;
 		//qDebug() << "void XArrow::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event) ";
 		//qDebug() << "yUuid = " << QString::fromStdString(myStartItem->getUuid());
@@ -131,8 +132,8 @@ namespace XVisual {
 
 		XBaseHandle* myStartHandle = myStartItem->getXHandle();
 		XBaseHandle* myEndHandle = myEndItem->getXHandle();
-		Dest& dests = myStartHandle->getDests();
-		Source& sources = myEndHandle->getSources();
+		VarBag& dests = myStartHandle->getDests();
+		VarBag& sources = myEndHandle->getSources();
 		std::vector<std::string> yNames_raw = ACQUIRE_NAMES(dests);
 		std::vector<std::string> xNames_raw = ACQUIRE_NAMES(sources);
 		int yNum_raw = yNames_raw.size();
@@ -141,7 +142,7 @@ namespace XVisual {
 		XLOG_INFO("yNames_raw.size() = " + std::to_string(yNum_raw), CURRENT_THREAD_ID);
 		XLOG_INFO("xNames_raw.size() = " + std::to_string(xNum_raw), CURRENT_THREAD_ID);
 
-		// °´ÕÕtypeid¹ıÂËµô²»Æ¥ÅäµÄxNameºÍyName
+		// æŒ‰ç…§typeidè¿‡æ»¤æ‰ä¸åŒ¹é…çš„xNameå’ŒyName
 
 		std::unordered_map<std::string, bool> x_matched;
 		for (const auto& x_name : xNames_raw)
@@ -171,10 +172,10 @@ namespace XVisual {
 			}
 		}
 
-		// »ñÈ¡ x_matched ÀïÃæ²»Îª false µÄ key£¬²¢Áí´æµ½Ò»¸ö std::vector<std::string>
+		// è·å– x_matched é‡Œé¢ä¸ä¸º false çš„ keyï¼Œå¹¶å¦å­˜åˆ°ä¸€ä¸ª std::vector<std::string>
 		std::vector<std::string> xNames;
 
-		// ±éÀú unordered_map ²¢¼ì²éÖµ
+		// éå† unordered_map å¹¶æ£€æŸ¥å€¼
 		for (const auto& pair : x_matched)
 		{
 			if (pair.second)
@@ -183,10 +184,10 @@ namespace XVisual {
 			}
 		}
 
-		// »ñÈ¡ y_matched ÀïÃæ²»Îª false µÄ key£¬²¢Áí´æµ½Ò»¸ö std::vector<std::string>
+		// è·å– y_matched é‡Œé¢ä¸ä¸º false çš„ keyï¼Œå¹¶å¦å­˜åˆ°ä¸€ä¸ª std::vector<std::string>
 		std::vector<std::string> yNames;
 
-		// ±éÀú unordered_map ²¢¼ì²éÖµ
+		// éå† unordered_map å¹¶æ£€æŸ¥å€¼
 		for (const auto& pair : y_matched)
 		{
 			if (pair.second)
@@ -220,7 +221,7 @@ namespace XVisual {
 			}
 		}
 
-		// ×·¼ÓÒ»¸ö unSelectedData ±íÊ¾Î´Ñ¡ÖĞµÄ
+		// è¿½åŠ ä¸€ä¸ª unSelectedData è¡¨ç¤ºæœªé€‰ä¸­çš„
 		if (variablesY.size() > 0)
 		{
 			TableData unSelectedData = { TableData_UnSelectedItemId, TableData_UnSelectedName, TableData_UnSelectedType };

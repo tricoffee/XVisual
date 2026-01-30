@@ -63,14 +63,14 @@ ErrorCode ImagePreHandle::writeInnerParam(cJSON* cjson_innerParam)
 void ImagePreHandle::initParams()
 {
 	cv::Mat image;
-	REGISTER_MEMBER_ATTR_STR(sources, "image", image, false);
-	REGISTER_TYPE_STR(sources, "image", image);
+	REGISTER_MEMBER_ATTR_STR((*sources), "image", image, false);
+	REGISTER_TYPE_STR((*sources), "image", image);
 	cv::Mat outputImage;
-	REGISTER_MEMBER_ATTR_STR(dests, "outputImage", outputImage, false);
-	REGISTER_TYPE_STR(dests, "outputImage", outputImage);
+	REGISTER_MEMBER_ATTR_STR((*dests), "outputImage", outputImage, false);
+	REGISTER_TYPE_STR((*dests), "outputImage", outputImage);
 	PreParam outputParam;
-	REGISTER_MEMBER_ATTR_STR(dests, "outputParam", outputParam, false);
-	REGISTER_TYPE_STR(dests, "outputParam", outputParam);
+	REGISTER_MEMBER_ATTR_STR((*dests), "outputParam", outputParam, false);
+	REGISTER_TYPE_STR((*dests), "outputParam", outputParam);
 	// set initial PrePram
 	std::string preTagStr = "ResizePaste";
 	int dstWidth = 416;
@@ -87,7 +87,7 @@ void ImagePreHandle::initParams()
 }
 void ImagePreHandle::xOperate()
 {
-	cv::Mat image = GET_MEMBER_WITH_TYPE_STR(sources, cv::Mat, "image");
+	cv::Mat image = GET_MEMBER_WITH_TYPE_STR((*sources), cv::Mat, "image");
 	if (!image.empty())
 	{
 		XLOG_INFO("ImagePreHandle::xOperate, image is NOT empty ", CURRENT_THREAD_ID);
@@ -95,10 +95,10 @@ void ImagePreHandle::xOperate()
 		ImagePre imgPre1(imagePreParams);
 		cv::Mat outputImage;
 		imgPre1.preprocess(image, outputImage);
-		REGISTER_MEMBER_STR(dests, "outputImage", outputImage);
+		REGISTER_MEMBER_STR((*dests), "outputImage", outputImage);
 		// Update "imaegPreParams" because PreParams.decodeParams has been updated after executing the preoprocess operation
 		innerParam["imagePreParams"] = imgPre1.getPreParam();
-		REGISTER_MEMBER_STR(dests, "outputParam", innerParam["imagePreParams"]);
+		REGISTER_MEMBER_STR((*dests), "outputParam", innerParam["imagePreParams"]);
 	}
 	else
 	{

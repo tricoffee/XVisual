@@ -11,6 +11,7 @@
 #include "GlobalStorage/HandleGlobalStorage.h"
 #include "MainWindow/GraphicsWidget.h"
 #include "ItemBase/XBaseItem.h"
+#include "Core/Runtime/VarBag.h"
 #include "Common/StrUtils.h"
 #include "ItemWidget/DiagramProxyWidget.h"
 
@@ -233,7 +234,7 @@ void DiagramScene::addArrowByJson(const std::pair<std::string, std::set<std::str
 		}
 
 		XBaseHandle* qHandle = qItem->getXHandle();
-		Source& qS = qHandle->getSources();
+		VarBag& qS = qHandle->getSources();
 		std::vector<std::string> qSourceNames = ACQUIRE_NAMES(qS);
 		std::unordered_map<std::string, TableData> defaultValuesUMap;
 		for (const auto& qSourceName : qSourceNames)
@@ -258,7 +259,7 @@ void DiagramScene::addArrowByJson(const std::pair<std::string, std::set<std::str
 					if (yItemId == pItem->getXHandle()->getUuid())
 					{
 						XBaseHandle* pHandle = pItem->getXHandle();
-						Dest& pD = pHandle->getDests();
+						VarBag& pD = pHandle->getDests();
 						std::string yTypeName = (*GET_MEMBER_TYPE_STR(pD, yName)).name();
 						TableData yData{ yItemId,yName,yTypeName };
 						defaultValuesUMap[qSourceName] = yData;

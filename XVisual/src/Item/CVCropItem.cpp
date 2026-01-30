@@ -11,6 +11,7 @@
 #include "CustomDialog/CropDialog.h"
 #include "MainWindow/GraphicsWidget.h"
 #include "Handle/CVCropHandle.h"
+#include "Core/Runtime/VarBag.h"
 #include "Common/StrUtils.h"
 
 namespace XVisual {
@@ -48,8 +49,8 @@ void CVCropItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 void CVCropItem::xOperate()
 {
 	xHandle->xOperate();
-	//Source& s = xHandle->getSources();
-	Dest& d = xHandle->getDests();
+	//VarBag& s = xHandle->getSources();
+	VarBag& d = xHandle->getDests();
 	// cv::Mat image = GET_MEMBER_WITH_TYPE_STR(s, cv::Mat, "image");
 	cv::Mat croppedImage = GET_MEMBER_WITH_TYPE_STR(d, cv::Mat, "croppedImage");
 	// std::string imageFilename = uniqueName.toStdString() + "_croppedImage.png";

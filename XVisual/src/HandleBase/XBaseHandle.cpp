@@ -6,10 +6,14 @@
 #include "Common/StrUtils.h"
 #include "Common/UuidGenerator.h"
 #include "GlobalStorage/HandleManager.h"
+#include <stop_token>
 
 namespace XVisual {
 
-	XBaseHandle::XBaseHandle() : Colleague(), sources(Source::getInstance()), dests(Dest::getInstance())
+	XBaseHandle::XBaseHandle()
+		: Colleague()
+		, sources(std::make_unique<VarBag>())
+		, dests(std::make_unique<VarBag>())
 	{
 		//std::cout << "class XBaseHandle: public Colleague " << std::endl;
 		XLOG_INFO("class XBaseHandle: public Colleague ...", CURRENT_THREAD_ID);
@@ -49,23 +53,13 @@ namespace XVisual {
 		//Here, uuid is the protected member variable of the XHandle class
 		this->uuid = handleUuid;
 	}
-	Source& XBaseHandle::getSources()
+	VarBag& XBaseHandle::getSources()
 	{
-		//qDebug() << "Source& XBaseHandle::getSources() ";
-		return this->sources;
+		return *sources;
 	}
-	Dest& XBaseHandle::getDests()
+	VarBag& XBaseHandle::getDests()
 	{
-		//qDebug() << "Dest& XBaseHandle::getDests() ";
-		return this->dests;
-	}
-	void XBaseHandle::setSources(Source mSourcs)
-	{
-		this->sources = mSourcs;
-	}
-	void XBaseHandle::setDests(Dest mDests)
-	{
-		this->dests = mDests;
+		return *dests;
 	}
 	XVisual::ErrorCode XBaseHandle::setInnerParam(cJSON* innerParamPtr)
 	{
@@ -93,15 +87,21 @@ namespace XVisual {
 	}
 	void XBaseHandle::xOperate()
 	{
+	}
 
+	void XBaseHandle::execute(std::stop_token st)
+	{
+		// é»˜è®¤å®ç°ï¼šå…ˆåˆå§‹åŒ–è¾“å…¥å‚æ•°ï¼Œå†æ‰§è¡Œè®¡ç®—
+		initOperands();
+		xOperate();
 	}
 	/*
-	´ÓsourceFrom²éÕÒsourcesÀïÃæµÄÃ¿¸ö²ÎÊıµÄÀ´Ô´²¢ÇÒ³õÊ¼»¯¸Ã²ÎÊı
+	ä»sourceFromæŸ¥æ‰¾sourcesé‡Œé¢çš„æ¯ä¸ªå‚æ•°çš„æ¥æºå¹¶ä¸”åˆå§‹åŒ–è¯¥å‚æ•°
 	*/
 	void XBaseHandle::initOperands()
 	{
 		XLOG_INFO("XBaseHandle::initItemOperands ...... ", CURRENT_THREAD_ID);
-		std::vector<std::string> xVaribleNames = ACQUIRE_NAMES(sources);
+		std::vector<std::string> xVaribleNames = ACQUIRE_NAMES((*sources));
 		int num = xVaribleNames.size();
 		XLOG_INFO("XBaseHandle::initItemOperands,xVaribleNames.size() = " + std::to_string(num), CURRENT_THREAD_ID);
 		for (const auto& xName : xVaribleNames)
@@ -132,7 +132,7 @@ namespace XVisual {
 				{
 					std::lock_guard<std::mutex> lock(handleMapMutex);
 					yHandle = globalHandleMap[yHandleId];
-				}// ×÷ÓÃÓò½áÊøÊ±£¬lock_guard »á×Ô¶¯½âËø»¥³âËøhandleMapMutex
+				}// ä½œç”¨åŸŸç»“æŸæ—¶ï¼Œlock_guard ä¼šè‡ªåŠ¨è§£é”äº’æ–¥é”handleMapMutex
 
 				if (yHandle == nullptr)
 				{
@@ -143,10 +143,10 @@ namespace XVisual {
 					XLOG_INFO("XBaseHandle::initItemOperands:  yHandle is Not NULLPtr", CURRENT_THREAD_ID);
 				}
 
-				//DebugÊ±ºòÓÃµÄ,×¢ÊÍµô
+				//Debugæ—¶å€™ç”¨çš„,æ³¨é‡Šæ‰
 				//Dest& mDest = yHandle->getDests();
 				//std::vector<std::string> yVaribleNames = ACQUIRE_NAMES(mDest);
-				//// Ê¹ÓÃ·¶Î§Ñ­»·±éÀú std::vector<std::string>
+				//// ä½¿ç”¨èŒƒå›´å¾ªç¯éå† std::vector<std::string>
 				//for (const std::string& yNameStr : yVaribleNames)
 				//{
 				//	//std::cout << yNameStr << std::endl;
@@ -154,8 +154,8 @@ namespace XVisual {
 				//}
 
 
-				// XBaseHandleÔÙÌí¼ÓÒ»¸ö³ÉÔ±±äÁ¿, isSourceFromOutside, ²¢ÇÒifÌõ¼şĞŞ¸ÄÎªyHandle != nullptr && isSourceFromOutside == false
-				// ÆúÓÃ isSourceFromOutside ÊôĞÔ£¬Ö±½ÓÍ¨¹ı IS_MEMBER_FROM_OUTSIDE_STR ºê¶¨ÒåÅĞ¶Ï
+				// XBaseHandleå†æ·»åŠ ä¸€ä¸ªæˆå‘˜å˜é‡, isSourceFromOutside, å¹¶ä¸”ifæ¡ä»¶ä¿®æ”¹ä¸ºyHandle != nullptr && isSourceFromOutside == false
+				// å¼ƒç”¨ isSourceFromOutside å±æ€§ï¼Œç›´æ¥é€šè¿‡ IS_MEMBER_FROM_OUTSIDE_STR å®å®šä¹‰åˆ¤æ–­
 
 				bool xIsFromOutside = IS_MEMBER_FROM_OUTSIDE_STR(yHandle->getDests(), yName);
 				if (xIsFromOutside)
@@ -167,7 +167,7 @@ namespace XVisual {
 					if (yHandle != nullptr && xIsFromOutside == false)
 					{
 						auto yValue = GET_MEMBER_STR(yHandle->getDests(), yName);
-						REGISTER_MEMBER_STR(sources, xName, yValue);
+						REGISTER_MEMBER_STR((*sources), xName, yValue);
 					}
 					XLOG_INFO("====== XBaseHandle::xIsFromInside  ======", CURRENT_THREAD_ID);
 				}// end if (xIsFromOutside)--else
@@ -176,30 +176,30 @@ namespace XVisual {
 		}// end for (const auto& xName : xVaribleNames) 
 	}
 	/*
-	ÉèÖÃÄ³¸ö±äÁ¿µÄsourceFrom£¬ÈÃÎÒÃÇÖªµÀËü´ÓÄÄÀïÀ´
+	è®¾ç½®æŸä¸ªå˜é‡çš„sourceFromï¼Œè®©æˆ‘ä»¬çŸ¥é“å®ƒä»å“ªé‡Œæ¥
 	*/
 	void XBaseHandle::setSourceFrom(const std::string& xVariableName, const SourceFrom& sourceFrom)
 	{
-		// XBaseHandleÔÙÌí¼ÓÒ»¸ö³ÉÔ±±äÁ¿, isSourceFromOutside, Ìõ¼şisSourceFromOutside == trueÎªÕæÊ±, Ö±½Ó·µ»Øtrue
-		// ÆúÓÃ isSourceFromOutside ÊôĞÔ£¬Ö±½ÓÍ¨¹ı IS_MEMBER_FROM_OUTSIDE_STR ºê¶¨ÒåÅĞ¶Ï
-		bool xIsFromOutside = IS_MEMBER_FROM_OUTSIDE_STR(sources, xVariableName);
+		// XBaseHandleå†æ·»åŠ ä¸€ä¸ªæˆå‘˜å˜é‡, isSourceFromOutside, æ¡ä»¶isSourceFromOutside == trueä¸ºçœŸæ—¶, ç›´æ¥è¿”å›true
+		// å¼ƒç”¨ isSourceFromOutside å±æ€§ï¼Œç›´æ¥é€šè¿‡ IS_MEMBER_FROM_OUTSIDE_STR å®å®šä¹‰åˆ¤æ–­
+		bool xIsFromOutside = IS_MEMBER_FROM_OUTSIDE_STR((*sources), xVariableName);
 		if (xIsFromOutside == true)
 		{
 			//doNoting
 		}
 		else
 		{
-			SET_SOURCEFROM_STR(sources, xVariableName, sourceFrom);
+			SET_SOURCEFROM_STR((*sources), xVariableName, sourceFrom);
 		}
 	}
 	/*
-	°´Ãû×Ö²éÕÒÄ³¸ö±äÁ¿µÄsourceFrom£¬ÔÚÖ´ĞĞ¼ÆËãÍ¼Ç°³õÊ¼»¯²ÎÊıÊ±»áµ÷ÓÃÕâ¸öº¯Êı
+	æŒ‰åå­—æŸ¥æ‰¾æŸä¸ªå˜é‡çš„sourceFromï¼Œåœ¨æ‰§è¡Œè®¡ç®—å›¾å‰åˆå§‹åŒ–å‚æ•°æ—¶ä¼šè°ƒç”¨è¿™ä¸ªå‡½æ•°
 	*/
 	void XBaseHandle::loadSourceFrom(const std::string& xVariableName, SourceFrom& sourceFrom)
 	{
-		// XBaseHandleÔÙÌí¼ÓÒ»¸ö³ÉÔ±±äÁ¿, isSourceFromOutside, Ìõ¼şisSourceFromOutside == trueÎªÕæÊ±, Ö±½Ó·µ»Øtrue
-		// ÆúÓÃ isSourceFromOutside ÊôĞÔ£¬Ö±½ÓÍ¨¹ı IS_MEMBER_FROM_OUTSIDE_STR ºê¶¨ÒåÅĞ¶Ï
-		bool xIsFromOutside = IS_MEMBER_FROM_OUTSIDE_STR(sources, xVariableName);
+		// XBaseHandleå†æ·»åŠ ä¸€ä¸ªæˆå‘˜å˜é‡, isSourceFromOutside, æ¡ä»¶isSourceFromOutside == trueä¸ºçœŸæ—¶, ç›´æ¥è¿”å›true
+		// å¼ƒç”¨ isSourceFromOutside å±æ€§ï¼Œç›´æ¥é€šè¿‡ IS_MEMBER_FROM_OUTSIDE_STR å®å®šä¹‰åˆ¤æ–­
+		bool xIsFromOutside = IS_MEMBER_FROM_OUTSIDE_STR((*sources), xVariableName);
 		if (xIsFromOutside == true)
 		{
 			//doNothing
@@ -208,7 +208,7 @@ namespace XVisual {
 		{
 			try
 			{
-				sourceFrom = GET_SOURCEFROM_STR(sources, xVariableName);
+				sourceFrom = GET_SOURCEFROM_STR((*sources), xVariableName);
 			}
 			catch (UmapKeyNoFoundException& e)
 			{

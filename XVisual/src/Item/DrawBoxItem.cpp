@@ -11,6 +11,7 @@
 #include "CustomDialog/CropDialog.h"
 #include "MainWindow/GraphicsWidget.h"
 #include "Handle/DrawBoxHandle.h"
+#include "Core/Runtime/VarBag.h"
 #include "Common/StrUtils.h"
 
 namespace XVisual {
@@ -29,7 +30,7 @@ void DrawBoxItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 void DrawBoxItem::xOperate()
 {
 	xHandle->xOperate();
-	Dest& d = xHandle->getDests();
+	VarBag& d = xHandle->getDests();
 	cv::Mat resultImage = GET_MEMBER_WITH_TYPE_STR(d, cv::Mat, "resultImage");
 	// Done,Add code for sending show image signals to display images on SideWidgets
 	std::string filename = uniqueName;

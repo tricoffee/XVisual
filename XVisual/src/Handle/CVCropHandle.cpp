@@ -66,11 +66,11 @@ ErrorCode CVCropHandle::writeInnerParam(cJSON* cjson_innerParam)
 void CVCropHandle::initParams()
 {
 	cv::Mat image;
-	REGISTER_MEMBER_ATTR_STR(sources, "image", image, false);
-	REGISTER_TYPE_STR(sources, "image", image);
+	REGISTER_MEMBER_ATTR_STR((*sources), "image", image, false);
+	REGISTER_TYPE_STR((*sources), "image", image);
 	cv::Mat croppedImage;
-	REGISTER_MEMBER_ATTR_STR(dests, "croppedImage", croppedImage, false);
-	REGISTER_TYPE_STR(dests, "croppedImage", croppedImage);
+	REGISTER_MEMBER_ATTR_STR((*dests), "croppedImage", croppedImage, false);
+	REGISTER_TYPE_STR((*dests), "croppedImage", croppedImage);
 	cv::Rect regionOfInterest;
 	regionOfInterest.x = 0;
 	regionOfInterest.y = 0;
@@ -80,7 +80,7 @@ void CVCropHandle::initParams()
 }
 void CVCropHandle::xOperate()
 {
-	cv::Mat image = GET_MEMBER_WITH_TYPE_STR(sources, cv::Mat, "image");
+	cv::Mat image = GET_MEMBER_WITH_TYPE_STR((*sources), cv::Mat, "image");
 	int imageWidth = -1;
 	int imageHeight = -1;
 	if (!image.empty())
@@ -106,7 +106,7 @@ void CVCropHandle::xOperate()
 			croppedImage = image.clone();
 			XLOG_INFO("CVCropHandle::xOperate, Region of Intersest is invalid, the cropped image is equivalent to the original image ", CURRENT_THREAD_ID);
 		}
-		REGISTER_MEMBER_STR(dests, "croppedImage", croppedImage);
+		REGISTER_MEMBER_STR((*dests), "croppedImage", croppedImage);
 	}
 	else
 	{

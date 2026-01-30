@@ -22,6 +22,8 @@
 #include "Core/Executor/GraphExecutor.h"
 #include "Core/Executor/IEventSink.h"
 #include "Core/Executor/INode.h"
+// PR-3: Node factory adapter
+#include "Adapter/Handle/HandleNodeFactory.h"
 
 #include "TableWidget/TableData.h"
 #include "Common/ErrorCode.h"
@@ -150,6 +152,8 @@ private:
 
 	// PR-2: Core graph executor (serial) + UI bridge
 	XVisual::GraphExecutor m_graphExecutor;
+	// PR-3: Node factory for per-job node instantiation
+	XVisual::HandleNodeFactory m_nodeFactory;
 
 	void setUiLocked(bool locked);
 };

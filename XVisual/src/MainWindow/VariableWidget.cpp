@@ -5,9 +5,7 @@
 #include <QLabel>
 #include <QHeaderView>
 #include "MainWindow/VariableWidget.h"
-#include "Common/LoggerInstance.h"
-#include "XVariable/Source.h"
-#include "XVariable/Dest.h"
+#include "Core/Runtime/VarBag.h"
 #include "HandleBase/XBaseHandle.h"
 #include "ItemBase/XBaseItem.h"
 
@@ -47,8 +45,8 @@ VariableWidget::VariableWidget(QWidget* parent) : QWidget(parent)
 void VariableWidget::createTree(XBaseItem* xItem)
 {
 	XBaseHandle* xHandle = xItem->getXHandle();
-	Source& sources = xHandle->getSources();
-	Dest& dests = xHandle->getDests();
+	VarBag& sources = xHandle->getSources();
+	VarBag& dests = xHandle->getDests();
 	std::vector<std::string> sNames =  ACQUIRE_NAMES(sources);
 	std::vector<std::string> dNames = ACQUIRE_NAMES(dests);
 	XLOG_INFO("VariableWidget::createTree  sNames = " + std::to_string(sNames.size()), CURRENT_THREAD_ID);

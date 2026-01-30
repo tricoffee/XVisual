@@ -286,6 +286,11 @@
     <ClInclude Include="include\Core\Executor\GraphExecutor.h" />
     <ClInclude Include="include\Core\Executor\IEventSink.h" />
     <ClInclude Include="include\Core\Executor\INode.h" />
+    <ClInclude Include="include\Core\Executor\INodeFactory.h" />
+    <ClInclude Include="include\Core\Runtime\Value.h" />
+    <ClInclude Include="include\Core\Runtime\VarBag.h" />
+    <ClInclude Include="include\Core\Runtime\ExecutionContext.h" />
+    <ClInclude Include="include\Adapter\Handle\HandleNodeFactory.h" />
     <ClInclude Include="include\Adapter\Qt\QtEventBridge.h" />
     <ClInclude Include="include\XGraph\GraphNode.h" />
     <ClInclude Include="include\XGraph\XGraph.h" />

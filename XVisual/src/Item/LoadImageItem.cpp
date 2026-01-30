@@ -8,6 +8,7 @@
 #include <QFileDialog>
 #include "MainWindow/GraphicsWidget.h"
 #include "Handle/LoadImageHandle.h"
+#include "Core/Runtime/VarBag.h"
 #include "Common/StrUtils.h"
 #include "Common/FileUtils.h"
 #include "GlobalStorage/GlobalVariable.h"
@@ -36,13 +37,13 @@ namespace XVisual {
 			XLOG_INFO("LoadImageItem::checkFileReady, dstFilePath = " + fileCopyData.dstFilePath.toStdString(), CURRENT_THREAD_ID);
 			QString baseFilePath;
 			qGetBaseFileName(fileCopyData.dstFilePath, baseFilePath);
-			Source& s = xHandle->getSources();
+			VarBag& s = xHandle->getSources();
 			REGISTER_MEMBER_STR(s, "imagePath", baseFilePath.toStdString());
 		}
 	}
 	void LoadImageItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 	{
-		Source& s = xHandle->getSources();
+		VarBag& s = xHandle->getSources();
 		QString lastPath = QString::fromStdString(GET_MEMBER_WITH_TYPE_STR(s, std::string, "imagePath"));
 		QString defaultPath = lastPath.isEmpty() ? QDir::homePath() : lastPath;
 		// Handle the double-click event here
@@ -73,8 +74,8 @@ namespace XVisual {
 	void LoadImageItem::xOperate()
 	{
 		xHandle->xOperate();
-		Source& s = xHandle->getSources();
-		Dest& d = xHandle->getDests();
+		VarBag& s = xHandle->getSources();
+		VarBag& d = xHandle->getDests();
 
 		//std::string imagePath = GET_MEMBER_WITH_TYPE_STR(s, std::string, "imagePath");
 		cv::Mat image = GET_MEMBER_WITH_TYPE_STR(d, cv::Mat, "image");
@@ -85,4 +86,4 @@ namespace XVisual {
 
 	REGISTER_ITEM(LoadImage);
 
-} // namespace XVisual 
+} // namespace XVisual

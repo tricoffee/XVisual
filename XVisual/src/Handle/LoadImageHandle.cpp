@@ -33,7 +33,7 @@ ErrorCode LoadImageHandle::setOuterParam(std::unordered_map<std::string, cJSON*>
 		if (it != outerParamUMap.end() && cJSON_IsString(outerParamUMap["imagePath"]))
 		{
 			std::string image_path = outerParamUMap["imagePath"]->valuestring;
-			REGISTER_MEMBER_STR(sources, "imagePath", image_path);
+			REGISTER_MEMBER_STR((*sources), "imagePath", image_path);
 		}
 		else
 		{
@@ -51,7 +51,7 @@ ErrorCode LoadImageHandle::writeOuterParam(cJSON* cjson_variableSource, const st
 {
 	if (xName == "imagePath")
 	{
-		std::string imagePath = GET_MEMBER_WITH_TYPE_STR(sources, std::string, "imagePath");
+		std::string imagePath = GET_MEMBER_WITH_TYPE_STR((*sources), std::string, "imagePath");
 		cJSON_AddStringToObject(cjson_variableSource, "outerParam", imagePath.c_str());
 	}
 	else
@@ -67,17 +67,17 @@ ErrorCode LoadImageHandle::writeInnerParam(cJSON* cjson_innerParam)
 void LoadImageHandle::initParams() 
 {
 	std::string imagePath;
-	REGISTER_MEMBER_ATTR_STR(sources, "imagePath", imagePath, true);
-	REGISTER_TYPE_STR(sources, "imagePath", imagePath);
+	REGISTER_MEMBER_ATTR_STR((*sources), "imagePath", imagePath, true);
+	REGISTER_TYPE_STR((*sources), "imagePath", imagePath);
 	cv::Mat image;
-	REGISTER_MEMBER_ATTR_STR(dests, "image", image, false);
-	REGISTER_TYPE_STR(dests, "image", image);
+	REGISTER_MEMBER_ATTR_STR((*dests), "image", image, false);
+	REGISTER_TYPE_STR((*dests), "image", image);
 }
 void LoadImageHandle::xOperate()
 {
 
 	XLOG_INFO("LoadImageHandle::xOperate ...", CURRENT_THREAD_ID);
-	std::string imagePath0 = GET_MEMBER_WITH_TYPE_STR(sources, std::string, "imagePath");
+	std::string imagePath0 = GET_MEMBER_WITH_TYPE_STR((*sources), std::string, "imagePath");
 	XLOG_INFO("LoadImageHandle::xOperate, imagePath = " + imagePath0, CURRENT_THREAD_ID);
 
 	cv::Mat image;
@@ -94,7 +94,7 @@ void LoadImageHandle::xOperate()
 		std::string imagePath = p.lexically_normal().string();
 
 		image = cv::imread(imagePath);
-		REGISTER_MEMBER_STR(dests, "image", image);
+		REGISTER_MEMBER_STR((*dests), "image", image);
 		XLOG_INFO("LoadImageHandle::xOperate " + imagePath, CURRENT_THREAD_ID);
 		if (image.empty())
 		{

@@ -11,6 +11,7 @@
 #include "CustomDialog/CropDialog.h"
 #include "MainWindow/GraphicsWidget.h"
 #include "Handle/TFDetectHandle.h"
+#include "Core/Runtime/VarBag.h"
 #include "Common/StrUtils.h"
 #include "Common/DetectResult.h"
 #include "Common/FileUtils.h"
@@ -40,14 +41,14 @@ void TFDetectItem::fileCopyReadyUpdateFunc(FileCopyData data)
 		XLOG_INFO("TFDetectItem::fileCopyReadyUpdateSlot, dstFilePath = " + fileCopyData.dstFilePath.toStdString(), CURRENT_THREAD_ID);
 		QString baseFilePath;
 		qGetBaseFileName(fileCopyData.dstFilePath, baseFilePath);
-		Source& s = xHandle->getSources();
+		VarBag& s = xHandle->getSources();
 		REGISTER_MEMBER_STR(s, "savedModelPath", baseFilePath.toStdString());
 	}
 }
 void TFDetectItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 {
 	// Using Dialogs to Retrieve SavedModel
-	Source& s = xHandle->getSources();
+	VarBag& s = xHandle->getSources();
 	QString lastPath = QString::fromStdString(GET_MEMBER_WITH_TYPE_STR(s, std::string, "savedModelPath"));
 	QString defaultPath = lastPath.isEmpty() ? QDir::homePath() : lastPath;
 

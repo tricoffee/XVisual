@@ -244,8 +244,11 @@ void MainWindow::runButtonClicked(bool checked)
 	{
 		XBaseItem* item = nullptr;
 		explicit ItemNodeAdapter(XBaseItem* i) : item(i) {}
-		void initOperands() override { item->initOperands(); }
-		void run(std::stop_token) override { item->xOperate(); } // node-boundary cancel only
+		void execute(std::stop_token) override
+		{
+			item->initOperands();
+			item->xOperate();
+		}
 	};
 
 	auto adapters = std::make_shared<std::unordered_map<std::string, std::unique_ptr<ItemNodeAdapter>>>();
@@ -279,6 +282,31 @@ void MainWindow::runButtonClicked(bool checked)
 	});
 
 	// Start executor (serial). Keep adapters/bridge alive until finished by capturing them in callback.
+	// ============================================================
+	// PR-3: factory-based start (per-job node instantiation)
+	// Un-comment the block below and comment out the ItemNodeAdapter block above
+	// to switch to HandleNodeFactory path.
+	// ============================================================
+	// const bool started = m_graphExecutor.start(
+	// 	"XGraph",
+	// 	graphSnapshot,
+	// 	&m_nodeFactory,      // INodeFactory*
+	// 	bridge.get(),
+	// 	[this, bridge](XVisual::ErrorCode code)
+	// 	{
+	// 		QMetaObject::invokeMethod(this, [this, code]()
+	// 		{
+	// 			m_lastError = code;
+	// 			setUiLocked(false);
+	// 			if (code != XVisual::ErrorCode::Success && code != XVisual::ErrorCode::Canceled)
+	// 				emit errorOccurred(m_lastError);
+	// 		}, Qt::QueuedConnection);
+	// 	},
+	// 	XVisual::GraphExecutor::Options{ true });
+
+	// ============================================================
+	// PR-2 (existing resolver-based path, default)
+	// ============================================================
 	const bool started = m_graphExecutor.start(
 		"XGraph",
 		graphSnapshot,
@@ -413,7 +441,7 @@ void MainWindow::exportButtonClicked(bool checked)
 
 			// 获取sources里面每个source变量xName对应的sourceFrom, 并将其写入到JSON
 			cJSON* cjson_sourceFrom = cJSON_CreateObject();
-			Source& sources = handle->getSources();
+			VarBag& sources = handle->getSources();
 			std::vector<std::string> xVaribleNames = ACQUIRE_NAMES(sources);
 			for (const auto& xName : xVaribleNames)
 			{

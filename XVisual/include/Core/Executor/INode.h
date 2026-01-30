@@ -17,11 +17,8 @@ class INode
 public:
 	virtual ~INode() = default;
 
-	// Prepare inputs for this node (typically pulls from upstream node outputs).
-	virtual void initOperands() = 0;
-
-	// Execute the node.
-	virtual void run(std::stop_token st) = 0;
+	// Execute the node (includes initOperands internally if needed).
+	virtual void execute(std::stop_token st) = 0;
 };
 
 } // namespace XVisual
