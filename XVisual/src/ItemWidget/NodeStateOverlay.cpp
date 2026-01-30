@@ -2,7 +2,15 @@
 
 #include <QPainter>
 #include <QGraphicsScene>
+#include <QDebug>
+
+// 确保 M_PI 在 Windows 上可用
+#define _USE_MATH_DEFINES
 #include <cmath>
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 namespace XVisual {
 
@@ -52,8 +60,10 @@ void NodeStateOverlay::setState(NodeState state)
     
     // 管理脉冲动画
     if (state_ == NodeState::Running && oldState != NodeState::Running) {
+        qDebug() << "NodeStateOverlay::setState: Starting pulse animation";
         startPulseAnimation();
     } else if (state_ != NodeState::Running && oldState == NodeState::Running) {
+        qDebug() << "NodeStateOverlay::setState: Stopping pulse animation";
         stopPulseAnimation();
     }
     
@@ -89,6 +99,7 @@ void NodeStateOverlay::paint(QPainter* painter, const QStyleOptionGraphicsItem* 
         return;
     
     painter->save();
+    painter->setRenderHint(QPainter::Antialiasing, true);
     
     // 获取目标图元边界
     QRectF targetRect = targetItem_->boundingRect();
@@ -99,21 +110,19 @@ void NodeStateOverlay::paint(QPainter* painter, const QStyleOptionGraphicsItem* 
     
     // 设置画笔
     QColor color = stateColor();
+    qreal currentBorderWidth = kBorderWidth;
     
-    // Running 状态时应用脉冲效果
-    if (state_ == NodeState::Running) {
-        // 脉冲效果：透明度和边框宽度随相位变化
-        qreal pulse = 0.5 + 0.5 * std::sin(pulsePhase_);  // 0.0 ~ 1.0
-        color.setAlphaF(0.5 + 0.5 * pulse);  // 0.5 ~ 1.0
-    }
-    
-    QPen pen(color, kBorderWidth, statePenStyle());
-    pen.setJoinStyle(Qt::RoundJoin);
-    painter->setPen(pen);
+    // 绘制基础边框
+    QPen basePen(color, currentBorderWidth, statePenStyle());
+    basePen.setJoinStyle(Qt::RoundJoin);
+    painter->setPen(basePen);
     painter->setBrush(Qt::NoBrush);
-    
-    // 绘制圆角矩形边框
     painter->drawRoundedRect(borderRect, 8.0, 8.0);
+    
+    // Running 状态时绘制流水灯效果
+    if (state_ == NodeState::Running) {
+        drawRunningAnimation(painter, borderRect, color);
+    }
     
     // 绘制角标
     if (showBadge_) {
@@ -144,28 +153,106 @@ void NodeStateOverlay::paint(QPainter* painter, const QStyleOptionGraphicsItem* 
     painter->restore();
 }
 
+void NodeStateOverlay::drawRunningAnimation(QPainter* painter, const QRectF& borderRect, const QColor& baseColor)
+{
+    // 计算边框周长
+    qreal width = borderRect.width();
+    qreal height = borderRect.height();
+    qreal perimeter = 2 * (width + height);
+    
+    // 流水灯参数
+    const int numDots = 3;           // 亮点数量
+    const qreal dotLength = 30.0;    // 每个亮点的长度
+    const qreal dotSpacing = perimeter / numDots;  // 亮点间距
+    
+    // 根据相位计算起始位置
+    qreal basePosition = std::fmod(pulsePhase_ / (2 * M_PI) * perimeter, perimeter);
+    
+    for (int i = 0; i < numDots; ++i) {
+        qreal dotPosition = std::fmod(basePosition + i * dotSpacing, perimeter);
+        
+        // 绘制渐变亮点
+        for (int j = 0; j < static_cast<int>(dotLength); j += 3) {
+            qreal pos = std::fmod(dotPosition + j, perimeter);
+            QPointF point = getPointOnBorder(borderRect, pos, perimeter);
+            
+            // 渐变透明度：头部最亮，尾部渐暗
+            qreal alpha = 1.0 - (static_cast<qreal>(j) / dotLength);
+            QColor dotColor = baseColor;
+            dotColor.setAlphaF(alpha);
+            
+            // 渐变大小
+            qreal dotSize = 6.0 * alpha + 2.0;
+            
+            painter->setPen(Qt::NoPen);
+            painter->setBrush(dotColor);
+            painter->drawEllipse(point, dotSize / 2, dotSize / 2);
+        }
+    }
+}
+
+QPointF NodeStateOverlay::getPointOnBorder(const QRectF& rect, qreal position, qreal perimeter) const
+{
+    qreal width = rect.width();
+    qreal height = rect.height();
+    
+    // 将位置映射到边框上（顺时针）
+    // 上边：0 ~ width
+    // 右边：width ~ width + height
+    // 下边：width + height ~ 2*width + height
+    // 左边：2*width + height ~ perimeter
+    
+    if (position < width) {
+        // 上边（从左到右）
+        return QPointF(rect.left() + position, rect.top());
+    }
+    position -= width;
+    
+    if (position < height) {
+        // 右边（从上到下）
+        return QPointF(rect.right(), rect.top() + position);
+    }
+    position -= height;
+    
+    if (position < width) {
+        // 下边（从右到左）
+        return QPointF(rect.right() - position, rect.bottom());
+    }
+    position -= width;
+    
+    // 左边（从下到上）
+    return QPointF(rect.left(), rect.bottom() - position);
+}
+
 void NodeStateOverlay::onPulseTimer()
 {
     pulsePhase_ += kPulseSpeed;
     if (pulsePhase_ > 2 * M_PI) {
         pulsePhase_ -= 2 * M_PI;
     }
+    qDebug() << "NodeStateOverlay::onPulseTimer: pulsePhase=" << pulsePhase_;
     update();
 }
 
 void NodeStateOverlay::startPulseAnimation()
 {
-    if (!pulseTimer_->isActive()) {
+    qDebug() << "NodeStateOverlay::startPulseAnimation: pulseTimer_=" << pulseTimer_ 
+             << " isActive=" << (pulseTimer_ ? pulseTimer_->isActive() : false);
+    if (pulseTimer_ && !pulseTimer_->isActive()) {
         pulsePhase_ = 0.0;
         pulseTimer_->start(kPulseIntervalMs);
+        qDebug() << "NodeStateOverlay::startPulseAnimation: Timer started with interval=" << kPulseIntervalMs;
+        // 立即触发一次重绘，确保动画开始可见
+        update();
     }
 }
 
 void NodeStateOverlay::stopPulseAnimation()
 {
-    if (pulseTimer_->isActive()) {
+    if (pulseTimer_ && pulseTimer_->isActive()) {
         pulseTimer_->stop();
         pulsePhase_ = 0.0;
+        update();
     }
 }
 

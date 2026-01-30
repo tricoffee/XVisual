@@ -64,6 +64,10 @@ private:
     Qt::PenStyle statePenStyle() const;
     QString stateIcon() const;
 
+    // 流水灯动画辅助方法
+    void drawRunningAnimation(QPainter* painter, const QRectF& borderRect, const QColor& baseColor);
+    QPointF getPointOnBorder(const QRectF& rect, qreal position, qreal perimeter) const;
+
     QGraphicsItem* targetItem_ = nullptr;
     NodeState state_ = NodeState::Pending;
     bool showBadge_ = true;

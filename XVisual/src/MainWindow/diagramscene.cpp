@@ -555,7 +555,12 @@ QGraphicsItem* DiagramScene::findItemByNodeId(const std::string& nodeId) const
 	std::lock_guard<std::mutex> lock(itemMapMutex);
 	auto it = globalItemMap.find(nodeId);
 	if (it != globalItemMap.end())
+	{
+		XLOG_INFO("DiagramScene::findItemByNodeId: FOUND nodeId=" + nodeId, CURRENT_THREAD_ID);
 		return it->second;
+	}
+	XLOG_INFO("DiagramScene::findItemByNodeId: NOT FOUND nodeId=" + nodeId + 
+	          ", globalItemMap.size()=" + std::to_string(globalItemMap.size()), CURRENT_THREAD_ID);
 	return nullptr;
 }
 
@@ -564,14 +569,21 @@ NodeStateOverlay* DiagramScene::getOrCreateOverlay(const std::string& nodeId)
 	// 检查是否已存在
 	auto it = nodeOverlays_.find(nodeId);
 	if (it != nodeOverlays_.end())
+	{
+		XLOG_INFO("DiagramScene::getOrCreateOverlay: REUSING existing overlay for nodeId=" + nodeId, CURRENT_THREAD_ID);
 		return it->second;
+	}
 
 	// 找到对应的图元
 	QGraphicsItem* targetItem = findItemByNodeId(nodeId);
 	if (!targetItem)
+	{
+		XLOG_INFO("DiagramScene::getOrCreateOverlay: FAILED - targetItem is nullptr for nodeId=" + nodeId, CURRENT_THREAD_ID);
 		return nullptr;
+	}
 
 	// 创建新的 overlay
+	XLOG_INFO("DiagramScene::getOrCreateOverlay: CREATING new overlay for nodeId=" + nodeId, CURRENT_THREAD_ID);
 	NodeStateOverlay* overlay = new NodeStateOverlay(targetItem);
 	nodeOverlays_[nodeId] = overlay;
 	
@@ -580,12 +592,18 @@ NodeStateOverlay* DiagramScene::getOrCreateOverlay(const std::string& nodeId)
 
 void DiagramScene::setNodeState(const std::string& nodeId, NodeState state)
 {
+	XLOG_INFO("DiagramScene::setNodeState CALLED: nodeId=" + nodeId + 
+	          " state=" + std::to_string(static_cast<int>(state)), CURRENT_THREAD_ID);
+	
 	NodeStateOverlay* overlay = getOrCreateOverlay(nodeId);
 	if (overlay)
 	{
 		overlay->setState(state);
-		XLOG_INFO("DiagramScene::setNodeState: nodeId=" + nodeId + 
-		          " state=" + std::to_string(static_cast<int>(state)), CURRENT_THREAD_ID);
+		XLOG_INFO("DiagramScene::setNodeState: SUCCESS - overlay state updated", CURRENT_THREAD_ID);
+	}
+	else
+	{
+		XLOG_INFO("DiagramScene::setNodeState: FAILED - overlay is nullptr", CURRENT_THREAD_ID);
 	}
 }
 
