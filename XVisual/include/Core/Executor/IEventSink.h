@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <string>
+#include "NodeState.h"
 
 namespace XVisual {
 
@@ -11,7 +12,9 @@ enum class EventType
 	JobStarted,
 	NodeStarted,
 	NodeFinished,
+	NodeSkipped,    // 新增：节点被跳过（上游失败）
 	JobFinished,
+	ProgressUpdate, // 新增：进度更新
 	Log
 };
 
@@ -27,10 +30,16 @@ struct NodeEvent
 	// status / payload
 	int code = 0; // Typically XVisual::ErrorCode cast to int
 	std::string message;
+	NodeState state = NodeState::Pending; // 新增：节点状态
 
 	// timing
 	std::uint64_t tsUs = 0;
 	std::uint64_t durationUs = 0;
+
+	// progress (for ProgressUpdate event)
+	int progress = 0;       // 0-100
+	int totalNodes = 0;     // 总节点数
+	int completedNodes = 0; // 已完成节点数
 };
 
 class IEventSink

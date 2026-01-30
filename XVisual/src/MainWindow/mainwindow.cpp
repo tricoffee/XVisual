@@ -37,6 +37,7 @@
 #include "Common/JsonFileUtils.h"
 
 #include "Adapter/Qt/QtEventBridge.h"
+#include "Core/Executor/NodeState.h"
 
 // PR-2 uses std::stop_token in core executor
 #include <stop_token>
@@ -270,14 +271,59 @@ void MainWindow::runButtonClicked(bool checked)
 	// Event bridge marshals core events to UI thread
 	auto bridge = std::make_shared<XVisual::QtEventBridge>(this, [this](const XVisual::NodeEvent& e)
 	{
-		// Minimal handling for PR-2: mainly job finish -> unlock UI + error
-		if (e.type == XVisual::EventType::JobFinished)
+		// PR-4: Handle all event types
+		switch (e.type)
 		{
-			auto code = static_cast<XVisual::ErrorCode>(e.code);
-			m_lastError = code;
-			setUiLocked(false);
-			if (code != XVisual::ErrorCode::Success && code != XVisual::ErrorCode::Canceled)
-				emit errorOccurred(m_lastError);
+		case XVisual::EventType::JobStarted:
+			XLOG_INFO("Job started: " + e.jobId + ", total nodes: " + std::to_string(e.totalNodes), CURRENT_THREAD_ID);
+			break;
+
+		case XVisual::EventType::NodeStarted:
+			XLOG_INFO("Node started: " + e.nodeId, CURRENT_THREAD_ID);
+			// TODO: Update UI to show node is running (e.g., change node color to blue)
+			break;
+
+		case XVisual::EventType::NodeFinished:
+			{
+				std::string stateStr = XVisual::nodeStateToString(e.state);
+				XLOG_INFO("Node finished: " + e.nodeId + ", state: " + stateStr + 
+				          ", duration: " + std::to_string(e.durationUs / 1000) + "ms", CURRENT_THREAD_ID);
+				// TODO: Update UI to show node completed/failed (e.g., green/red color)
+				if (e.state == XVisual::NodeState::Failed)
+				{
+					XLOG_INFO("Node failed: " + e.nodeId + ", error: " + e.message, CURRENT_THREAD_ID);
+				}
+			}
+			break;
+
+		case XVisual::EventType::NodeSkipped:
+			XLOG_INFO("Node skipped: " + e.nodeId + ", reason: " + e.message, CURRENT_THREAD_ID);
+			// TODO: Update UI to show node was skipped (e.g., gray color)
+			break;
+
+		case XVisual::EventType::ProgressUpdate:
+			XLOG_INFO("Progress: " + std::to_string(e.completedNodes) + "/" + 
+			          std::to_string(e.totalNodes) + " (" + std::to_string(e.progress) + "%)", CURRENT_THREAD_ID);
+			// TODO: Update progress bar in status bar
+			break;
+
+		case XVisual::EventType::JobFinished:
+			{
+				auto code = static_cast<XVisual::ErrorCode>(e.code);
+				m_lastError = code;
+				XLOG_INFO("Job finished: " + e.jobId + ", result: " + e.message + 
+				          ", duration: " + std::to_string(e.durationUs / 1000) + "ms" +
+				          ", completed: " + std::to_string(e.completedNodes) + "/" + std::to_string(e.totalNodes), 
+				          CURRENT_THREAD_ID);
+				setUiLocked(false);
+				if (code != XVisual::ErrorCode::Success && code != XVisual::ErrorCode::Canceled)
+					emit errorOccurred(m_lastError);
+			}
+			break;
+
+		case XVisual::EventType::Log:
+			XLOG_INFO("Log: " + e.message, CURRENT_THREAD_ID);
+			break;
 		}
 	});
 

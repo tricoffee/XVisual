@@ -133,6 +133,7 @@
     <ClCompile Include="src\GlobalStorage\GlobalStorage.cpp" />
     <ClCompile Include="src\GlobalStorage\GlobalVariable.cpp" />
     <ClCompile Include="src\Core\Executor\GraphExecutor.cpp" />
+    <ClCompile Include="src\Core\Executor\ThreadPool.cpp" />
     <ClCompile Include="src\GlobalStorage\HandleGlobalStorage.cpp" />
     <ClCompile Include="src\GlobalStorage\HandleManager.cpp" />
     <ClCompile Include="src\GlobalStorage\ItemManager.cpp" />
@@ -287,6 +288,9 @@
     <ClInclude Include="include\Core\Executor\IEventSink.h" />
     <ClInclude Include="include\Core\Executor\INode.h" />
     <ClInclude Include="include\Core\Executor\INodeFactory.h" />
+    <ClInclude Include="include\Core\Executor\NodeState.h" />
+    <ClInclude Include="include\Core\Executor\ThreadPool.h" />
+    <ClInclude Include="include\Core\Executor\ThreadSafeQueue.h" />
     <ClInclude Include="include\Core\Runtime\Value.h" />
     <ClInclude Include="include\Core\Runtime\VarBag.h" />
     <ClInclude Include="include\Core\Runtime\ExecutionContext.h" />
