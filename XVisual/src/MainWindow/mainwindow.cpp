@@ -1267,12 +1267,21 @@ QWidget* MainWindow::createCellWidget(const QString& text)
 {
 	idnames[itemtype] = text;
 	std::string itemclass = text.toStdString();
+	
+	// 启用临时模式：临时 Item/Handle 的 UUID 将使用 Temp_ 前缀
+	// 避免临时创建的对象污染全局存储
+	XLOG_INFO("MainWindow::createCellWidget: Setting temporaryMode=true for " + itemclass, CURRENT_THREAD_ID);
+	ItemRegistry::setTemporaryMode(true);
+	XLOG_INFO("MainWindow::createCellWidget: isTemporaryMode=" + 
+	          std::string(ItemRegistry::isTemporaryMode() ? "true" : "false"), CURRENT_THREAD_ID);
 	XBaseItem  *item = ItemRegistry::createObject(itemclass, graphicsWidget, itemMenu, nullptr);
 	QIcon icon(item->image());
 	// 在这里 item 仅仅是为了获得image图形, 所以用完就删除
 	// The item here is only for obtaining image graphics, so it will be deleted after used
 	delete item;
 	item = nullptr;
+	ItemRegistry::setTemporaryMode(false);
+	XLOG_INFO("MainWindow::createCellWidget: Reset temporaryMode=false", CURRENT_THREAD_ID);
 
 	QToolButton* button = new QToolButton;
 	button->setIcon(icon);

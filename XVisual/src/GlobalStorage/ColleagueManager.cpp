@@ -1,4 +1,7 @@
 #include "GlobalStorage/ColleagueManager.h"
+#include "ItemBase/ItemFactory.h"  // For ItemRegistry::isTemporaryMode()
+#include "Common/LoggerInstance.h"
+#include "Common/XThreadMacro.h"
 
 namespace XVisual {
 	ColleagueManager::ColleagueManager() {}
@@ -11,24 +14,45 @@ namespace XVisual {
 
 	std::string ColleagueManager::getUniqueItemName(const std::string& baseName)
 	{
-		int& itemCount = itemCounts[baseName];
-		//std::cout << "itemCount = " << std::to_string(itemCount);
-		/*
-		std::to_string ÀïÃæµÄ²ÎÊıÊÇitemCount - 1¶ø²»ÊÇitemCount£¬ÊÇÒòÎª¸ÃÏîÄ¿²ÉÓÃºê¶¨Òå×¢²áÃ¿¸öXXXItem
-		ÔÚ±àÒëÊ±»áÖ´ĞĞÒ»±éÃ¿¸öXXXItemµÄ¹¹Ôìº¯Êı£¬´ËÊ±itemCountÊÇ0£»
-		ÕâÑùµÄ»°ÔÚµ½sceneÀïÃæÌí¼ÓXXXItemµÄÊ±ºòitemCountÔò±ä³É1
-		*/
-		std::string uniqueItemName = baseName + std::to_string(itemCount - 1);
-		if (itemCount - 1 == 0)
+		// å¦‚æœæ˜¯ä¸´æ—¶æ¨¡å¼ï¼ˆå¦‚ ToolBox è·å–å›¾æ ‡ï¼‰ï¼Œè¿”å›ä¸´æ—¶åç§°ï¼Œä¸å¢åŠ è®¡æ•°
+		bool isTemp = ItemRegistry::isTemporaryMode();
+		XLOG_INFO("ColleagueManager::getUniqueItemName: baseName=" + baseName + 
+		          ", isTemporaryMode=" + (isTemp ? "true" : "false"), CURRENT_THREAD_ID);
+		if (isTemp)
 		{
-			/*
-			Èç¹ûitemCount - == 0³ÉÁ¢Ôò±íÊ¾Êµ¼ÊµÄuniqueItemNameÊÇXXXItem0;
-			Ï°¹ßÉÏÏÔÊ¾XXXItem±ÈXXXItem0ÒªºÃµÃ¶à;
-			ËùÒÔ½«uniqueItemNameÖØÖÃÎªbaseName + std::string("")
-			*/
-			uniqueItemName = baseName + std::string("");
+			std::string tempName = "Temp_" + baseName;
+			XLOG_INFO("ColleagueManager::getUniqueItemName: returning tempName=" + tempName, CURRENT_THREAD_ID);
+			return tempName;
+		}
+		
+		int& itemCount = itemCounts[baseName];
+		
+		/*
+		ç°åœ¨ä¸´æ—¶æ¨¡å¼ä¸‹ä¸ä¼šå¢åŠ è®¡æ•°ï¼Œæ‰€ä»¥ä¸å†éœ€è¦ itemCount - 1 çš„é€»è¾‘ã€‚
+		
+		åŸæ¥çš„è®¾è®¡æ˜¯ï¼šä¸´æ—¶åˆ›å»ºå’Œæ­£å¼åˆ›å»ºå…±ç”¨è®¡æ•°å™¨ï¼Œæ‰€ä»¥ç”¨ itemCount - 1 æ¥è¡¥å¿ã€‚
+		æ–°è®¾è®¡æ˜¯ï¼šä¸´æ—¶æ¨¡å¼ä¸‹ç›´æ¥è¿”å› Temp_xxxï¼Œä¸å¢åŠ è®¡æ•°ï¼Œæ­£å¼åˆ›å»ºæ—¶ä» 0 å¼€å§‹ã€‚
+		
+		å‘½åè§„åˆ™ï¼š
+		- itemCount = 0 -> "LoadImage" (ç¬¬ä¸€ä¸ªï¼Œæ— åç¼€)
+		- itemCount = 1 -> "LoadImage1" (ç¬¬äºŒä¸ª)
+		- itemCount = 2 -> "LoadImage2" (ç¬¬ä¸‰ä¸ª)
+		- ...
+		*/
+		std::string uniqueItemName;
+		if (itemCount == 0)
+		{
+			// ç¬¬ä¸€ä¸ªèŠ‚ç‚¹ï¼šæ— åç¼€
+			uniqueItemName = baseName;
+		}
+		else
+		{
+			// åç»­èŠ‚ç‚¹ï¼šæ·»åŠ æ•°å­—åç¼€
+			uniqueItemName = baseName + std::to_string(itemCount);
 		}
 		++itemCount;
+		XLOG_INFO("ColleagueManager::getUniqueItemName: returning uniqueItemName=" + uniqueItemName + 
+		          ", itemCount after=" + std::to_string(itemCount), CURRENT_THREAD_ID);
 		return uniqueItemName;
 	}
-} // namespace XVisual 
+} // namespace XVisual

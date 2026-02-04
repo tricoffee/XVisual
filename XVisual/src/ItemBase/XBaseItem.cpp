@@ -183,7 +183,15 @@ namespace XVisual {
 	}
 	void XBaseItem::createUuid()
 	{
-		uuid = "Item_" + generateUUID();
+		// 检查是否是临时模式（如 ToolBox 获取图标）
+		if (ItemRegistry::isTemporaryMode())
+		{
+			uuid = "Temp_Item_" + generateUUID();
+		}
+		else
+		{
+			uuid = "Item_" + generateUUID();
+		}
 	}
 	void XBaseItem::setColleagueType()
 	{

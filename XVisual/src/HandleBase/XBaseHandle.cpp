@@ -6,6 +6,7 @@
 #include "Common/StrUtils.h"
 #include "Common/UuidGenerator.h"
 #include "GlobalStorage/HandleManager.h"
+#include "ItemBase/ItemFactory.h"  // For ItemRegistry::isTemporaryMode()
 #include <stop_token>
 
 namespace XVisual {
@@ -39,7 +40,15 @@ namespace XVisual {
 		//QUuid id = QUuid::createUuid();
 		//uuid = "Handle_" + id.toString().toStdString();
 
-		uuid = "Handle_" + generateUUID();
+		// 检查是否是临时模式（如 ToolBox 获取图标）
+		if (ItemRegistry::isTemporaryMode())
+		{
+			uuid = "Temp_Handle_" + generateUUID();
+		}
+		else
+		{
+			uuid = "Handle_" + generateUUID();
+		}
 	}
 	void XBaseHandle::createUniqueName(const std::string& classNameStr)
 	{
@@ -47,11 +56,23 @@ namespace XVisual {
 	}
 	void XBaseHandle::setUuidConsistentWithItem(std::string xitemUuid)
 	{
-		std::string delimiter = "_";
-		std::string uuidStr2 = extractSubstrAfterDelimiter(xitemUuid, delimiter);
-		const std::string handleUuid = "Handle_" + uuidStr2;
-		//Here, uuid is the protected member variable of the XHandle class
-		this->uuid = handleUuid;
+		// 处理 Temp_Item_xxx 和 Item_xxx 两种格式
+		// Temp_Item_xxx -> Temp_Handle_xxx
+		// Item_xxx -> Handle_xxx
+		if (xitemUuid.rfind("Temp_Item_", 0) == 0)
+		{
+			// 去掉 "Temp_Item_" 前缀，取后面的 UUID 部分
+			std::string uuidPart = xitemUuid.substr(10);  // "Temp_Item_".length() == 10
+			this->uuid = "Temp_Handle_" + uuidPart;
+		}
+		else
+		{
+			std::string delimiter = "_";
+			std::string uuidStr2 = extractSubstrAfterDelimiter(xitemUuid, delimiter);
+			const std::string handleUuid = "Handle_" + uuidStr2;
+			//Here, uuid is the protected member variable of the XHandle class
+			this->uuid = handleUuid;
+		}
 	}
 	VarBag& XBaseHandle::getSources()
 	{

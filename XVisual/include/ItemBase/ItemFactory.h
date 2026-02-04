@@ -23,9 +23,27 @@ public:
 	// 新增参数GraphicsWidget* gWidget
 	static XBaseItem* createObject(const std::string& type, 
 		GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent = nullptr);
+	
+	/**
+	 * 临时模式标志：用于区分临时创建的 Item（如 ToolBox 获取图标）
+	 * 
+	 * 当 isTemporaryMode() 为 true 时，Item/Handle 的 UUID 将使用 Temp_ 前缀：
+	 *   - Temp_Item_xxx
+	 *   - Temp_Handle_xxx
+	 * 
+	 * 使用方式：
+	 *   ItemRegistry::setTemporaryMode(true);
+	 *   auto* item = ItemRegistry::createObject(...);
+	 *   // 使用 item
+	 *   delete item;
+	 *   ItemRegistry::setTemporaryMode(false);
+	 */
+	static void setTemporaryMode(bool temporary);
+	static bool isTemporaryMode();
 
 private:
 	ItemRegistry();
+	static bool temporaryMode_;
 };
 
 

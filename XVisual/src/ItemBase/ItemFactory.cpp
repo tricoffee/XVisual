@@ -3,6 +3,9 @@
 
 namespace XVisual {
 
+	// é™æ€æˆå‘˜å˜é‡å®šä¹‰
+	bool ItemRegistry::temporaryMode_ = false;
+
 	ItemRegistry::ItemRegistry() {}
 	ItemRegistry::ItemClassRegistry& ItemRegistry::RegistryInstance()
 	{
@@ -17,7 +20,7 @@ namespace XVisual {
 			registry[type] = constructor;
 		}
 	}
-	// ĞÂÔö²ÎÊı GraphicsWidget* gWidget
+	// æ–°å¢å‚æ•° GraphicsWidget* gWidget
 	XBaseItem* ItemRegistry::createObject(const std::string& type,
 		GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent)
 	{
@@ -26,9 +29,19 @@ namespace XVisual {
 	}
 
 
+	void ItemRegistry::setTemporaryMode(bool temporary)
+	{
+		temporaryMode_ = temporary;
+	}
+
+	bool ItemRegistry::isTemporaryMode()
+	{
+		return temporaryMode_;
+	}
+
 	ItemClassRegisterer::ItemClassRegisterer(const std::string& type,
 		XBaseItem* (*creator)(GraphicsWidget* gWidget, QMenu* contextMenu, QGraphicsItem* parent))
 	{
 		ItemRegistry::putConstructor(type, creator);
 	}
-} // namespace XVisual 
+} // namespace XVisual
