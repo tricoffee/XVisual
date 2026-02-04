@@ -2,6 +2,7 @@
 #define XVISUAL_CORE_EXECUTOR_INODE_H
 
 #include <stop_token>
+#include "Core/Device/DeviceType.h"
 
 namespace XVisual {
 
@@ -19,6 +20,18 @@ public:
 
 	// Execute the node (includes initOperands internally if needed).
 	virtual void execute(std::stop_token st) = 0;
+
+	/**
+	 * Returns the preferred device type for this node.
+	 * 
+	 * Default returns Any, meaning the scheduler decides (PR-5.1: mapped to CPU).
+	 * Nodes can override to indicate device preference (e.g., GPU for inference).
+	 * 
+	 * PR-5.1 behavior:
+	 * - Any -> CPU (fixed mapping in scheduler)
+	 * - GPU/NPU -> route to SerialQueue (placeholder, still executes on CPU)
+	 */
+	virtual DeviceType preferredDevice() const { return DeviceType::Any; }
 };
 
 } // namespace XVisual

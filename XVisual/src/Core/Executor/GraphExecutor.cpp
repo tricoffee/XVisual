@@ -8,6 +8,7 @@
 #include "Common/UuidGenerator.h"
 #include "Common/XThreadMacro.h"
 #include "Exception/UmapKeyNoFoundException.h"
+#include "Core/Device/DeviceType.h"
 
 namespace XVisual {
 
@@ -33,6 +34,12 @@ GraphExecutor::~GraphExecutor()
 	{
 		threadPool_->shutdown();
 		threadPool_.reset();
+	}
+	// PR-5.1: 关闭设备队列管理器
+	if (deviceQueueManager_)
+	{
+		deviceQueueManager_->shutdown();
+		deviceQueueManager_.reset();
 	}
 	stopSource_ = std::stop_source{};
 	running_.store(false);
@@ -380,6 +387,22 @@ void GraphExecutor::executeNode(const std::string& nodeId, NodeResolver resolver
 		}
 		else
 		{
+			// PR-5.1: 根据节点偏好设备路由
+			DeviceType preferredDev = execNode->preferredDevice();
+			
+			// Any -> CPU 映射（PR-5.1 固定策略）
+			if (preferredDev == DeviceType::Any)
+			{
+				preferredDev = DeviceType::CPU;
+			}
+			
+			// 日志：设备路由
+			std::string devName = deviceTypeToString(preferredDev);
+			XLOG_INFO("executeNode: nodeId=" + nodeId + " -> " + devName + " queue", CURRENT_THREAD_ID);
+			
+			// PR-5.1 占位实现：仍然直接执行（在当前线程）
+			// 真正的设备队列异步调度将在 PR-5.2 实现
+			// 这里只是为了验证路由日志和接口可用
 			execNode->execute(stopSource_.get_token());
 			finalState = NodeState::Completed;
 		}
@@ -427,6 +450,10 @@ void GraphExecutor::runParallel(NodeResolver resolver, Options opt, FinishedCall
 	if (poolSize == 0)
 		poolSize = std::max(1u, std::thread::hardware_concurrency() - 1);
 	threadPool_ = std::make_unique<ThreadPool>(poolSize);
+
+	// PR-5.1: 创建设备队列管理器
+	deviceQueueManager_ = std::make_unique<DeviceQueueManager>();
+	XLOG_INFO("runParallel: DeviceQueueManager created (CPU/GPU/NPU queues)", CURRENT_THREAD_ID);
 
 	// PR-4.5b: 启动心跳线程
 	startHeartbeatThread();
@@ -503,6 +530,13 @@ void GraphExecutor::runParallel(NodeResolver resolver, Options opt, FinishedCall
 	// 清理
 	threadPool_->shutdown();
 	threadPool_.reset();
+
+	// PR-5.1: 关闭设备队列管理器
+	if (deviceQueueManager_)
+	{
+		deviceQueueManager_->shutdown();
+		deviceQueueManager_.reset();
+	}
 
 	running_.store(false);
 	if (onFinished)

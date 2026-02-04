@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "HandleBase/XBaseHandle.h"
+#include "Core/Device/DeviceType.h"
 
 namespace XVisual {
 
@@ -20,6 +21,14 @@ class TFDetectHandle : public XBaseHandle
 		XVisual::ErrorCode writeInnerParam(cJSON* cjson_innerParam) override;
 		void initParams() override;
 		void xOperate() override;
+		
+		/**
+		 * TFDetect 节点偏好 GPU 设备
+		 * 
+		 * PR-5.1: 实际仍在 CPU 执行，但会路由到 GPU 串行队列
+		 * PR-5.2+: 真正的 GPU 推理
+		 */
+		DeviceType preferredDevice() const override { return DeviceType::GPU; }
 	protected:
 		
 	private:
@@ -29,4 +38,3 @@ class TFDetectHandle : public XBaseHandle
 } // namespace XVisual
 
 #endif // TFDetectHandle_H
-

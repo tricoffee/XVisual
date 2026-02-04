@@ -38,6 +38,7 @@
 
 #include "Adapter/Qt/QtEventBridge.h"
 #include "Core/Executor/NodeState.h"
+#include "Core/Device/DeviceType.h"
 #include "ItemWidget/NodeStateOverlay.h"
 
 // PR-2 uses std::stop_token in core executor
@@ -250,6 +251,13 @@ void MainWindow::runButtonClicked(bool checked)
 		{
 			item->initOperands();
 			item->xOperate();
+		}
+		// PR-5.1: 透传底层 Handle 的设备偏好
+		XVisual::DeviceType preferredDevice() const override
+		{
+			if (item && item->getXHandle())
+				return item->getXHandle()->preferredDevice();
+			return XVisual::DeviceType::Any;  // fallback
 		}
 	};
 
