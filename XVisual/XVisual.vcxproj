@@ -140,6 +140,9 @@
     <ClCompile Include="src\Core\Device\DeviceQueueManager.cpp" />
     <ClCompile Include="src\Core\Device\DeviceSpec.cpp" />
     <ClCompile Include="src\Core\Device\DeviceManager.cpp" />
+    <ClCompile Include="src\Core\Device\DeviceInstance.cpp" />
+    <ClCompile Include="src\Core\Device\DeviceRuntime.cpp" />
+    <ClCompile Include="src\Core\Device\DevicePolicy.cpp" />
     <ClCompile Include="src\Core\Inference\ModelDesc.cpp" />
     <ClCompile Include="src\Core\Inference\BackendRegistry.cpp" />
     <ClCompile Include="src\Core\Inference\ModelCache.cpp" />
@@ -310,6 +313,9 @@
     <ClInclude Include="include\Core\Device\DeviceQueueManager.h" />
     <ClInclude Include="include\Core\Device\DeviceSpec.h" />
     <ClInclude Include="include\Core\Device\DeviceManager.h" />
+    <ClInclude Include="include\Core\Device\DeviceInstance.h" />
+    <ClInclude Include="include\Core\Device\DeviceRuntime.h" />
+    <ClInclude Include="include\Core\Device\DevicePolicy.h" />
     <ClInclude Include="include\Core\Inference\ModelDesc.h" />
     <ClInclude Include="include\Core\Inference\ModelHandle.h" />
     <ClInclude Include="include\Core\Inference\RunResult.h" />

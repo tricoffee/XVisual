@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <string>
 #include "NodeState.h"
+#include "Core/Device/DeviceType.h"
 
 namespace XVisual {
 
@@ -12,10 +13,11 @@ enum class EventType
 	JobStarted,
 	NodeStarted,
 	NodeFinished,
-	NodeSkipped,    // 新增：节点被跳过（上游失败）
+	NodeSkipped,     // 新增：节点被跳过（上游失败）
 	JobFinished,
-	ProgressUpdate, // 新增：进度更新
-	NodeHeartbeat,  // PR-4.5b: 长节点心跳（表示节点仍在运行）
+	ProgressUpdate,  // 新增：进度更新
+	NodeHeartbeat,   // PR-4.5b: 长节点心跳（表示节点仍在运行）
+	NodeDispatched,  // PR-5.3: 节点被投递到设备队列
 	Log
 };
 
@@ -42,6 +44,11 @@ struct NodeEvent
 	int progress = 0;       // 0-100
 	int totalNodes = 0;     // 总节点数
 	int completedNodes = 0; // 已完成节点数
+
+	// PR-5.3: 设备信息（用于 NodeDispatched 事件）
+	DeviceType deviceType = DeviceType::Any;  // 设备类型
+	int deviceIndex = 0;                       // 设备索引
+	std::string deviceName;                    // 设备名称 (如 "cpu:0", "gpu:0")
 };
 
 class IEventSink

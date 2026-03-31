@@ -35,12 +35,13 @@ GraphExecutor::~GraphExecutor()
 		threadPool_->shutdown();
 		threadPool_.reset();
 	}
-	// PR-5.1: 关闭设备队列管理器
-	if (deviceQueueManager_)
+	// PR-5.3: 关闭设备运行时
+	if (deviceRuntime_)
 	{
-		deviceQueueManager_->shutdown();
-		deviceQueueManager_.reset();
+		deviceRuntime_->shutdown();
+		deviceRuntime_.reset();
 	}
+	devicePolicy_.reset();
 	stopSource_ = std::stop_source{};
 	running_.store(false);
 }
@@ -387,22 +388,26 @@ void GraphExecutor::executeNode(const std::string& nodeId, NodeResolver resolver
 		}
 		else
 		{
-			// PR-5.1: 根据节点偏好设备路由
-			DeviceType preferredDev = execNode->preferredDevice();
+			// PR-5.3: 使用 DevicePolicy 选择设备
+			DeviceInstance targetDevice = devicePolicy_->pick(*execNode, *deviceRuntime_);
 			
-			// Any -> CPU 映射（PR-5.1 固定策略）
-			if (preferredDev == DeviceType::Any)
-			{
-				preferredDev = DeviceType::CPU;
-			}
+			// 发送 NodeDispatched 事件
+			NodeEvent dispatchEvt;
+			dispatchEvt.type = EventType::NodeDispatched;
+			dispatchEvt.jobId = jobId_;
+			dispatchEvt.graphId = graphId_;
+			dispatchEvt.nodeId = nodeId;
+			dispatchEvt.deviceType = targetDevice.type;
+			dispatchEvt.deviceIndex = targetDevice.index;
+			dispatchEvt.deviceName = targetDevice.name();
+			dispatchEvt.tsUs = static_cast<std::uint64_t>(nowMicros());
+			emitEvent(dispatchEvt);
 			
-			// 日志：设备路由
-			std::string devName = deviceTypeToString(preferredDev);
-			XLOG_INFO("executeNode: nodeId=" + nodeId + " -> " + devName + " queue", CURRENT_THREAD_ID);
+			XLOG_INFO("executeNode: nodeId=" + nodeId + " dispatched to " + targetDevice.name(), CURRENT_THREAD_ID);
 			
-			// PR-5.1 占位实现：仍然直接执行（在当前线程）
-			// 真正的设备队列异步调度将在 PR-5.2 实现
-			// 这里只是为了验证路由日志和接口可用
+			// PR-5.3: 仍然直接执行（在当前线程）
+			// 真正的设备队列异步调度将在后续 PR 实现
+			// 这里的关键改进是：使用 DevicePolicy 选择设备，并发送 NodeDispatched 事件
 			execNode->execute(stopSource_.get_token());
 			finalState = NodeState::Completed;
 		}
@@ -451,9 +456,16 @@ void GraphExecutor::runParallel(NodeResolver resolver, Options opt, FinishedCall
 		poolSize = std::max(1u, std::thread::hardware_concurrency() - 1);
 	threadPool_ = std::make_unique<ThreadPool>(poolSize);
 
-	// PR-5.1: 创建设备队列管理器
-	deviceQueueManager_ = std::make_unique<DeviceQueueManager>();
-	XLOG_INFO("runParallel: DeviceQueueManager created (CPU/GPU/NPU queues)", CURRENT_THREAD_ID);
+	// PR-5.3: 创建设备运行时和策略
+	DeviceRuntimeConfig runtimeConfig;
+	runtimeConfig.gpuCount = 1;  // 默认 1 个 GPU（占位）
+	runtimeConfig.npuCount = 0;  // 默认 0 个 NPU
+	deviceRuntime_ = std::make_unique<DeviceRuntime>(runtimeConfig);
+	devicePolicy_ = std::make_unique<FixedPolicy>();  // 使用固定策略
+	XLOG_INFO("runParallel: DeviceRuntime created (1 CPU, " + 
+	          std::to_string(deviceRuntime_->getGPUCount()) + " GPU, " +
+	          std::to_string(deviceRuntime_->getNPUCount()) + " NPU), policy=" + 
+	          devicePolicy_->name(), CURRENT_THREAD_ID);
 
 	// PR-4.5b: 启动心跳线程
 	startHeartbeatThread();
@@ -531,12 +543,13 @@ void GraphExecutor::runParallel(NodeResolver resolver, Options opt, FinishedCall
 	threadPool_->shutdown();
 	threadPool_.reset();
 
-	// PR-5.1: 关闭设备队列管理器
-	if (deviceQueueManager_)
+	// PR-5.3: 关闭设备运行时
+	if (deviceRuntime_)
 	{
-		deviceQueueManager_->shutdown();
-		deviceQueueManager_.reset();
+		deviceRuntime_->shutdown();
+		deviceRuntime_.reset();
 	}
+	devicePolicy_.reset();
 
 	running_.store(false);
 	if (onFinished)

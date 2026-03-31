@@ -349,6 +349,17 @@ void MainWindow::runButtonClicked(bool checked)
 			}
 			break;
 
+		case XVisual::EventType::NodeDispatched:
+			// PR-5.3: 节点被投递到设备队列
+			{
+				XLOG_INFO("Node dispatched: " + e.nodeId + " -> " + e.deviceName, CURRENT_THREAD_ID);
+				// 可选：更新状态栏显示节点被分配到的设备
+				// statusBar()->showMessage(QString("Dispatched %1 to %2")
+				//     .arg(QString::fromStdString(e.nodeId))
+				//     .arg(QString::fromStdString(e.deviceName)));
+			}
+			break;
+
 		case XVisual::EventType::JobFinished:
 			{
 				auto code = static_cast<XVisual::ErrorCode>(e.code);

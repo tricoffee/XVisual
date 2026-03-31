@@ -18,7 +18,8 @@
 #include "Core/Executor/NodeState.h"
 #include "Core/Executor/ThreadPool.h"
 #include "Core/Executor/ThreadSafeQueue.h"
-#include "Core/Device/DeviceQueueManager.h"
+#include "Core/Device/DeviceRuntime.h"
+#include "Core/Device/DevicePolicy.h"
 #include "Core/Runtime/ExecutionContext.h"
 #include "XGraph/GraphNode.h"
 #include "Common/ErrorCode.h"
@@ -133,7 +134,8 @@ private:
 
 	// PR-4: 并行调度数据结构
 	std::unique_ptr<ThreadPool> threadPool_;
-	std::unique_ptr<DeviceQueueManager> deviceQueueManager_;  // PR-5.1: 设备队列管理器
+	std::unique_ptr<DeviceRuntime> deviceRuntime_;    // PR-5.3: 设备运行时管理器
+	std::unique_ptr<IDevicePolicy> devicePolicy_;     // PR-5.3: 设备选择策略
 	ThreadSafeQueue<std::string> readyQueue_;
 	std::unordered_map<std::string, int> inDegree_;                          // 节点入度
 	std::unordered_map<std::string, std::vector<std::string>> downstream_;   // 下游邻接表
